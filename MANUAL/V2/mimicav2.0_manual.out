@@ -1,0 +1,53 @@
+\BOOKMARK [1][-]{section.1}{Coding standards}{}
+\BOOKMARK [1][-]{section.2}{Physical model description}{}
+\BOOKMARK [2][-]{subsection.2.1}{The LES approach}{section.2}
+\BOOKMARK [2][-]{subsection.2.2}{Governing equations}{section.2}
+\BOOKMARK [3][-]{subsubsection.2.2.1}{Pressure decomposition}{subsection.2.2}
+\BOOKMARK [3][-]{subsubsection.2.2.2}{Balance equations}{subsection.2.2}
+\BOOKMARK [2][-]{subsection.2.3}{Subgrid scale closure}{section.2}
+\BOOKMARK [2][-]{subsection.2.4}{Radiation}{section.2}
+\BOOKMARK [2][-]{subsection.2.5}{Microphysics: a two moment bulk scheme}{section.2}
+\BOOKMARK [3][-]{subsubsection.2.5.1}{Basic definitions}{subsection.2.5}
+\BOOKMARK [3][-]{subsubsection.2.5.2}{Equivalence with mass distributions}{subsection.2.5}
+\BOOKMARK [3][-]{subsubsection.2.5.3}{Collisions between hydrometeors}{subsection.2.5}
+\BOOKMARK [3][-]{subsubsection.2.5.4}{Warm microphysics: Seifert \046 Beheng's scheme}{subsection.2.5}
+\BOOKMARK [3][-]{subsubsection.2.5.5}{mixed phase microphysics}{subsection.2.5}
+\BOOKMARK [3][-]{subsubsection.2.5.6}{Precipitation}{subsection.2.5}
+\BOOKMARK [3][-]{subsubsection.2.5.7}{Phase transitions}{subsection.2.5}
+\BOOKMARK [3][-]{subsubsection.2.5.8}{Saturation adjustment}{subsection.2.5}
+\BOOKMARK [3][-]{subsubsection.2.5.9}{Direct integration of condensation/evaporation}{subsection.2.5}
+\BOOKMARK [3][-]{subsubsection.2.5.10}{Droplet activation}{subsection.2.5}
+\BOOKMARK [3][-]{subsubsection.2.5.11}{Ice nucleation}{subsection.2.5}
+\BOOKMARK [2][-]{subsection.2.6}{Boundary conditions}{section.2}
+\BOOKMARK [3][-]{subsubsection.2.6.1}{Lateral boundaries}{subsection.2.6}
+\BOOKMARK [3][-]{subsubsection.2.6.2}{Top boundary}{subsection.2.6}
+\BOOKMARK [3][-]{subsubsection.2.6.3}{Surface modeling}{subsection.2.6}
+\BOOKMARK [2][-]{subsection.2.7}{Large scale tendencies \(nudging\)}{section.2}
+\BOOKMARK [1][-]{section.3}{Numerics}{}
+\BOOKMARK [2][-]{subsection.3.1}{Time integration}{section.3}
+\BOOKMARK [2][-]{subsection.3.2}{Numerical grid}{section.3}
+\BOOKMARK [2][-]{subsection.3.3}{Momentum advection}{section.3}
+\BOOKMARK [2][-]{subsection.3.4}{Scalar advection}{section.3}
+\BOOKMARK [3][-]{subsubsection.3.4.1}{Upwind finite differences}{subsection.3.4}
+\BOOKMARK [3][-]{subsubsection.3.4.2}{2nd order flux limited Lax-Wendroff method}{subsection.3.4}
+\BOOKMARK [3][-]{subsubsection.3.4.3}{3rd order TVD flux limited scheme}{subsection.3.4}
+\BOOKMARK [3][-]{subsubsection.3.4.4}{3rd order MUSCL scheme}{subsection.3.4}
+\BOOKMARK [3][-]{subsubsection.3.4.5}{3rd order WENO scheme}{subsection.3.4}
+\BOOKMARK [2][-]{subsection.3.5}{Multidimensional advection}{section.3}
+\BOOKMARK [2][-]{subsection.3.6}{Precipitation}{section.3}
+\BOOKMARK [2][-]{subsection.3.7}{The pressure solver}{section.3}
+\BOOKMARK [3][-]{subsubsection.3.7.1}{Diagnostic pressure}{subsection.3.7}
+\BOOKMARK [3][-]{subsubsection.3.7.2}{Prognostic pressure}{subsection.3.7}
+\BOOKMARK [2][-]{subsection.3.8}{Criterion for numerical stability}{section.3}
+\BOOKMARK [2][-]{subsection.3.9}{MPI communications and domain decomposition}{section.3}
+\BOOKMARK [1][-]{section.4}{Input/Output}{}
+\BOOKMARK [2][-]{subsection.4.1}{cm.nml and out.nml}{section.4}
+\BOOKMARK [2][-]{subsection.4.2}{start}{section.4}
+\BOOKMARK [2][-]{subsection.4.3}{Output files}{section.4}
+\BOOKMARK [3][-]{subsubsection.4.3.1}{Overview}{subsection.4.3}
+\BOOKMARK [3][-]{subsubsection.4.3.2}{Output options}{subsection.4.3}
+\BOOKMARK [3][-]{subsubsection.4.3.3}{Post-processing}{subsection.4.3}
+\BOOKMARK [2][-]{subsection.4.4}{Restart files}{section.4}
+\BOOKMARK [1][-]{section.5}{Main routines and data structures}{}
+\BOOKMARK [2][-]{subsection.5.1}{Main subroutines and overall hierarchy}{section.5}
+\BOOKMARK [2][-]{subsection.5.2}{data structures}{section.5}

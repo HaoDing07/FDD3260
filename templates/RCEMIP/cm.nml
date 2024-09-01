@@ -1,0 +1,134 @@
+ $cm_run
+	dt0           = 300.,
+	ldtfix        = 0,
+	limit_ts      = 200.,
+	tstart        = 0.,
+	tstop         = 5184000.,
+	ntau	      = 40,
+	ldebug        = .false.,
+	new_run       = .false.,
+        nest_run      = .false.
+  $end
+  
+  $cm_init
+	casename      = 'RCEMIP',
+	psurf         = 101480.,
+	dpt           = 0.1,
+	dqv           = 0.,
+	dw            = 0.,
+	kpert  	      = 10,
+	sca_set       = 2,
+	j_day         = 116,
+	ctr_lat       = 12.,
+	t_local       = 0.,
+	file_init     = 'em_rcemip'
+  $end
+  
+  $cm_grid
+        gridfile      = 'new_grid.dat',
+	dx            = 3000.,
+	dy            = 3000.,
+	dz            = 250.,
+	z1            = 1200.,
+	z2            = 18000.,
+	ztop          = 20000.,
+	sratio        = 0.5,
+	zdamp         = 16000.,
+        dxdamp        = -1000.,
+        dydamp        = -1000.,
+	tdamp         = 3600.,
+        tnudg         = 21600.
+  $end
+  
+  $cm_out
+	no_out	      = .true.,
+	minmax	      = .false.,
+	iax           = 86400.,
+	its           = 180.,
+	ipro	      = 900.,
+	ires          = 86400.,
+	iav           = 90000.,
+        kout          = 0,
+        zbl	      = 755.,
+	nslicez       = 6,
+	slicez_io     = 0., 325., 755., 1200., 2400., 4800., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+        nslicey       = 1.
+        slicey_io     = 2048000., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+        nslicex       = 4.
+        slicex_io     = 32000., 64000., 96000., 128000., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+	spec_diag     = .true.,
+        out_surf      = .true.,
+	ts_out        = 'cumulus',
+	file_output   = 'output_rce.nc'
+  $end
+
+  $cm_num
+	scal_adv      = 'muscl',
+	limit         = .true.,
+        p_mcons       = .false.,
+        lim_tol       = 1.e-7,
+        imp_buoy      = .true.,
+        split_mic     = 0,
+        mom_ord       = 4,
+	nsubp         = 2,
+	cfl_max       = 0.5,
+	cfl_min       = 0.45,
+	adiv          = 0.01
+  $end
+  
+  $cm_phys
+	with_mom      = .true.,
+	with_adv      = .true.,
+	with_dif      = .true.,
+	with_buoy     = .true.,
+        with_mic      = .true.,
+	with_rad      = .true.,
+	with_nudg     = .true.,
+	with_lsadv    = .false.,
+	diff_2d       = .false.,
+	iradx	      = 900.,
+        rad_o3        = 0,
+	diff          = 0.,
+	zdec          = 7500.,
+	pran          = -0.4,
+	u0shift       = 0.,
+	v0shift       = 0.,
+	Ddiv          = 0.,
+        cst_cp	      = 1
+  $end
+  
+  $cm_bc
+	bcl(1)        = 'per',
+	bcl(2)        = 'per',
+	bcl(3)        = 'per',
+	bcl(4)        = 'per',
+	bcl(5)        = 'nnf',
+	bcl(6)        = 'nnf',
+	isurf         = 3,
+	shf0          = 0.,
+	lhf0          = 0.,
+	scf	      = 0.,
+        momsf         = 0,
+	zrough        = 0.16,
+	alb           = 0.07,  
+	sst           = 300.,
+	ssm           = 1.,
+	c_dm          = 0.7,
+	c_ds          = 1.1e-3,
+        min_w         = 1.
+  $end
+  
+  $cm_micro
+	micro_dif     = .false.,
+	lmicro        = 1,
+	lndrop        = 0,
+	lfreeze       = 1,
+	qauto         = 1.e-4,
+	qthres        = 1.e-5,
+	xnc0_d        = 0.2e-6,
+	xnc0_s        = 1.47,
+	xnc0_k        = 0.61,
+	xn_ccn0       = 100.0e6,
+	xn_in0        = 100.,
+	ice_habit     = 'DEN'
+  $end

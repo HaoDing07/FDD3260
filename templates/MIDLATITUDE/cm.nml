@@ -1,0 +1,143 @@
+ $cm_run
+	dt0           = 15.,
+	ldtfix        = 0,
+	limit_ts      = 75.,
+	tstart        = 0.,
+	tstop         = 57600.,
+	ntau	      = 40,
+	ldebug        = .false.,
+	new_run       = .true.,
+        nest_run      = .false.
+  $end
+  
+  $cm_init
+	casename      = 'MIDLAT',
+	psurf         = 96000.,
+	dpt           = 0.1,
+	dw            = 0.,
+	kpert  	      = 15,
+	sca_set       = 0,
+	j_day         = 116,
+	ctr_lat       = 18.,
+	t_local       = 5.,
+	tpert         = 12600.,
+	file_init     = 'none'
+  $end
+  
+  $cm_grid
+	dx            = 400.,
+	dy            = 400.,
+	dz            = 60.,
+	z1            = 1000.,
+	z2            = 14000.,
+	ztop          = 14000.,
+	sratio        = 0.5,
+	zdamp         = 12200.,
+        dxdamp        = -1000.,
+        dydamp        = -1000.,
+	tdamp         = 7200.,
+        tnudg         = 43200.
+  $end
+  
+  $cm_out
+	no_out	      = .true.,
+ 	minmax        = .false.,
+	iax           = 900.,
+	its           = 30.,
+	ipro	      = 90.,
+	ires          = 10000.,
+	iav           = 90000.,
+        kout          = 0,
+        zbl	      = 750.,
+	nslicez       = 6,
+	slicez_io     = 0., 400., 1200., 2000., 4000., 7000., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+	spec_diag     = .true.,
+        out_surf      = .true.,
+        out_hov       = .false.,
+	ts_out        = 'cumulus',
+	file_output   = 'midlatitude.nc'
+  $end
+
+  $cm_num
+	scal_adv      = 'muscl',
+	limit         = .true.,
+	lim_tol       = 1.e-7,
+        imp_buoy      = .true.,
+        split_mic     = 0,
+        mom_ord       = 3,
+	nsubp         = 2,
+	cfl_max       = 0.52,
+	cfl_min       = 0.47,
+	adiv          = 0.005
+  $end
+  
+  $cm_phys
+	with_mom      = .true.,
+	with_adv      = .true.,
+	with_dif      = .true.,
+	with_buoy     = .true.,
+        with_mic      = .true.,
+	with_rad      = .false.,
+	with_nudg     = .true.,
+	with_cor      = .false.,
+	with_lsadv    = .false.,
+	diff_2d       = .false.,
+	iradx	      = 0.,
+        rad_sw        = 0,
+	diff          = 0.,
+	zdec          = 5000.,
+	pran          = -0.4,
+	u0shift       = 0.,
+	v0shift       = 0.,
+	Ddiv          = 0.,
+        cst_cp	      = 1
+  $end
+  
+  $cm_bc
+	bcl(1)        = 'per',
+	bcl(2)        = 'per',
+	bcl(3)        = 'per',
+	bcl(4)        = 'per',
+	bcl(5)        = 'nnf',
+	bcl(6)        = 'nnf',
+	isurf         = 0,
+	shf0          = 77.,
+	lhf0          = 383.,
+	scf	      = 0.,
+        momsf         = 0,
+	zrough        = 1.,
+	alb           = 0.9,  
+	sst           = 291.15,
+	ssm           = 1.,
+	c_dm          = 1.2e-3,
+	c_ds          = 1.1e-3,
+        min_w         = 1.
+  $end
+  
+  $cm_micro
+	micro_dif     = .false.,
+	lmicro        = 3,
+	laero         = -1,
+	lndrop        = 0,
+	lfreeze       = 2,
+	qauto         = 1.e-4,
+	qthres        = 1.e-6,
+	xnc0_d        = 0.2e-6,
+	xnc0_s        = 1.47,
+	xnc0_k        = 0.61,
+	xn_ccn0       = 500.0e6,
+	xn_in0        = 0.,
+	ice_habit     = 'DEN'
+  $end
+  
+  $cm_lag
+        ilag		= 5.,		
+        nlag		= 1,
+        res_lag        	= .false.,
+        lag_init	= 2,
+	zl1		= 500.,
+	zl2    		= 3000.,
+        lag_ord 	= 0,
+        lag_mix		= .true.
+  $end
+  

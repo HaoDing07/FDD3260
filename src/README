@@ -1,0 +1,11 @@
+./src:
+	MIMICA's source files.
+		- AEROCHEM: sources related to aerosol processes and chemistry
+		- INTEG: sources for numerical integration and advection
+		- IO: sources for input/output as well as initialisation
+		- MAIN: main source code and drivers
+		- MICRO: microphysics sources
+		- PHYS: physical packages including SGS mixing, radiation, surface fluxes and thermodynamics
+		- PRESSURE: pressure solvers (diagnostic and prognostic)
+		- TOOLS: other source codes and functions
+		- TYPES: data types and data structures (including shared_data, defining all shared data used by MIMICA)

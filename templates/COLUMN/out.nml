@@ -1,0 +1,68 @@
+
+ $ou_in
+	out_u         = .false.
+	out_v         = .false.
+	out_w         = .true.
+	out_p         = .true.
+	out_t         = .true.
+	out_pt        = .true.
+	out_ptv       = .false.	
+	out_mse       = .true.	
+	out_rho       = .true.
+	out_sca       = .true.
+	out_qv        = .true.
+	out_qc        = .true.
+	out_nc        = .false.
+	out_qr        = .true.
+	out_nr        = .false.
+	out_qi        = .false.
+	out_ni        = .false.	
+	out_qg        = .false.
+	out_ng        = .false.	
+	out_qs        = .false.
+	out_ns        = .false.
+	out_qt        = .true.	
+	out_var       = .false.
+	out_sat       = .true.
+	out_k         = .true.
+	out_tke       = .false.
+        out_grad      = .false.
+	out_buoy      = .false.	
+	out_wmom      = .false.
+	out_flut      = .true.
+	out_dtnet     = .true.
+	out_frad      = .true.
+	out_ccn       = .false.
+	out_in        = .false.
+ $END
+ 
+ $ou2d_in
+        out_lwp       = .false.
+	out_wvp       = .false.
+	out_cmse      = .false.
+        out_ctop      = .false.
+	out_cp        = .false.
+        out_sfl       = .true.
+	out_srad      = .false.
+        out_rrate     = .false.
+        out_cape      = .false.
+	out_ints      = .false.
+ $END
+
+ $oud_in
+        out_diagu     = .false.
+        out_diagv     = .false. 
+        out_diagw     = .false.
+        out_diagp     = .false.
+        out_diagt     = .true.
+        out_diagq     = .true.
+        out_diagl     = .false.
+        out_diagr     = .false.
+        out_diagi     = .false.
+        out_diags     = .true.
+	out_micro     = .false.
+ $END
+
+ $pro_in
+	pro_tot       = .true.
+ $END

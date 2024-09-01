@@ -1,0 +1,122 @@
+         Step =   399  Time=   399.000 sec. Max. pressure corr.= 0.113E+01 Max. CFL= 0.177E+00 Max. CFL_acoustic= 0.000E+00
+           Elapsed time =    0.018 min.  User time =    0.017 min.  System time =    0.001 min. 
+
+           Wrote time series in OUTPUT/T_S
+           Max & Min u                     1.0217    44    33    48         -1.0163    24    33    48
+           Max & Min v                     1.0217    33    44    48         -1.0163    33    24    48
+           Max & Min w                     2.7315    34    34    40         -0.6803    24    25    42
+           Max & Min p                     2.0588    34    34    53         -1.6148    40    41    40
+           Max & Min p1                    1.1320     1     1     1          0.0000     1     1    65
+           Max & Min t                   303.0000     1     1     1        293.3794     1     1    65
+           Max & Min pt                  303.3522    28    28    48        303.0000     1     1     1
+           Max & Min qv                    0.0000     1     1     1          0.0000     1     1     1
+           Max & Min qt                    0.0000     1     1     1          0.0000     1     1     1
+           Max & Min qc                    0.0000     1     1     1          0.0000     1     1     1
+           Max & Min qr                    0.0000     1     1     1          0.0000     1     1     1
+           Max & Min s                    -0.0170    33    34    65         -0.0273     1     1     1
+           Max & Min si                   -0.0208    33    34    65         -0.0371     1     1     1
+           Max & Min rh                    0.0000     1     1     1          0.0000     1     1     1
+           Max & Min k                     0.5000     1     1     1          0.5000     1     1     1
+           Max & Min ke                    3.7274    34    34    40          0.0000     1     1    65
+           Max & Min ke2                   0.0000     1     1     1          0.0000     1     1     1
+           Max & Min s2                    0.0000     1     1     1          0.0000     1     1     1
+           Max & Min gu1                   0.0173    42    34    48         -0.0097    45    35    47
+           Max & Min gu2                   0.0089    42    25    47         -0.0090    42    41    48
+           Max & Min gu3                   0.0143    42    34    49         -0.0140    26    31    48
+           Max & Min gv1                   0.0089    25    42    47         -0.0090    41    42    48
+           Max & Min gv2                   0.0173    34    42    48         -0.0097    35    45    47
+           Max & Min gv3                   0.0143    34    42    49         -0.0140    31    26    48
+           Max & Min gw1                   0.0606    23    36    43         -0.0609    44    33    44
+           Max & Min gw2                   0.0606    36    23    43         -0.0609    33    44    44
+           Max & Min gw3                   0.0083    40    23    46         -0.0273    41    38    48
+           Max & Min gt1                   0.0122    25    37    48         -0.0123    43    37    48
+           Max & Min gt2                   0.0122    37    25    48         -0.0123    37    43    48
+           Max & Min gt3                   0.0037    38    35    49         -0.0127    39    38    51
+           Max & Min gq1                   0.0000     1     1     1          0.0000     1     1     1
+           Max & Min gq2                   0.0000     1     1     1          0.0000     1     1     1
+           Max & Min gq3                   0.0000     1     1     1          0.0000     1     1     1
+           Max & Min bres                  0.0122    38    39    49         -0.0000    33    33     1
+           Max & Min bsgs                  0.0000     1     1     1          0.0000     1     1     1
+           Max & Min n2                    0.0000     1     1     1          0.0000     1     1     1
+           Max & Min ri                    0.0000     1     1     1          0.0000     1     1     1
+           Max & Min udiag                 0.0288    25    34    48         -0.0296    43    34    48
+           Max & Min vdiag                 0.0121    41    29    48         -0.0125    41    39    48
+           Max & Min wdiag                 0.0423    44    33    46         -0.0204    23    34    36
+           Max & Min pdiag                 0.0016    25    26    41         -0.0007    34    34    53
+           Max & Min tdiag                 0.0129    43    36    48         -0.0018    45    34    38
+           Max & Min qdiag                 0.0000     1     1     1          0.0000     1     1     1
+           Max & Min ldiag                 0.0000     1     1     1          0.0000     1     1     1
+           Max & Min rdiag                 0.0000     1     1     1          0.0000     1     1     1
+           Max & Min udiag                 0.0121    29    41    48         -0.0125    39    41    48
+           Max & Min vdiag                 0.0288    34    25    48         -0.0296    34    43    48
+           Max & Min wdiag                 0.0423    33    44    46         -0.0204    34    23    36
+           Max & Min pdiag                 0.0015    25    26    41         -0.0007    34    34    53
+           Max & Min tdiag                 0.0129    36    43    48         -0.0018    34    45    38
+           Max & Min qdiag                 0.0000     1     1     1          0.0000     1     1     1
+           Max & Min ldiag                 0.0000     1     1     1          0.0000     1     1     1
+           Max & Min rdiag                 0.0000     1     1     1          0.0000     1     1     1
+           Max & Min udiag                 0.0152    25    34    40         -0.0159    43    34    40
+           Max & Min vdiag                 0.0152    34    25    40         -0.0159    34    43    40
+           Max & Min wdiag                 0.0580    42    33    48         -0.0312    34    34    33
+           Max & Min pdiag                 1.9172    34    34    53         -1.4793    40    41    40
+           Max & Min tdiag                 0.0163    36    37    52         -0.0066    34    37    49
+           Max & Min qdiag                 0.0000     1     1     1          0.0000     1     1     1
+           Max & Min ldiag                 0.0000     1     1     1          0.0000     1     1     1
+           Max & Min rdiag                 0.0000     1     1     1          0.0000     1     1     1
+           Max & Min udiag                 0.0011    25    39    47         -0.0012    44    36    47
+           Max & Min vdiag                 0.0011    39    25    47         -0.0012    36    44    47
+           Max & Min wdiag                 0.0018    25    26    44         -0.0016    26    27    43
+           Max & Min pdiag                 0.0202    46    36    41         -0.0202    22    36    41
+           Max & Min tdiag                 0.0000     1     1     1          0.0000     1     1     1
+           Max & Min qdiag                 0.0000     1     1     1          0.0000     1     1     1
+           Max & Min ldiag                 0.0000     1     1     1          0.0000     1     1     1
+           Max & Min rdiag                 0.0000     1     1     1          0.0000     1     1     1
+           Max & Min udiag                 0.0004    42    40    46         -0.0004    25    40    46
+           Max & Min vdiag                 0.0004    40    42    46         -0.0004    40    25    46
+           Max & Min wdiag                 0.0011    41    39    49         -0.0009    40    39    48
+           Max & Min pdiag                 0.0202    36    46    41         -0.0202    36    22    41
+           Max & Min tdiag                 0.0006    26    26    48         -0.0007    40    40    48
+           Max & Min qdiag                 0.0000     1     1     1          0.0000     1     1     1
+           Max & Min ldiag                 0.0000     1     1     1          0.0000     1     1     1
+           Max & Min rdiag                 0.0000     1     1     1          0.0000     1     1     1
+           Max & Min udiag                 0.0000     1     1     1          0.0000     1     1     1
+           Max & Min vdiag                 0.0000     1     1     1          0.0000     1     1     1
+           Max & Min wdiag                 0.0000     1     1     1          0.0000     1     1     1
+           Max & Min pdiag                 0.0225    41    41    47         -0.0115    40    41    37
+           Max & Min tdiag                 6.3824    39    38    51         -1.8603    38    35    49
+           Max & Min qdiag                 0.0000     1     1     1          0.0000     1     1     1
+           Max & Min ldiag                 0.0000     1     1     1          0.0000     1     1     1
+           Max & Min rdiag                 0.0000     1     1     1          0.0000     1     1     1
+           Max & Min udiag                 0.0279    44    33    44         -0.0277    23    36    43
+           Max & Min vdiag                 0.0279    33    44    44         -0.0277    36    23    43
+           Max & Min wdiag                 0.0122    38    39    49         -0.0000    33    33     1
+           Max & Min pdiag                 0.0000     1     1     1          0.0000     1     1     1
+           Max & Min tdiag                 0.0000     1     1     1          0.0000     1     1     1
+           Max & Min qdiag                 0.0000     1     1     1          0.0000     1     1     1
+           Max & Min ldiag                 0.0000     1     1     1          0.0000     1     1     1
+           Max & Min rdiag                 0.0000     1     1     1          0.0000     1     1     1
+           Max & Min udiag                 0.0299    26    34    49         -0.0308    42    34    49
+           Max & Min vdiag                 0.0299    34    26    49         -0.0308    34    42    49
+           Max & Min wdiag                 0.0803    40    41    47         -0.0235    41    40    37
+           Max & Min pdiag                 0.0000     1     1    18         -0.0000    33    33    64
+           Max & Min tdiag                 0.0000     1     1     1          0.0000     1     1     1
+           Max & Min qdiag                 0.0000     1     1     1          0.0000     1     1     1
+           Max & Min ldiag                 0.0000     1     1     1          0.0000     1     1     1
+           Max & Min rdiag                 0.0000     1     1     1          0.0000     1     1     1
+           Max & Min udiag                 0.0269    26    34    49         -0.0277    42    34    49
+           Max & Min vdiag                 0.0269    34    26    49         -0.0277    34    42    49
+           Max & Min wdiag                 0.0565    40    40    48         -0.0158    24    25    46
+           Max & Min pdiag                 0.0000     1     1     1          0.0000     1     1     1
+           Max & Min tdiag                 0.0213    38    40    50         -0.0070    38    38    48
+           Max & Min qdiag                 0.0000     1     1     1          0.0000     1     1     1
+           Max & Min ldiag                 0.0000     1     1     1          0.0000     1     1     1
+           Max & Min rdiag                 0.0000     1     1     1          0.0000     1     1     1
+ SUCCESS writing netcdf file ./OUTPUT/bubble.nc
+           Wrote restart data in OUTPUT/restart.dat and OUTPUT/REF0
+         Step =   400  Time=   400.000 sec. Max. pressure corr.= 0.113E+01 Max. CFL= 0.178E+00 Max. CFL_acoustic= 0.000E+00
+           Elapsed time =    0.055 min.  User time =    0.049 min.  System time =    0.006 min. 
+
+  
+ Ending Time: SEP 18, 2017   10:29:36.475
+ 
+ MIMICA ENDED NORMALLY

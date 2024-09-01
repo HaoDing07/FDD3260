@@ -1,0 +1,5 @@
+./INCLUDE:
+	Collection of include files used by MIMICA. This includes in particular initial conditions for various
+idealized and more realistic test cases, the 'restart.dat' file for MIMICA's restart option, the definition
+of all input/output files used by MIMICA (assign), as well as scripts used to interprete the start file and
+define the dimensions of the numerical domain ('wheaders.csh' and 'wgrid.csh' respectively).

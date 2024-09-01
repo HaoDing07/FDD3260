@@ -1,0 +1,126 @@
+ $cm_run
+	dt0           = 0.15625,
+	ldtfix        = 1,
+	limit_ts      = 20.,
+	tstart        = 0.,
+	tstop         = 200.,
+	ntau	      = 30,
+	new_run       = .true.,
+	nest_run      = .false.,
+	ldebug	      = .false.
+  $end
+  
+  $cm_init
+        casename      = 'SINE',
+	psurf         = 100000.,
+	dpt           = 0.00032,
+	dqv           = 0.,
+	dw            = 0.,
+	kpert  	      = 10,
+	j_day         = 116,
+	ctr_lat       = 71.1,
+	t_local       = 17.,
+	res_sca       = .false.,
+	file_init     = 'initial.dat'
+  $end
+  
+  $cm_grid
+	dx            = 0.03125,
+	dy            = 1.,
+	dz            = 0.125,
+	z1            = 920.,
+	z2            = 1120.,
+	ztop          = 1800.,
+	sratio        = 0.3,
+        zdamp         = 1000.,
+        dxdamp        = -1000.,
+        dydamp        = -1000.,
+	tdamp         = 300.,
+	tnudg         = 0.
+  $end
+  
+  $cm_out
+        no_out        = .false.,
+	iax           = 10.,
+	iav           = 1000.,
+	its           = 1000.,
+	ipro	      = 1000.,
+	ires          = 1000.,
+	zbl           = 0.,
+	kout          = 0,
+	out_surf      = .false.,
+	spec_diag     = .false.,
+        ts_out        = 'none',
+        file_output   = 'sine.out'
+  $end
+
+  $cm_num
+  	scal_adv      = 'lw',
+  	limit         = .true.,
+	p_mcons       = .false.,
+	lim_tol       = 1.e-18,
+        split_mic     = 0,
+	nsubp         = 1,
+	mom_ord	      = 4,
+	cfl_max       = 0.4,
+	cfl_min       = 0.1,
+	adiv          = 0.005
+  $end
+  
+  $cm_phys
+        with_mom      = .false.,
+	with_adv      = .true.,
+	with_buoy     = .false.,
+	with_mic      = .false.,
+	with_dif      = .false.,
+	with_nudg     = .false.,
+	with_lsadv    = .false.,
+	with_rad      = .false.,
+	diff_2d       = .false.,
+    	iradx	      = 1,
+	diff	      = 0.,
+	zdec	      = 2000.,
+	pran          = 0.,
+   	u0shift       = 0.,
+	v0shift       = 0.,
+	Ddiv          = 0.e-6,
+	cst_cp        = 0
+  $end
+  
+  $cm_bc
+	bcl(1)        = 'per',
+	bcl(2)        = 'per',
+	bcl(3)        = 'per',
+	bcl(4)        = 'per',
+	bcl(5)        = 'nnf',
+	bcl(6)        = 'nnf',
+    	isurf         = 10,
+	momsf         = 0,
+	shf0          = 0.,
+	lhf0          = 0.,
+	scf           = 0.,
+	zrough        = 0.,
+	alb           = 0.9,  
+	sst           = 300.,
+    	ssm           = 0.,
+	c_dm          = 1.e-3,
+	c_ds          = 1.e-3,
+	min_w         = 0.
+  $end
+  
+  $cm_micro
+	micro_dif     = .false.,
+	lmicro        = 1,
+	lndrop        = 0,
+	qauto         = 1.e-4,
+	xnc0_d        = 0.2e-6,
+	xnc0_s        = 1.47,
+	xnc0_k        = 0.61,
+	xn_ccn0       = 210.0e6,
+	xn_in0        = 0.,
+	ice_habit     = 'DEN'
+  $end
+  
+  $cm_lag
+  $end
+  

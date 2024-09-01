@@ -1,0 +1,214 @@
+This file provides some information regarding all options and keywords included in the namelist cm.nml. Note that default values assigned to each of these parameters are set in INCLUDE/default.h.
+
+-----------------------------------------
+
+ $cm_run		! Run time options (time-step, simulated time)
+	dt0           	! Initial (or fixed) time-step
+	ldtfix        	! Fixed time-step if =1, time-step step by CFL if =0
+	limit_ts      	! Minimum allowed time step is dt0/limit_ts
+	tstart        	! Simulation starting time
+	tstop         	! Simulation end time
+	ntau	      	! Number of sub-steps in compressible solver (small time-step = dt0/ntau)
+	verbose       	! Level of debug printouts in cm.prt: from 0 (nothing) to 3 (all)
+	new_run       	! New run if .true., run start from restart.dat file if .false.
+	nest_run        ! If true, restart a nested run from existing nesting.dat file
+  $end
+  
+  $cm_init		! Initialization options
+	casename      	! Reference name of the case (useful for predefined test cases)
+	psurf         	! Surface pressure
+	dpt           	! Max initial potential temperature perturbations (random)
+	dqv           	! Max initial water vapor perturbations (random)
+	dw          	! Max initial vertical velocity perturbations (random)
+	sca_set         ! Predefined sets of passive scalars
+	kpert  	      	! Level up to which random perturbations are applied
+	j_day         	! Julian day     	
+	ctr_lat       	! Reference latitude
+	t_local       	! Local time at simulation start (UTC)
+	file_init     	! Name of initial sounding file
+	file_rest     	! Name of restart file
+	tpert           ! Time of perturbations
+  $end
+  
+  $cm_grid		! Grid/domain options
+	dx            	! Cell size in x
+	dy            	! Cell size in y
+	dz            	! Reference cell size in z
+	gridfile        ! Name of vertical grid file
+	rep             ! Allows restart with repeated domain
+	xc_nest        	! Center of new mesh 
+	yc_nest      	! Center of new mesh
+	lx_nest         ! Dimension of new mesh (in x)
+	ly_nest         ! Dimension of new mesh (in y)
+	z1            	! First reference altitude for refinement (depends on algorithm)
+	z2            	! Second reference altitude for refinement (depends on algorithm)
+	ztop          	! Predefined domain top altitude for grid refinement
+	sratio        	! Minimum vertical cell size defined as sratio*dz
+	sponge          ! Sponge layer option (1=explicit - default, 2=implicit)
+	zdamp         	! Starting altitude of vertical damping layer
+        dxdamp        	! Width of horizonzal damping layer in x
+        dydamp        	! Width of horizonzal damping layer in z
+	tdamp         	! Relaxation time scale in damping layer
+	tnudg         	! Nudging time scale
+  $end
+  
+  $cm_out		! Output options
+	no_out		! Turns off all outputs for debug (default .false.)
+	iax           	! Frequency of main 3D (2D) outputs in sec
+	its           	! Frequency of time series output (T_S) in sec
+	ipro	      	! Frequency of t-z profile outputs in sec
+	isli	      	! Frequency of slices output in sec
+	ires          	! Frequency of restart.dat output in sec
+	inest           ! Frequency of nesting.dat output in sec
+	iav           	! Frequency for resetting temporal averages
+	minmax          ! Writes domain min-max values of output quantities (default .false.) 
+	zbl		! Boundary layer (or reference) height
+	ztrop		! Tropopause height
+	qthres          ! Liquid water threshold for diagnosing clouds
+	wthres          ! Vertical velocity threshold for diagnosing clouds
+	kout            ! Writes levels below kout only (all levels if kout=0)
+	nslicez         ! Number of horizontal slices to output
+	nslicex		! Number of slices in Y-Z plane
+	nslicey		! Number of lsices in X-Z plane
+	slicez_io(16)   ! Altitudes of horizontal slices (16 max)
+	slicex_io(16)   ! Altitudes of Y-Z slices (16 max)
+	slicey_io(16)   ! Altitudes of X-Z slices (16 max)
+	ts_out        	! Type of time-series (T_S) output: 'stratus', 'cumulus' or 'none'
+	out_surf        ! Output surface variables (in main output file)
+	out_hov         ! Output Hovmoller plot
+	out_yav	        ! Output slices along x, averaged along y direction
+	spec_diag       ! Turns on special diagnostics
+	file_output   	! Name of main output file
+	all_rest   	! Saves all restart files
+  $end
+
+  $cm_num		! Numerics options
+	sorder          ! Scheme order of accuracty (1 or 2)
+  	scal_adv        ! Scalar advection scheme with sorder=2 ('muscl', 'quick', 'ppm')
+	limit         	! Apply slope limiter to scalar advection if .true. (recommended)
+	lim_tol		! Tolerance for flux limiter
+        imp_buoy        ! Implicit buoyancy 
+        split_mic       ! Split microphysics integration (Strang splitting if true)
+        lavisc          ! Turns on artificial viscosity for momentum advection 
+	lddamp          ! With 2D divergence damping 
+	p_mcons         ! Mass conservation constraint on dynamical pressure (anelastic solver)
+        mom_ord       	! Order of accuracy of momentum advection (2 or 4)
+	diff_ord        ! Order of accuracy of diffusion discretization (2 or 3)
+	nsubp           ! Number of pressure solver subiterations
+	fft_solv        ! FFT solver for 3D cases (2d fftw, default = 0; 1d fftw = 1; fftMPI = 2)
+	cfl_max       	! Max allowed CFL (time-step adjusted so that CFL is always below that limit)
+	cfl_min       	! Min allowed CFL (can be very small)
+  $end
+  
+  $cm_phys		! Physics options
+	with_mom      	! Advances momentum if .true., fixed velocity field if .false.
+	with_scal     	! Advances scalars if .true.
+	with_adv      	! Allows advection of scalars and momentum
+	with_dif      	! Allows turbulent diffusion of scalars and momentum
+	with_buoy     	! Allows buoyancy
+	with_mic        ! Allows microphysics calculation
+	with_nudg       ! Allows nudging
+	with_lsadv      ! Allows large-scale advection
+	with_lssrc      ! Allows large-scale sources
+	with_lssub	! Allows large-scale subsidence
+	with_cor        ! Allows Coriolis
+	with_rad        ! Allows radiation
+	with_tvar       ! Allows time dependent parameters
+	with_piggy      ! Piggy-backing 
+	anis_k       	! Anisotropic turbulent diffusion 
+	nl_sgs       	! Non-linear turbulent diffusion 
+	iradx	      	! Frequency of update of radiation in time-steps
+	rad_sw          ! Turn off short wave radiation if =0
+	rad_o3          ! Interactive radiation with O3 if =1 
+	diff          	! Fixed diffusion coefficient if /=0 (from SGS model otherwise)
+	zdec		! Decay height for SGS turbulence (eddy viscosity decays as exp(-z/z_dec) when pran < 0)
+	pran          	! Turbulent Prandtl number for scalar diffusion
+	u0shift       	! Reference (geostrophic) wind speed in x
+	v0shift       	! Reference (geostrophic) wind speed in y
+	Ddiv          	! Horizontal divergence used to calculate subsidence rate
+	w_up		! Fixed upwelling velocity
+        cst_cp	      	! Constant thermo (cp, cv) properties if =1 (depend on water content otherwise)
+  $end	
+  
+  $cm_bc		! Boundary conditions
+	bcl(1)        	! Boundary condition at x=0 ('nnf' for no-normal flow, 'ope' for open, 'per' for periodic)
+	bcl(2)          ! Boundary condition at x=nx ('nnf' for no-normal flow, 'ope' for open, 'per' for periodic)
+	bcl(3)        	! Boundary condition at y=0 ('nnf' for no-normal flow, 'ope' for open, 'per' for periodic)
+	bcl(4)        	! Boundary condition at y=ny ('nnf' for no-normal flow, 'ope' for open, 'per' for periodic)
+	bcl(5)		! Boundary condition at z=0: surface ('nnf' for no-normal flow, 'ope' for open, 'per' for periodic)
+	bcl(6)		! Boundary condition at z=nz: top ('nnf' for no-normal flow, 'ope' for open, 'per' for periodic)
+	isurf         	! Type of surface conditions: =0 fixed fluxes, =1 fixed sst and ssm, =2 fixed sst ssm and drag coefficient, =4 sst equivalent to fixed fluxes
+	ust           	! Fixed u* (isurf=0)
+	shf0           	! Fixed sensible heat flux (isurf=0)
+	lhf0            ! Fixed latent heat flux (isurf=0)
+	scf		! Fixed surface scalar flux
+        momsf           ! Includes surface friction if >0
+	zrough        	! Roughness height
+	alb           	! Surface albedo
+	emi           	! Surface emissivity
+	sst           	! Fixed Sea Surface Temperature (isurf=0,1)
+	ssm           	! Fixed surface saturation (saturated if =1; isurf=0,1))
+	c_dm           	! Fixed surface drag coefficient for momentum (isurf=2,3)
+	c_ds           	! Fixed surface drag coefficient for scalars (isurf=2,3)
+        min_w         	! Min surface horizontal velocity for surface calculation
+  $end
+  
+  $cm_micro		! Microphysics/aerosols options
+	micro_dif       ! No turbulent diffusion for microphysical quantities if .false.
+	lmicro        	! Microphysics level (=0 no microphysics, =1 liquid only, =2 liquid+ice, =3 graupel+snow, =4 hail)
+	lndrop        	! Prognostic cloud droplet number if =1 (fixed number if =0)
+	lfreeze       	! Freezing turned on (=1 simple activation with fixed IN, =2 temperature dependent IN following Cooper, =3 Diehl and Wurzler nucleation)
+	lrime		! Turns on riming/graupel formation
+	ldrizz		! Turns on rain/drizzle formation
+	lvent		! Turns on ventilation if .true.
+	dtcon		! Condensation time-step
+	ldtmic		! Model time step limited by microphysics
+	auto		! Auto-conversion for SB scheme: 0=default, 1=Kessler, 2=Liu-Daum
+	moments		! Number of moments in SB scheme: 1 or 2 (default)
+	ice_delay	! Ice microphysics delay: time after which ice nucleation is turned on
+	xauto         	! Autoconversion threshold (Seifert-Beheng)
+	qauto         	! Autoconversion threshold (Kessler)
+	xnc0_d        	! Mean aerosol diameter for bulk aerosol species
+	xnc0_s        	! Aerosol size variance for bulk aerosol species
+	xnc0_k        	! Mean kappa parameter for bulk aerosol species
+	xn_ccn0       	! Fixed number of CCNs (units kg/m3)
+	xn_in0        	! Fixed number of ice nuclei (units kg/m3)
+	ice_habit    	! Ice crystal shape (DEN=dendrites, COL=columns, PLA=plates...) 
+  $end
+
+  $cm_aero
+	laero                ! Aerosol model level (<0 all flags turned off, =0 activation only, =1 with transport+activation, =2 +precipitation and regeneration, =3 +impaction scavenging, >3 use aerosol flags below)
+	aero_flg%act         !< activation of aerosol on/off, default off
+	aero_flg%tran        !< transport of aerosol on/off, default off
+	aero_flg%act_scv     !< activation scavenging of aerosol on/off, default off
+	aero_flg%imp_scv     !< impaction scavenging of aerosol on/off, default off
+	aero_flg%reg         !< regeneration of aerosol on/off, default off
+	aero_flg%chem        !< aerosol chemisty on/off, default off
+	nmode0	       		! Number of aerosol modes
+	reg_mode		! Presence of regeneration mode if .true. 
+	lkin			! Allows kinetic growth of activated drops
+	aero_sfc_source	        ! Turn on/off aerosol source
+
+	aeroi(1)%nelem 		! Number of elements in mixed mode (up to 4, sulfate, BC, salt, orga)
+        aeroi(1)%init%present 	! 4 items, mixed particle contains given element if .true.
+	aeroi(1)%init%frac    	! 4 items, volume fraction of a given element in mixed particle
+	aeroi(1)%init%n0      	! Initial number concentration (in #/kg)
+	aeroi(1)%size%rmean   	! Initial geometric mean radius 
+	aeroi(1)%size%sigma   	! Geometric standard deviation 
+	aeroi(1)%init%n_sfc_source  ! Aerosol surface number source
+	aeror%xxxx		! Same as aeroi but for regeneration mode
+  $end  
+  
+  $cm_lag	        ! Lagrangian particles tracking options
+        aerosol_lag	! Allows to create an ensemble of particles
+        compos_lag	! Name of the compound of which all particles composed (currently only 'NaCl')
+        mu_lag  	! Parameter of log-normal distribution of aerosol particles
+        sigma_lag	! Parameter of log-normal distribution of aerosol particles
+        ilag		! Frequency of lagrangian particle outputs
+        nlag		! Number of lagrangian particle outputs
+        res_lag         ! Reset lagrangian particles when removed
+        lag_init	! Method for initializing lagrangian particles
+	zl1, zl2        ! Altitude bounds for particle initialisation
+        lag_ord 	! Interpolation order for lagrangian particles (0, 1 or 2)
+        lag_mix 	! Particle properties from mixing with mean grid cell
+  $end

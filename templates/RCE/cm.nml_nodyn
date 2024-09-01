@@ -1,0 +1,114 @@
+ $cm_run
+	dt0           = 5.,
+	ldtfix        = 0,
+	limit_ts      = 30.,
+	tstart        = 0.,
+	tstop         = 3600.,
+	ntau	      = 20,
+	ldebug        = .false.,
+	new_run       = .true. 
+  $end
+  
+  $cm_init
+	casename      = 'RCE',
+	perturb       = 2,
+	psurf         = 101630.,
+	dpt           = 0.1,
+	dqv           = 0.,
+	dw            = 0.,
+	kpert  	      = 5,
+	j_day         = 116,
+	ctr_lat       = 71.1,
+	t_local       = 17.,
+	datadir       = './DATA',
+	incdir        = './INCLUDE',
+	file_init     = 'em_rce_2'
+  $end
+  
+  $cm_grid
+	dx            = 2000.,
+	dy            = 2000.,
+	dz            = 220.,
+	z1            = 0.,
+	z2            = 20000.,
+	ztop          = 20000.,
+	sratio        = 0.2,
+	zdamp         = 15500.,
+        dxdamp        = -1000.,
+        dydamp        = -1000.,
+	tdamp         = 300.
+  $end
+  
+  $cm_out
+	iax           = 120.,
+	its           = 15.,
+	ipro	      = 120.,
+	ires          = 12000.,
+	iclt	      = 90000.,
+	iav           = 90000.,
+	ts_out        = 'cumulus',
+	file_output   = 'output_2d.nc'
+  $end
+
+  $cm_num
+	limit         = .true.,
+	phi_p         = 1.,
+	cfl_max       = 0.4,
+	cfl_min       = 1.e-6,
+	avisc         = 1.,
+	adiv          = 0.075
+  $end
+  
+  $cm_phys
+	with_mom      = .true.,
+	with_adv      = .false.,
+	with_dif      = .false.,
+	diff_2d       = .false.,
+	iradx	      = 1,
+	ilag          = 1.,
+  	i_creact      = 0,
+	diff          = 0.,
+	pran          = 1.,
+	u0shift       = 0.,
+	v0shift       = 0.,
+	Ddiv          = 0.,
+        cst_cp	      = 1,
+        ref_den       = 1
+  $end
+  
+  $cm_bc
+	bcl(1)        = 'per',
+	bcl(2)        = 'per',
+	bcl(3)        = 'per',
+	bcl(4)        = 'per',
+	bcl(5)        = 'nnf',
+	bcl(6)        = 'nnf',
+	isurf         = 2,
+	shf           = 0.,
+	lhf           = 0.,
+	zrough        = 0.16,
+	alb           = 0.9,  
+	sst           = 300.,
+	ssm           = 0.99,
+	c_d           = 1.e-3,
+        min_w         = 5.
+  $end
+  
+  $cm_micro
+	micro_diag    = .false.,
+	lmicro        = 1,
+	lndrop        = 0,
+	c_sed         = 0,
+	drizz         = 1,
+	lvent         = 0,
+	lgrowth       = 1,
+	lfreeze       = 0,
+	drmin         = 50.,
+	xnc0_d        = 0.2e-6,
+	xnc0_s        = 1.47,
+	xnc0_k        = 0.61,
+	xn_ccn0       = 100.0e6,
+	xn_in0        = 0.,
+	ice_habit     = 'DEN'
+  $end
+  

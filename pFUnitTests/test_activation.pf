@@ -1,0 +1,168 @@
+module test_activation
+	use aeroactivate
+   use funit
+
+   implicit none
+
+   ! Variable definitions
+   ! initialize everything with zeros
+   REAL :: s0               !< Supersatuation [-]
+   REAL :: rg               !< geometic mean radius in [m]
+   REAL :: sigma            !< standarddeviation aerosol number distribition in [-]
+   REAL :: den              !< density of aerosol population [kg/m3]
+   REAL :: A                !< Kelvin curvature parameter 
+   REAL :: kappa            !< Hygroskopicity aerosols 
+   
+   REAL :: fact             !< activated number fraction
+   REAL :: mact             !< mean mass of activated fraction
+   REAL :: rwet             !< radius of wet activated fraction
+   !
+   REAL :: nact_kk          !< activated number fraction
+   REAL :: mact_kk          !< mean mass of activated fraction
+   REAL :: rwet_kk          !< radius of wet activated fraction
+   !      
+   real :: x_expected       !<  Helper for expacted  values
+   real :: test_tolerance   !<  Tolerance for tests
+   
+contains
+    
+   ! The following procedure will be called before running
+   ! each test in the suite.
+   @before
+   subroutine test_activation_init()
+      s0 = 0.d0
+      rg = 0.d0
+      sigma = 0.d0
+      den = 0.d0
+      A = 0.d0
+      kappa = 0.d0
+      fact = 0.d0
+      mact = 0.d0
+      rwet = 0.d0
+      !      
+      x_expected = 0.d0 
+      test_tolerance =1.e-6
+   end subroutine test_activation_init
+
+
+   !>----------------------------------------------------
+   !> Test: call everything with zeros
+   @test
+   subroutine test_activation_none( )
+      x_expected =  0.d0
+      call activate(s0, rg, sigma, den, A, kappa,nact = fact, mact = mact, rwet = rwet)
+      !
+      @assertEqual(x_expected, fact, tolerance=test_tolerance)
+      @assertEqual(x_expected, mact, tolerance=test_tolerance)
+      @assertEqual(1.e9, rwet, tolerance=test_tolerance)
+      !
+   end subroutine test_activation_none
+
+   !> ----------------------------------------------------------------
+   !> Test: call with reasonable numbers without supersaturation
+   @test
+   subroutine test_activation_no_ss( )
+      real :: x_expected = 0.d0
+      s0 = 0
+      rg = 5e-08
+      sigma = 1.5
+      den = 1000
+      !
+      ! This A value comes form calling 
+      ! A = np.array(2.*cal_sigmawv(Tem) / (Rw*Tem*rhow))
+      ! with 
+      ! Rw = 461.5                 # Constant for water vapor
+      ! Tem = 290                  # Temp
+      ! rhow = 1000.               # Liquid water density
+      ! 
+      ! (see aero_active subroutine in src/MICRO/activation.f90 )
+      !
+      A = 2.41733944e-09
+      kappa = 0.8
+      fact = 0
+      mact = 0
+      rwet = 0
+      !
+      x_expected =  0.d0
+      call activate(s0, rg, sigma, den, A, kappa,nact = fact, mact = mact, rwet = rwet)
+      !
+      @assertEqual(x_expected, fact, tolerance=test_tolerance)
+      @assertEqual(x_expected, mact, tolerance=test_tolerance)
+      @assertEqual(1.e9, rwet, tolerance=test_tolerance)
+   end subroutine test_activation_no_ss
+
+   !> ----------------------------------------------------------------
+   !> Test: call with reasonable numbers and high supersaturation
+   @test
+   subroutine test_activation_acitvate_all( )
+      real :: x_expected = 0.d0
+      s0 = .2  ! 20% supersaturation should activate all particles
+      rg = 5e-08
+      sigma = 1.5
+      den = 1000
+      !
+      ! This A value comes form calling 
+      ! A = np.array(2.*cal_sigmawv(Tem) / (Rw*Tem*rhow))
+      ! with 
+      ! Rw = 461.5                 # Constant for water vapor
+      ! Tem = 290                  # Temp
+      ! rhow = 1000.               # Liquid water density
+      ! 
+      ! (see aero_active subroutine in src/MICRO/activation.f90 )
+      !
+      A = 2.41733944e-09
+      kappa = 0.8
+      fact = 0
+      mact = 0
+      rwet = 0
+      !
+      x_expected =  1.0
+      call activate(s0, rg, sigma, den, A, kappa,nact = fact, mact = mact, rwet = rwet)
+      !
+      @assertEqual(x_expected, fact, tolerance=test_tolerance)
+      !
+   end subroutine test_activation_acitvate_all
+
+
+   !> ----------------------------------------------------------------
+   !> Test: compare active vs active_kk
+   !> activate and activate_kk do not give the same results; 
+   !> activate_kk is depreciated and should not be used
+   @test
+   @disable
+   subroutine test_activate_vs_activate_kk( )
+      real :: fact_kk, mact_kk, rwet_kk !> output variables for activate_kk
+      rg = 5e-08
+      sigma = 1.5
+      den = 1000
+      !
+      ! This A value comes form calling 
+      ! A = np.array(2.*cal_sigmawv(Tem) / (Rw*Tem*rhow))
+      ! with 
+      ! Rw = 461.5                 # Constant for water vapor
+      ! Tem = 290                  # Temp
+      ! rhow = 1000.               # Liquid water density
+      ! 
+      ! (see aero_active subroutine in src/MICRO/activation.f90 )
+      !
+      A = 2.41733944e-09
+      kappa = 0.8
+      !
+      do s0 = 0.001, 0.10, 0.001
+         ! reset output
+         fact = 0
+         mact = 0
+         rwet = 0
+         call activate ( s0, rg, sigma, den, A, kappa, fact, mact, rwet )
+         fact_kk = 0
+         mact_kk = 0
+         rwet_kk = 0
+         call activate_kk ( s0, rg, sigma, den, A, kappa, fact_kk, mact_kk, rwet_kk )
+         !
+         ! 
+         ! compare the two activation implementations
+         @assertEqual(fact, fact_kk, tolerance=test_tolerance)
+     enddo
+     !
+   end subroutine test_activate_vs_activate_kk
+end module test_activation

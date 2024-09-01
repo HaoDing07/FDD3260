@@ -1,0 +1,135 @@
+ $cm_run
+	dt0           = 15.,
+	ldtfix        = 0,
+	limit_ts      = 45.,
+	tstart        = 0.,
+	tstop         = 57600.,
+	ntau	      = 40,
+	ldebug        = .false.,
+	new_run       = .true.,
+        nest_run      = .false.
+  $end
+  
+  $cm_init
+	casename      = 'RICO',
+	psurf         = 101540.,
+	dpt           = 0.1,
+	dqv           = 0.000025,
+	dw            = 0.,
+	kpert  	      = 20,
+	sca_set       = 0,
+	j_day         = 116,
+	ctr_lat       = 18.,
+	t_local       = 7.5,
+	file_init     = 'none'
+  $end
+  
+  $cm_grid
+	dx            = 26.,
+	dy            = 26.,
+	dz            = 26.,
+	z1            = 1500.,
+	z2            = 3900.,
+	ztop          = 3900.,
+	sratio        = 1.,
+	zdamp         = 3300.,
+        dxdamp        = -1000.,
+        dydamp        = -1000.,
+	tdamp         = 7200.,
+        tnudg         = 0.
+  $end
+  
+  $cm_out
+	no_out	      = .true.,
+ 	minmax        = .false.,
+	iax           = 1800.,
+	its           = 60.,
+	ipro	      = 180.,
+	ires          = 7200.,
+	iav           = 90000.,
+        kout          = 0,
+        zbl	      = 750.,
+	nslicez       = 9,
+	slicez_io     = 0., 100., 500., 800., 1000., 1200., 1500., 2000., 3000., 0., 0., 0., 0., 0., 0.,
+	spec_diag     = .true.,
+        out_surf      = .true.,
+	ts_out        = 'cumulus',
+	file_output   = 'rico.nc'
+  $end
+
+  $cm_num
+	scal_adv      = 'quick',
+	limit         = .true.,
+	lim_tol       = 1.e-7,
+        p_mcons       = .false.,
+        imp_buoy      = .true.,
+        split_mic     = 0,
+        mom_ord       = 3,
+	nsubp         = 2,
+	cfl_max       = 0.5,
+	cfl_min       = 0.45,
+	adiv          = 0.005
+  $end
+  
+  $cm_phys
+	with_mom      = .true.,
+	with_adv      = .true.,
+	with_dif      = .true.,
+	with_buoy     = .true.,
+        with_mic      = .true.,
+	with_rad      = .false.,
+	with_nudg     = .false.,
+	with_cor      = .true.,
+	with_lsadv    = .true.,
+	diff_2d       = .false.,
+	iradx	      = 0.,
+        rad_sw        = 0,
+	diff          = 0.,
+	zdec          = 1000.,
+	pran          = -0.33,
+	u0shift       = -6.,
+	v0shift       = -4.,
+	Ddiv          = 0.,
+        cst_cp	      = 1
+  $end
+  
+  $cm_bc
+	bcl(1)        = 'per',
+	bcl(2)        = 'per',
+	bcl(3)        = 'per',
+	bcl(4)        = 'per',
+	bcl(5)        = 'nnf',
+	bcl(6)        = 'nnf',
+	isurf         = 2,
+	shf0          = 0.,
+	lhf0          = 0.,
+	scf	      = 0.,
+        momsf         = 1,
+	zrough        = 1.,
+	alb           = 0.9,  
+	sst           = 299.8,
+	ssm           = 1.,
+	c_dm          = 1.32e-3,
+	c_ds          = 1.18e-3,
+        min_w         = 0.1
+  $end
+  
+  $cm_micro
+	micro_dif     = .false.,
+	lmicro        = 1,
+	laero         = -1,
+	lndrop        = 0,
+	lfreeze       = 0,
+	qauto         = 1.e-4,
+	qthres        = 1.e-5,
+	xnc0_d        = 0.2e-6,
+	xnc0_s        = 1.47,
+	xnc0_k        = 0.61,
+	xn_ccn0       = 70.0e6,
+	xn_in0        = 0.,
+	ice_habit     = 'DEN'
+  $end
+  
+  $cm_lag
+  $end
+  

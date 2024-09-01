@@ -1,0 +1,249 @@
+#!/bin/csh -f
+#
+# A shell to build, compile, link,
+#             
+#
+#   Chien Wang
+#   Modified for Tornado 060717 By Annica Ekman
+#
+# ==========================================
+# $Id: start 361 2012-09-28 16:28:55Z x_julsa $
+# ==========================================
+
+#
+# === Set up cpu: NP=number processors, NN=number nodes
+
+setenv NP 1
+setenv NN 1
+
+setenv MAXCPU $NP
+
+## wall time
+[ $NP -eq 1 ] && set wt=480
+[ $NP -eq 2 ] && set wt=240
+[ $NP -eq 4 ] && set wt=120
+[ $NP -eq 8 ] && set wt=80
+[ $NP -eq 16 ] && set wt=40
+[ $NP -eq 32 ] && set wt=20
+
+# === Set up compiler and platform and flags
+#
+#setenv CMPLER PGI
+setenv CMPLER INTEL
+
+setenv R8 TRUE
+#setenv R8 FALSE
+
+#setenv DEBUG TRUE
+setenv DEBUG FALSE
+
+#setenv PROF TRUE
+setenv PROF FALSE
+
+#setenv SPMD TRUE
+setenv SPMD FALSE
+
+#source modules.tornado
+#
+# === Model setting:
+#	M3D:     3d run
+#	NEWRUN:  new run; otherwise resume
+#	RADIA:   include radiation calculation
+#	CHEM:    include chemistry model (tracer, react, aq, and solid)
+#	AEROSOL: use multiple mode aerosol model; otherwise CCN and IN
+#	other parameters can be set in wheaders.csh
+#
+#	MAXX3D, MAXY3D, MAXZ3D: the max gridpoint along x, y, z axis for 3d
+#	MAXX2D, MAXY2D, MAXZ2D: the max gridpoint along x, y, z axis for 2d
+#
+#
+# ----------
+#  Domain
+# ----------
+#
+
+#setenv M3D TRUE
+setenv M3D FALSE
+
+#setenv DECOMP_2D TRUE
+setenv DECOMP_2D FALSE
+
+setenv MAXX3D 64 
+setenv MAXY3D 64
+setenv MAXZ3D 128
+
+setenv MAXX2D 101
+setenv MAXY2D   1
+setenv MAXZ2D 101
+
+if ($DECOMP_2D == TRUE && $SPMD == TRUE) then
+  if ($NP <= 16) then
+    setenv NPX $NP/2; setenv NPY 2
+  else if ($NP > 16 && $NP <64) then
+    setenv NPX $NP/4; setenv NPY 4
+  else if ($NP >= 64) then
+    setenv NPX $NP/8; setenv NPY 8
+  endif
+else if ($DECOMP_2D == FALSE && $SPMD == TRUE) then
+  setenv NPX $NP
+  setenv NPY 1
+else if ($SPMD == FALSE) then
+  setenv NPX 1
+  setenv NPY 1
+endif
+
+setenv NHYDRO 5
+
+#
+# ----------
+#  Initialize
+# ----------
+#
+
+#setenv FINE TRUE
+setenv FINE FALSE
+
+setenv NEWRUN TRUE
+#setenv NEWRUN FALSE
+
+setenv AUTO_INIT TRUE
+#setenv AUTO_INIT FALSE
+
+#
+# ----------
+#  Physical modules
+# ----------
+#
+
+#setenv CORIOLIS TRUE
+setenv CORIOLIS FALSE
+
+#setenv RADIA TRUE
+setenv RADIA FALSE
+
+#setenv CHEM TRUE
+setenv CHEM FALSE
+
+#setenv AEROSOL TRUE
+setenv AEROSOL FALSE
+
+#setenv ADV_AEROCHEM TRUE
+setenv ADV_AEROCHEM FALSE
+
+setenv FORCE_SUB TRUE
+#setenv FORCE_SUB FALSE
+
+#setenv NUDGE TRUE
+setenv NUDGE FALSE
+
+#setenv LSADV TRUE
+setenv LSADV FALSE
+
+#setenv SGS TRUE
+setenv SGS FALSE
+
+#setenv TKE TRUE
+setenv TKE FALSE
+
+#setenv LAGRANGE TRUE
+setenv LAGRANGE FALSE
+
+#
+# ----------
+#  OUTPUTS
+# ----------
+#
+
+setenv FULL_DIAG TRUE
+#setenv FULL_DIAG FALSE
+
+#setenv MEANDATA TRUE
+setenv MEANDATA FALSE
+
+setenv FORM TRUE
+#setenv FORM FALSE
+
+setenv PROFILE TRUE
+#setenv PROFILE FALSE
+
+setenv PROF_TS TRUE
+#setenv PROF_TS FALSE
+
+setenv OVERWRITE TRUE
+#setenv OVERWRITE FALSE
+
+setenv OUTPUTALL TRUE
+#setenv OUTPUTALL FALSE
+
+#
+# ----------
+#  NUMERICS
+# ----------
+#
+
+setenv PRESS_DIAG TRUE
+#setenv PRESS_DIAG FALSE
+
+setenv ADV4 TRUE
+#setenv ADV4 FALSE
+
+#setenv ADV_LW TRUE
+setenv ADV_LW FALSE
+
+#setenv ADV_TVD TRUE
+setenv ADV_TVD FALSE
+
+#setenv ADV_MUSCL TRUE
+setenv ADV_MUSCL FALSE
+
+#setenv ADV_WENO TRUE
+setenv ADV_WENO FALSE
+
+setenv RK3 TRUE
+#setenv RK3 FALSE
+
+#setenv RK4 TRUE
+setenv RK4 FALSE
+
+#setenv LF TRUE 
+setenv LF FALSE
+
+#
+# ----------
+#  Microphysics
+# ----------
+#
+
+#setenv SAT_ADJ TRUE
+setenv SAT_ADJ FALSE
+
+setenv SEIFERT TRUE
+#setenv SEIFERT FALSE
+
+#setenv NUC_CNT TRUE
+setenv NUC_CNT FALSE
+
+#setenv NUC_EMP TRUE
+setenv NUC_EMP FALSE
+
+#setenv CCN_ACTIV TRUE
+setenv CCN_ACTIV FALSE
+
+#
+# === Execution section:
+#
+setenv caseid BUBBLE
+setenv case $caseid
+
+setenv INCDIR ./INCLUDE/
+
+#  clean directory
+
+#	=== write gridno.F 
+	./wgrid.csh
+	
+#	=== write headers
+	./wheaders.csh
+	
+#	make -f ./Makefile cleandump
+	make -f ./Makefile

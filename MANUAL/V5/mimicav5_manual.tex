@@ -1,0 +1,1233 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% ENTETE                      %%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[11.5pt,A4,french]{article}
+\usepackage{graphics}
+\usepackage{hyperref}
+\usepackage{epsf}
+\usepackage{amsmath}
+\usepackage{epsfig}
+\usepackage{amssymb}
+\usepackage{epic}
+\usepackage{array}
+\pagenumbering{arabic}
+\usepackage{aeguill}
+\usepackage{geometry}
+\usepackage{fancyhdr}
+\usepackage{lscape}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\pagenumbering{arabic}
+%\pagestyle{fancy}
+%\fancyhf{}
+\lhead{}
+\rhead{}
+\geometry{hmargin=1.8cm,vmargin=1.7cm}
+\renewcommand{\baselinestretch}{1.03}
+%\fancypagestyle{plain}{
+%\fancyhead{}
+%\renewcommand{\headrulewidth}{0pt}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+\begin{titlepage}
+
+\voffset=9cm
+
+\begin{center}
+{\bf\huge{MIMICA V5, User guide}}\\
+\vspace{3 cm}
+\large{{\bf Julien SAVRE}}\\
+\large{Meteorological Institute, Ludwig-Maximilians-Universit\"at, Munich}\\
+\large{{\it julien.savre@lmu.de}}\\
+\vspace{0.25 cm}
+\large{{\bf Matthias Brakebusch}}\\
+\large{Dept. of Environmental Science and Analytical Chemistry, Stockholm University, Stockholm}\\
+\large{{\it matthias.brakebusch@aces.su.se}}\\
+\vspace{1 cm}
+\large{06.03.2019}
+\end{center}
+
+\end{titlepage}
+
+\tableofcontents
+\newpage
+
+\section{Introduction: how to compile and run MIMICA}
+\label{intro}
+
+The MIMICA model has been originally designed as an extension of the CRM-MIT model developed by Chien Wang and Julius Chang \cite{WC1993}. Since then, the model has been substantially modified and upgraded, and most of the original source code has been rewritten using modern fortran 90 and MPI standards. Despite the efforts put into the standardization and optimization of the model's source code, it should be noted that certain parts of the model still remain from the original CRM (aerosol and chemistry) and may therefore appear outdated.
+
+\newpage
+\section{Description of the MIMICA model}
+\label{model}
+
+The description proposed in this section focuses on a "default" configuration of the MIMICA model. It should be reminded that MIMICA possesses many more capabilities which are not detailed below for the sake of clarity. Some of these "hidden" features are however mentioned when appropriate, and more information can also be found in the description of the {\it start} and {\it cm.nml} files given in section \ref{inputs}: "MIMICA inputs".
+
+\subsection{Governing equations}
+
+MIMICA solves the basic conservation equations for mass (continuity equation), momentum, potential temperature and total water content in 2 or 3 dimensions. Depending of the level of complexity and physical parameterizations requested, a set of additional conservation equations for microphysical quantities (typically the mass and number concentrations of certain hydrometeor classes) as well as passive tracers can also be solved. Two different dynamical cores are available in MIMICA: {\bf an anelastic core}, in which the density is assumed to depend on altitude only so that the continuity equation becomes a diagnostic equation constraining the velocity vector to be divergence free, and {\bf a compressible core}, in which no approximation for the density is made and the continuity equation must be solved explicitly. All the equations presented hereafter are written according to the anelastic approxiation as this is the default dynamical core used in MIMICA ({\it setenv ANELASTIC TRUE} in {\it start}). More details about the compressible core are given in section \ref{compressible}.
+
+In its more general form, the momentum equation can be written as follows:
+\begin{eqnarray}
+\frac{\partial \rho_0 u}{\partial t} + \nabla\cdot\left(\rho_0 \mathbf{u} u\right) &=& - \rho_0 \frac{\partial}{\partial x}\left(\frac{p^{\prime}}{\rho_0}\right)
++ f_0 v + \nabla\cdot\left(\rho_0 \tau_{u}\right) \label{momu}\\
+\frac{\partial \rho_0 v}{\partial t} + \nabla\cdot\left(\rho_0 \mathbf{u} v\right) &=& - \rho_0 \frac{\partial}{\partial y}\left(\frac{p^{\prime}}{\rho_0}\right)
+- f_0 u + \nabla\cdot\left(\rho_0 \tau_{v}\right) \label{momv} \\
+\frac{\partial \rho_0 w}{\partial t} + \nabla\cdot\left(\rho_0 \mathbf{u} w\right) &=& b - \rho_0 \frac{\partial}{\partial z}\left(\frac{p^{\prime}}{\rho_0}\right)
++ \nabla\cdot\left(\rho_0 \tau_{w}\right) \label{momw}
+\end{eqnarray}
+${\mathbf u}$ is the velocity vector $\left(u,v,w\right)$, $b$ is the vertical buoyancy flux, $\tau_u$, $\tau_v$, $\tau_w$ are the contributions from subgrid scale turbulent diffusion to $u$, $v$ and $w$ respectively (defined in section \ref{SGS}), $f_0$ is the Coriolis parameter (f-plane approximation), $\rho_0$ is the reference anelastic density (independent of time and varies only with altitude), and $p^{\prime} = p - p_0$ is the perturbation pressure defined with respect to the base state hydrostatic pressure. The buoyancy $b$ is defined based on the classical definition of the virtual potential temperature:
+\begin{equation}
+b = \rho_0 g \left[\frac{\theta\left(1 + \epsilon q_v - q_l - q_i\right)}{\theta_0\left(1 + \epsilon q_{v0}\right)} - 1\right]
+\end{equation}
+with $\theta$ being the potential temperature, $q_v$ is the water vapor mixing ratio, $q_l$ and $q_i$ are the liquid and ice mixing ratios respectively, $g$ is the gravitational acceleration (constant, set to $9.81$ $m.s^{-2}$) and $\epsilon \approx 0.602$. $\theta_0$ and $q_{v0}$ are here defined as the base state potential temperature and vapor mixing ratio (independent of time, functions of altitude only). The different terms appearing in the momentum budget equations can be turned on or off individually using various options in {\it cm.nml} and {\it start}.
+
+The potential temperature, total water mixing ratio and passive tracer equations read:
+\begin{eqnarray}
+\frac{\partial \rho_0 \theta}{\partial t} + \nabla\cdot\left(\rho_0 \mathbf{u} \theta\right) &=& {\mathcal Q}_{rad} + {\mathcal Q}_{micro} + \nabla\cdot\left(\rho_0 \tau_{\theta}\right) \\
+\frac{\partial \rho_0 q_t}{\partial t} + \nabla\cdot\left(\rho_0 \mathbf{u} q_t\right) &=& \nabla\cdot\left(\rho_0 \tau_{qt}\right) + {\mathcal Q}_{prec} \\
+\frac{\partial \rho_0 \varphi}{\partial t} + \nabla\cdot\left(\rho_0 \mathbf{u} \varphi\right) &=& \nabla\cdot\left(\rho_0 \tau_{\varphi}\right)
+\end{eqnarray}
+with ${\mathcal Q}_{rad}$ and ${\mathcal Q}_{micro}$ being source terms representing radiative and latent heating and cooling respectively, ${\mathcal Q}_{prec}$ is a sedimentation term, $q_t$ and $\varphi$ are the total water mixing ratio and passive tracer, while $\tau_{\theta}$, $\tau_{qt}$, $\tau_{\varphi}$ are the contributions from subgrid scale turbulent diffusion. Note that the potential temperature is defined as:
+\begin{equation}
+\theta = T\left(\frac{p}{p_{00}}\right)^{-c_{pa}/R_a},
+\end{equation}
+with $T$ the absolute temperature, $p_{00} = 1000$ $hPa$, $cp_a=1004$ $J.K^{-1}.kg^{-1}$ and $R_a = 288$ $J.K^{-1}.kg^{-1}$ the dry air specific heat capacity at constant pressure and specific ideal gas constant for dry air respectively. As an alternative to the potential temperature equation, MIMICA an also operate with the frozen moist static energy (MSE) as the conserved energy quantity (available by setting {\it setenv ISENTROPIC FALSE} in {\it start}). The frozen MSE is often used to simulate tropical convection as it is almost exactly conserved upon adibatic processes and phase changes, and is directly related to the enthalpy (and therefore to the first law of thermodynamics).
+
+Finally, the system of equations is closed using the ideal gas law for moist air to relate all thermodynamic properties:
+\begin{equation}
+p_0 = \rho_0 R T
+\end{equation}
+with $R = \left(1-q_t\right)R_a + q_v R_v$ the ideal gas constant for moist air ($R_v = 461.5$ $J.K^{-1}.kg^{-1}$ being the ideal gas constant for water vapor). By default, the vapor contribution to $R$ is neglected so that $R = R_a = 288$ $J.K^{-1}.kg^{-1}$. This can however be changed by setting {\it cst\_cp = 0} in {\it cm.nml}.
+
+\subsection{The anelastic and compressible cores}
+
+\subsubsection{The anelastic solver}
+
+In its default configuration, MIMICA employs the anelastic approximation in which the density is assumed to vary only with altitude and is therefore time independent. Using such a time independent density enables us to filter out acoustic waves to improve the model's stability and overall performances. Solving the momentum equations under the anelastic approximation however requires a trick described below.
+
+First, we need to write the anelastic continuity equation:
+\begin{equation}
+\frac{\partial \rho_0 u}{\partial x} + \frac{\partial \rho_0 v}{\partial y} + \frac{\partial \rho_0 w}{\partial z} = 0.
+\label{anelastic}
+\end{equation}
+This diagnostic equation constraining the velocity vector to be divergence free is then used to diagnose the pressure gradient terms appearing in equations \ref{momu}-\ref{momw}, these terms being the source of the propagation of acoustic waves. The solution procedure essentially follows three steps:
+\begin{enumerate}
+\item The momentum equations \ref{momu}-\ref{momw} are first solved by omitting the pressure gradient terms. At this stage, the updated velocity vector ${\mathbf u}^{*}$ does not satisfy the continuity equation \ref{anelastic}.
+\item Next, using a simple Euler forward method, we introduce the pressure gradient terms as a correction to ${\mathbf u}^{*}$ yielding the new updated vector ${\mathbf u}^{n+1}$ at the end of the time step:
+\begin{equation}
+\rho_0 {\mathbf u}^{n+1} = \rho_0 {\mathbf u}^{*} - \Delta t \rho_0 \nabla\left(\frac{p^{\prime}}{\rho_0}\right).
+\label{correction}
+\end{equation}
+Now taking the divergence of  the above equation:
+\begin{equation}
+0 = \nabla\cdot\left(\rho_0 {\mathbf u}^{*}\right) - \Delta t \nabla\cdot\left(\rho_0 \nabla\frac{p^{\prime}}{\rho_0}\right),
+\label{elliptic}
+\end{equation}
+where we have used the fact that $\nabla\cdot\left(\rho_0 {\mathbf u}^{*}\right)$ must be 0 by continuity. The first term on the right hand side,  $\nabla\cdot\left(\rho_0 {\mathbf u}^{*}\right) \neq 0$, can be easily computed, leaving us with an elliptic equation for $p^{\prime}$. 
+\item After solving the equation for $p^{\prime}$ (see details below), its gradients can be computed, and ${\mathbf u}^{n+1}$ is finally obtained from equation \ref{correction}. 
+\end{enumerate}
+The whole procedure can be repeated a certain number of times (this is specified by {\it nsubp} in {\it cm.nml} which is set to 1 by default) in order to improve the accuracy of the method.  
+
+An efficient solver based on Fast Fourier Transforms (FFT) is implemented in MIMICA to solve the elliptic pressure perturbation equation. We first rewrite equation \ref{elliptic} as follows:
+\begin{equation}
+\nabla^{2}\frac{p^{\prime}}{\rho_0} + \frac{1}{\rho_0}\frac{\partial \rho_0}{\partial z}\frac{\partial}{\partial z}\frac{p^{\prime}}{\rho_0} = \mathcal{F},
+\end{equation}
+with $\mathcal{F}$ proportional to $\nabla\cdot\left(\rho_0 {\mathbf u}^{*}\right)$, and apply a Fourier transform in the horizontal plane to give:
+\begin{equation}
+-\left(k^{2} + l^{2}\right)\widehat{\left(\frac{p^{\prime}}{\rho_0}\right)} + \frac{\partial^{2}}{\partial z^{2}} \widehat{\left(\frac{p^{\prime}}{\rho_0}\right)} + \frac{1}{\rho_0}\frac{\partial \rho_0}{\partial z}\frac{\partial}{\partial z} \widehat{\left(\frac{p^{\prime}}{\rho_0}\right)} = \widehat{\mathcal{F}}. 
+\end{equation}
+Using centered finite differences to approximate the first and second order derivatives of the transformed perturbation pressure yields a tridiagonal system for $\widehat{\left(p^{\prime}/\rho_0\right)}$ which can be easily and efficiently inverted. Once this is done, the solution $\widehat{\left(p^{\prime}/\rho_0\right)}$ can be transformed back into the physical space to find $p^{\prime}/\rho_0$ at each grid point. We can then calculate the gradient of this quantity along each direction and introduce it in equation \ref{correction} to complete the pressure correction procedure. 
+
+The procedure presented above can only estimate the pressure perturbation to within a constant (unknown). This is not a problem when updating the velocity vector as the gradients of the pressure perturbation are not affected by the exact value of the constant. By default, the domain averaged value of $p^{\prime}$ is subtracted to the pressure perturbation solved by the FFT solver. It is also possible to correct $p^{\prime}$ more realistically by requiring that the total energy inside the domain is conserved (option {\it p\_mcons} in {\it cm.nml}).
+
+Although very accurate and efficient, the anelastic solver also comes with its limitations. It must be noted in particular that the present FFT solver assumed by default that the domain's lateral boundaries are periodic (extending the solver to open boundaries is possible but has not been done yet). Furthermore, although the FFT solver is parallelized, allowing for an efficient solution procedure even on large parallel domains, it currently assumes implicitly that the domain possesses an equal number of grid cells along the $X$ and $Y$ directions.
+
+\subsubsection{The compressible solver}
+
+By setting {\it setenv ANELASTIC FALSE} in {\it start}, MIMICA solves for the fully compressible equation of motions, which implies that the density is allowed to vary both in time and space. As mentioned previously, solving the fully compressible system of equations requires much smaller time steps to satisfy the acoustic CFL stability criterion, which often translates into a significant loss of model performances. The compressible solver however has its advantages: there is no {\it a priori} assumption on the density and it is more flexible in the sense that using periodic or open lateral boundaries does not need any extra coding effort and there is no requirement that $NX$ and $NY$ be equal. 
+
+In short, the following continuity equation now needs to be solved:
+\begin{equation}
+\frac{\partial \rho}{\partial t} + \nabla\cdot\left(\rho\mathbf{u}\right) = {\mathcal Q}_{prec}.
+\end{equation}
+The presence of a term related to precipitation (${\mathcal Q}_{prec}$) can be understood by noting that $q_a + q_v + q_l + q_i = 0$ ($q_a$ being the dry air mixing ratio), so that the continuity equation must be retrieved when summing the governing equations for $q_a$, $q_v$, $q_l$ and $q_i$. The conservation of water mass implies that all microphysical sources and sinks add up to $0$ except for the sedimentation terms. All the equations introduced previously still need to be solved, except that $\rho_0$ must now be replaced by $\rho$. In addition, note that divergence damping is also applied (an extra term in the momentum equations) in order to improve the solver's stability (the strength of this damping is controlled by {\it adiv} in {\it cm.nml} whose value is set by default to $0.2$).
+
+To solve the new system of coupled equations, no extra step must be taken. Because the density and potential temperature are solved and known explicitly within each grid cell, the pressure can be found using the ideal gas law. It is then enough to take the gradient of the diagnosed pressure and introduce it directly in the momentum equations. Because this procedure may be unstable at large time steps, this is done using a smaller acoustic time step calculated to satisfy the acoustic CFL criterion and is defined as a fraction of the main MIMICA time step ($\Delta t_{acoustic} = \Delta t_{main} / N_{step}$, where $N_{step}$ is the number of iterations required to solve the compressible system of equations). 
+
+\subsection{Numerical methods}
+\label{numerics}
+
+\subsubsection{Numerical grid and boundary conditions}
+
+The mesh used by the model is defined in a cartesian coordinate, in 2 or 3 dimensions. The cell size is fixed constant in the horizontal plane ($dx$ and $dy$ in {\it cm.nml}) but some refinement and stretching can be applied in the vertical direction by setting {\it setenv FINE TRUE} in {\it start}. Predefined vertical grids are available for specific test cases and can be used at will. Alternatively, the vertical grid can be provided as an external input file named {\it grid.dat} containing a unique column specifying each individual grid level. The number of cells in all 3 directions must be set by the user in {\it start}. The domain length in $X$ and $Y$ is then obtained by multiplying the number of grid cells in each direction by the cell sizes $dx$ and $dy$. The model top height depends on the non-constant grid spacing in the vertical.
+
+Cartesian grids are very convenient to discretize fluid equations using finite differences or finite volume methods. In MIMICA, a staggered grid system is employed, the C-Arakawa grid, defined as follows:
+\begin{itemize}
+\item[$\bullet$] the pressure, and all the other scalars, are defined at the center of each grid cell
+\item[$\bullet$] the three velocity components are shifted by half a cell and are therefore defined at face centers: $u_{ijk} = u\left(x+\frac{\Delta x}{2},y,z\right)$, $v_{ijk} = v\left(x,y+\frac{\Delta y}{2},z\right)$, $w_{ijk} = w\left(x,y,z+\frac{\Delta z}{2}\right)$
+\end{itemize}
+In addition, the local velocity (respectively pressure) gradients are defined at the point where pressure (respectively velocity) is defined.
+
+In practice, due to grid staggering, two different sets of vertical grid spacings have to be defined when vertical refinement is used: one corresponding to the spacing between two vertical velocity points, the other defined as the spacing between two scalar points. These two quantities are refered to as $\Delta z_{w}$ and $\Delta z_{p}$ respectively.
+
+Boundary conditions in MIMICA are defined by default as periodic in the horizontal plane, and solid (i.e. the vertical velocity vanishes exactly at the boundary) in the vertical. Because gravity waves are allowed to propagate in the domain and are usually reflected by the top boundary, it is often recommended to apply a sponge layer near the domain top, whose role is to nudge the simulated atmosphere in this region to the initial conditions with a time scale {\it tdamp} defined in {\it cm.nml} (the altitude at which the sponge layer is applied is set through {\it zdamp}).
+
+Open boundary conditions have also been implemented for the lateral boundaries, but this option is not recommended in the current version of MIMICA. It is however possible to apply pseudo-open lateral boundaries by using a large horizonal domain with the default periodic conditions, but by prescribing thick horizontal sponge layers as described in section \ref{others}. Similarly, it is possible to use periodic conditions in the vertical, although this only applies to specific idealized templates. Overall, it is recommended not to modify the default specification of boundary conditions accessible through parameters {\it bcl(1-6)} in {\it cm.nml}.
+
+\subsubsection{Momentum advection}
+
+The momentum advection scheme must provide sufficient accuracy and stability when coupled with the integration scheme. With no additional constraint, this leads to a very 
+limited choice, mainly based on the easiness of implementation. We chose here to discretize momentum advection using high-order central finite differences with hyperviscosity to preserve numerical stability. For clarity sake, the advective fluxes are recast into a conservative form (here taking the advection of the $u$ momentum along the $Y$ direction):
+\begin{equation}
+\frac{\partial \rho_0 v u}{\partial y} \equiv \frac{F_{i,j+1/2} - F_{i,j-1/2}}{\Delta y},
+\label{fluxes}
+\end{equation}
+where $F_{i,j+1/2}$ and $F_{i,j-1/2}$ are the fluxes interpolated respectively at the center of the right and left cell faces on the C-Arakawa grid. 
+For simplicity, we have here considered only a 2D system where the subscript $i$ is used in the $x$ direction and $j$ in the $y$ direction. 
+This formulation is by definition energy and mass conserving. The main issue consists now in evaluating the interpolated fluxes $F$. If we consider polynomial interpolations at the cell centers, the interpolated fluxes can be expressed as:
+\begin{equation}
+F_{i,j+1/2} = \sum_{l=0}^{n-1}C_{a,l}f\left(u_{i,j-a+l}\right),
+\end{equation}
+where $n$ represents the order of the interpolation, $a$ the first point considered for the interpolation, $f$ the local flux and $C_{a,l}$ the coefficients of the 
+polynom. Selecting $a=1$ and $n=4$  yields a 4th order central approximation for the interpolated flux given by:
+\begin{equation}
+F_{i,j+1/2} = \frac{\rho_0}{2}\left(v_{i+1,j} + v_{i,j}\right)\left[-\frac{1}{12} u_{i,j-1} + \frac{7}{12} u_{i,j} + \frac{7}{12} u_{i,j+1} - \frac{1}{12} u_{i,j+2}\right].
+\end{equation}
+Considering the grid is staggered, an interpolation of the advective velocity $v$ at the cell face is required.
+
+Following Durran \cite{Dur2010}, hyperviscosity is added by rewriting equation \ref{fluxes} as:
+\begin{equation}
+\frac{\rho_0 v \partial u}{\partial y} \equiv \frac{F_{i,j+1/2} - F_{i,j-1/2}}{\Delta y} + \rho_0 \gamma_{n} \widehat{u_{i,j}}^{nj},
+\label{filter}
+\end{equation}
+$\widehat{.}^{nj}$ denotes the discretized nth order spatial derivative along $j$ defined, for $n=4$, by:
+\begin{equation}
+\widehat{u_{i,j}}^{4j} = u_{i,j+2} - 4u_{i,j+1} + 6u_{i,j} - 4u_{i,j-1} + u_{i,j-2}.
+\end{equation} 
+$\gamma_{n}$ represents the numerical hyperviscosity. If we fix $\gamma_{4} = \left|u_{i,j}\right| / 12\Delta x_{j}$ along with the use of 4th order
+central differences, the resulting advection scheme is exactly equivalent to the 3rd order upwind scheme. In practice, we multiply $\gamma_{4}$ by a constant $C_{diff}$, with $0 \leq C_{diff} \leq 1$ ({\it avisc} in {\it cm.nml}) controling the strength of artificial diffusion.
+
+\subsubsection{Scalar advection}
+
+Regarding scalar advection, additional constraints must be considered in order to make sure that the advected quantities always remain within prescribed bounds and do not develop spurious numerical instabilities or reach unphysical values. For instance, it is obvious that mass mixing ratios (for vapor or hydrometeors) must always remain positive thus requiring a so-called positive-definite scheme. It must also be realized that low dissipation central difference schemes, as presented above for momentum advection, may develop numerical oscillations in regions where large gradients are encountered. Consequently, specific advective schemes must be employed for scalars to avoid the development of instabilities. In the present model, a wide variety of schemes was implemented giving the user a large choice of methods, each having its particularities.
+
+As for momentum advection, we use a conservative flux formulation for scalar advection:
+\begin{equation}
+\frac{\partial \rho_0 \Phi}{\partial x} \equiv \frac{F_{i+1/2,j} - F_{i-1/2,j}}{\Delta x}.
+\label{flux}
+\end{equation}
+Several methods are available to estimate the scalar fluxes $F$, which can all be accessed by the {\it scal\_adv} parameter in {\it cm.nml}:
+\begin{description}
+\item[tvd] enables the finite difference TVD scheme. The default flux limiter there is the MC limiter. 
+\item[muscl] enables the (at most 2nd order) MUSCL (piecewise linear) finite volume scheme. The default flux limiter there is the MC limiter. 
+\item[quick] enables the (at most 3rd order) QUICK finite volume scheme, with its default SMART flux limiter.
+\item[ppm] enables the (at most 3rd order) PPM (piecewise parabolic) finite volume scheme, with hierarchical flux limiter.
+\end{description}
+The {\it muscl} option is the default. In the following, only the default MUSCL scheme is introduced (the other schemes have a similar design, and more details can be found for example in \cite{Dur2010}).
+
+The MUSCL scheme \cite{KT2000} is a central method so that it generates minor numerical dissipation which is a great advantage compared to the usual upwind biased methods. Starting with equation \ref{flux}, we want to evaluate the flux swept through the cell face (i.e. $F_{i+1/2,j}$ at $x_{i+1/2}$) during a time step $\Delta t$. This can be expressed exactly following:
+\begin{equation}
+F_{i+1/2,j} = \frac{1}{\Delta t} \int^{x_{i+1/2}}_{x_{i+1/2}-u_{i+1/2,j}\Delta t} \widetilde{\Phi}\left(x\right) dx.
+\label{integral}
+\end{equation}
+$\widetilde{\Phi}$ is an approximation of the solution $\Phi$. We can define $\widetilde{\Phi}$ as a piecewise linear function between $x_{i-1/2}$ and $x_{i+1/2}$, giving:
+\begin{equation}
+\widetilde{\Phi}\left(x\right) = \Phi_i + \frac{\Phi_{i+1} - \Phi_i}{\Delta x}\left(x - x_i\right).
+\end{equation}
+We have here voluntarily dropped the $j$ index for clarity. Using the linear approximation, the integral \ref{integral} can be evaluated exactly:
+\begin{equation}
+F_{i+1/2} = \frac{1}{\Delta t} u_{i+1/2}\left[\Phi_i + \frac{1}{2}\left(1 - \left|\mu\right|\right)\left(\Phi_{i+1} - \Phi_i\right)\right]
+\label{flux1}
+\end{equation}
+where we have introduced the CFL number $\mu = u_{i+1/2} \Delta t / \Delta x$. Note that on the Arakawa C-grid, because $u$ is evaluated at face centers, the advective velocity $u_{i+1/2}$ is directly available and does not require any interpolation.
+
+As mentioned previously, scalar advection often requires the use of so-called limiters to prevent unphysical values to be produced as a result of numerical errors. We thus rewrite equation \ref{flux1} as:
+\begin{equation}
+F_{i+1/2} = \frac{1}{\Delta t} u_{i+1/2}\left[\Phi_i + \frac{1}{2}C_{i+1/2}\left(1 - \left|\mu\right|\right)\left(\Phi_{i} - \Phi_{i-1}\right)\right]
+\label{flux2}
+\end{equation}
+where we have now introduced the flux limiter $C_{i+1/2}$. $C_{i+1/2}$ si defined as a function of the ratio $\left(\Phi_{i+1} - \Phi_i\right)/\left(\Phi_{i} - \Phi_{i-1}\right)$. For example, the default MC limiter reads:
+\begin{equation}
+C_{i+1/2} = \max\left(\min\left(2\frac{\Phi_{i+1} - \Phi_i}{\Phi_{i} - \Phi_{i-1}},\frac{1}{2}\left(\frac{\Phi_{i+1} - \Phi_i}{\Phi_{i} - \Phi_{i-1}}+1\right),2\right),0\right).
+\label{limiter}
+\end{equation}
+To generalize, we can rewrite the flux $F_{i+1/2}$ as:
+\begin{equation}
+F_{i+1/2} = F^{LO}_{i+1/2} + \frac{1}{2}C_{i+1/2}\left(F^{HO}_{i+1/2} - F^{LO}_{i+1/2}\right),
+\end{equation}
+where $F^{LO}$ and $F^{HO}$ represent low-order and high-order fluxes respectively. The role of the flux limiter is then to selectively switch between the low-order, upwind biased formulation (very diffusive to prevent the development of numerical oscillations) in the presence of strong gradients, and the 2nd order central scheme (more dispersive and prone to produce wiggles) where gradients are smooth enough. For computational efficiency, the limiter \ref{limiter} is not applied everywhere in the domain, but only in regions where $\left|\Phi_{i+1} - \Phi_i\right| > \lambda\left|\Phi_i\right|$, with $\lambda$ set by default to $10^{-9}$ (this can be changed through the parameter {\it limit\_tol} in {\it cm.nml}).
+
+In the situation where $u_{i+1/2} < 0$, the upwinding must be reversed:
+\begin{equation}
+F^{-}_{i+1/2} = \frac{1}{\Delta t} u_{i+1/2}\left[\Phi_{i+1} - \frac{1}{2}C^{-}_{i+1/2}\left(1 - \left|\mu\right|\right)\left(\Phi_{i+2} - \Phi_{i+1}\right)\right],
+\end{equation}
+and $C^{-}_{i+1/2}$ is now a function of $\left(\Phi_{i+1} - \Phi_i\right)/\left(\Phi_{i+2} - \Phi_{i+1}\right)$. By denoting $F^{+}_{i+1/2}$ the flux defined by equation \ref{flux2}, we can finally write, for a velocity of arbitrary sign:
+\begin{equation}
+F_{i+1/2} = 0.5\left(1 + sign\left(1,u_{i+1/2}\right)\right)F^{+}_{i+1/2} + 0.5\left(1 - sign\left(1,u_{i+1/2}\right)\right)F^{+}_{i+1/2}.
+\end{equation}
+The function $sign\left(1,u_{i+1/2}\right)$ has the sign of $u_{i+1/2}$ and an absolute value equal to $1$.
+
+The QUICK and PPM methods are two extensions of the scheme introduced above considering piecewise parabollic approximations to $\Phi$ instead of piecewise linear functions.
+
+\subsection{Time integration} 
+\label{time_step}
+
+In the current version of the model, two time integration methods are available: the simple 1st order Euler forward scheme, and a 3rd order predictor-corrector method. The Euler forward method is the default in MIMICA, while if {\it setenv PREDICTOR\_CORRECTOR TRUE} in {\it start}, the predictor-corrector method is selected.
+
+To simplify, advancing a given scalar $\Psi$ using the forward Euler method reduces to (in semi-discrete form):
+\begin{equation}
+\Psi^{n+1} = \Psi^{n} + \Delta t {\mathcal F^{n}}\left(\Psi\right),
+\end{equation}
+where ${\mathcal F^{n}}$ is the total $\Psi$ tendency (sum of advection and physics contributions) evaluated at time $n$. The forward Euler method is extremely simple, but it is only 1st order accurate and possesses a very limited domain of stability. Using a simple stability analysis method (for example van Neuman), it can be shown that this scheme is only stable for $CFL < 1$, where $CFL$ is the Courant-Friedrichs-Lewy criterion characterizing the propagation of the dominant waves inside the numerical domain. 
+
+In the fully compressible case, where no particular approximation has been made, the acoustic waves propagating at a speed $c = \sqrt{\gamma p/\rho}$ must be resolved, giving $CFL = \left(\left|u\right| + c\right)\Delta t/ \Delta x$. In the anelastic case however, acoustic waves are filtered out, and numerical stability depends on a purely advective criterion: $CFL = \left|u\right|\Delta t/ \Delta x$. It is then easy to realize that because $c$ is generally an order of magnitude larger than $\left|u\right|$ in most atmospheric applications, a compressible solver will typically require time steps that are at least 10 times smaller than with an anelastic solver. 
+
+In general in MIMICA, $\Delta t$ is adjusted dynamically during the course of the simulation to satisfy the condition $CFL_{min} < CFL < CFL_{max}$. Both $CFL_{min}$ and $CFL_{max}$ can be set in {\it cm.nml} ({\it cfl\_min} and {\it cfl\_max} respectively). Although the theoretical stability limit for the forward Euler scheme is $1$, the true limit often observed in practice is much smaller than that, $\sim 0.5-0.7$. Note that in three dimensions, the CFL number is defined in MIMICA as the sum of the CFL numbers calculated along each dimension independently. 
+
+The second time integration scheme available in MIMICA is a 3rd order predictor-corrector method. As the first predictor step, the scheme employs a two step Adams-Bashforth method:
+\begin{equation}
+\Phi^{*} = \Phi^{n} + \frac{\Delta t}{2}\left(3{\mathcal F^{n}} - {\mathcal F^{n-1}}\right),
+\end{equation}
+where $\Phi^{*}$ represents an intermediate value of $\Phi$, and ${\mathcal F^{n-1}}$ is the total scalar tendency calculated and stored at time $n-1$. The corrector step is then defined as the two-step (implicit) Adams-Moulton method:
+\begin{equation}
+\Phi^{n+1} = \Phi^{n} + \frac{\Delta t}{12}\left(5{\mathcal F^{*}} + 8{\mathcal F^{n}} - {\mathcal F^{n-1}}\right).
+\end{equation}
+This predictor-corrector method has the advantage to be 3rd order accurate, and possesses an extended domain of stability compared to the forward Euler scheme (theoretical $CFL_{max}$ of $\sim 1.7$ instead of $1$). It must be reminded however that all computations must be executed twice to complete a time-step, which doesn't make it faster than the Euler forward method in the end, even if $CFL_{max}$ can be increased. Furthermore, it must be noted that the amount of data that must be stored by this predictor-corrector scheme is about 3 times that required by the Euler forward (data at three time stages, $t^{n-1}$, $t^{n}$, and $t^{*}$, are needed for the corrector step).
+
+\subsection{Physical parameterizations}
+
+\subsubsection{Subgrid scale turbulence}
+\label{SGS}
+
+Turbulence models are used to evaluate the subgrid scale (SGS) turbulent fluxes of all transported quantities, and are denoted ${\mathbf \tau_{\Psi}}$. Typically, a simple gradient hypothesis is used to model these terms, by analogy with molecular diffusion:
+\begin{equation}
+\tau_{\Psi,i} = - K_{h} \frac{\partial \Psi}{\partial x_{i}}
+\end{equation}
+for scalars and
+\begin{equation}
+\tau_{u,i,j} = - K_{m} \left(\frac{\partial u_{i}}{\partial x_{j}} + \frac{\partial u_{j}}{\partial x_{i}}\right)
+\end{equation}
+for momentum. Two approaches can then be used in MIMICA to evaluate the eddy diffusivities $K_{h}$ and $K_{m}$.
+
+The first approach, selected by setting {\it setenv TKE TRUE} in {\it start}, is a 1st order closure based on the solution of a turbulent kinetic energy (TKE) equation \cite{Moeng1989}. A closed form of the SGS TKE equation can be written (in non-conservative form):
+\begin{equation}
+\frac{\partial e}{\partial t} + u_{i}\frac{\partial e}{\partial x_{i}} = 2K_{m}S_{ij}S_{ij} + 2\frac{\partial}{\partial x_{i}}\left(K_{m}
+\frac{\partial e}{\partial x_{i}}\right) - K_{h} \frac{g}{\theta_v}\frac{\partial \theta_v}{\partial z} - C_{\epsilon} \frac{e^{3/2}}{l}.
+\label{tke}
+\end{equation}
+In the above equation, $e$ is the SGS TKE, $S_{ij} = \frac{1}{2}\left(\frac{\partial u_{i}}{\partial x_{j}} + \frac{\partial u_{j}}{\partial x_{i}}\right)$ is the 
+strain tensor, and $l$ a characteristic turbulent length scale. The characteristic length scale can be defined as (in 3D):
+\begin{equation}
+l_{\Delta} = \left(\Delta x \Delta y \Delta z\right)^{1/3},
+\end{equation}
+and:
+\begin{equation}
+l = \min\left(l_{\Delta},0.76\sqrt{\frac{e}{\mathcal{N}^{2}}},0.5 C_l \Delta z\left(1\right)\right)
+\end{equation}
+with $z$ the local altitude, $\kappa$ the Von Karman constant ($\approx 0.41$),$C_l$ a constant of the model (given below), and $\Delta z\left(1\right)$ the size of the first model level. The eddy diffusivity $K_{m}$ is finally obtained using simple scaling arguments:
+\begin{equation}
+K_{m} = C_{m} l \sqrt{e}.
+\end{equation}
+The constants $C_{l}$, $C_{\epsilon}$ and $C_{m}$ are set to $0.845$, $0.845$ and $0.0856$ respectively. It is then usually assumed that $K_{h} = 
+K_{m}/Pr$, with $Pr$ the turbulent Prandtl number (set by {\it pran} in {\it cm.nml}, with a recommended value of $\sim 0.4$). 
+
+The second closure is based on the 0th order Smagorinsky and Lilly approach \cite{Smago}. If we assume a balance between production of TKE by shear plus buoyancy and dissipation in equation \ref{tke}, it follows:
+\begin{equation}
+2K_{m}S_{ij}S_{ij} - K_{h} \mathcal{N}^{2} - C_{\epsilon} \frac{e^{3/2}}{l} = 0. 
+\end{equation}
+Rearranging the terms yields:
+\begin{equation}
+K_{m} = \left(C_{S}l\right)^{2} \sqrt{2S_{ij}S_{ij}}\sqrt{1 - \frac{Ri}{Pr}}
+\end{equation}
+with $C_S = 0.18$. We have here introduced the Richardson number $Ri = \frac{\mathcal{N}^{2}}{\left|{\mathbf S}\right|}$ to account for convective stability. In this case, the Brunt-Vaisala frequency $\mathcal{N}^{2}$ is modeled following \cite{Sal2002} to include changes in stability related to condensation/evaporation at the SGS level:
+\begin{equation}
+K_{h}\mathcal{N}^{2} = -\frac{g}{\theta_{00}}\left<w^{\prime}\theta_{v}^{\prime}\right> \approx K_{h}\frac{\partial b}{\partial z}.
+\end{equation}
+By considering the buoyancy production generated by the mixing of two separate levels in saturated or subsaturated conditions, Stevens et al. \cite{Sal2002} propose to model $\mathcal{N}^{2}$ following:
+\begin{equation}
+\mathcal{N}^{2} = \frac{g}{\theta_{00}}\left[\Delta \theta_{l} + 0.608 \theta_{00}\Delta q_{t} + \frac{n}{2}G\left(\Delta q_{t} - F \Delta \theta_{l}\right)\right].
+\end{equation}
+$F$ and $G$ are defined by : $F=\Pi d q_{s}/d T$ and $G = \left(L_{v}/c_{p}\Pi - \theta_{00}\left(1+r_{m}\right)\right)/\left(1 + L_{v}/c_{p} d q_{s}/d T\right)$. $n$ represents the number of consecutive saturated layers. In the model, we only consider the two neighbouring layers at a given level so that $n$ is always set to 2 (within the cloud layer) or 0 (in subsaturated conditions). The above relation was developed by considering that the cloud water in saturated conditions is adjusted to saturation. This model does not account for the presence of ice.
+
+The scalar eddy diffusivity is defined as the ratio between $K_{m}$ and a turbulent Prandtl number ({\it pran} in {\it cm.nml}). In MIMICA, it is possible to set {\it pran} to a negative value, in which case turbulent diffusion is only applied up to the altitude set by {\it zdec}, and then tends quickly to 0 above. Provided that all scalars are advected using flux-limited schemes which generate numerical diffusion in regions with strong gradients (see section \ref{numerics}), it can be argued that numerically induced diffusion is already sufficient and there is no need for additional diffusion through an explicit SGS contribution. 
+
+\subsubsection{Surface modeling}
+\label{surface}
+
+The surface in MIMICA is treated as a solid wall upon which the vertical velocity vanishes. We therefore first enforce that:
+\begin{equation}
+w\left(x,y,z=z_{1}\right) = 0.
+\end{equation}
+
+The modeling of turbulent surface fluxes (for momentum, potential temperature and moisture) is controled through the parameter {\it isurf} present in {\it cm.nml}. {\it isurf} is an integer which can take any value between 0 and 4:
+\begin{description}
+\item[0] Prescribed surface fluxes
+\item[1] Prescribed skin surface temperature (SST)
+\item[2] Prescribed SST with fixed drag coefficient 
+\item[3] Similar to 2 but with $u^{*}$ defined as in \cite{Grab2006}
+\item[4] No surface exchanges (all fluxes set to 0)
+\end{description}
+Only cases 0, 1 and 2 are described below.
+
+Options 0 and 1 rely on the Monin-Obukhov similarity theory according to which momentum and virtual potential temperature fluxes at the ground are proportional to the friction velocity $u^{*}$:
+\begin{equation}
+u^{*}u^{*} = \overline{u^{\prime}w^{\prime}} = \overline{v^{\prime}w^{\prime}}.
+\label{sfmom}
+\end{equation}
+\begin{equation}
+u^{*}\theta_v^{*} = \overline{\theta_v^{\prime}w^{\prime}}.
+\label{sftem}
+\end{equation}
+In the simple case where surface sensible and latent heat fluxes are prescribed ({\it isurf} = 0), there is no need to estimate $\theta_v^{*}$ as $\overline{\theta_v^{\prime}w^{\prime}}$ is readily given, but $u^{*}$ still needs to be computed to calculate the surface momentum flux. The turbulent surface fluxes are then rewritten using the usual gradient hypothesis:
+\begin{equation}
+\overline{u^{\prime}w^{\prime}} = -K_{m} \frac{\partial u}{\partial z},
+\end{equation}
+with $K_{m}$ approximated by:
+\begin{equation}
+K_{m} = \kappa z u^{*},
+\end{equation}
+where $\kappa$ is the von Karman constant ($\approx$ $0.41$) and $z$ is the altitude of the first velocity grid point. Combining these relations and integrating over $z$
+yields the classical logarithmic shape of the velocity profile inside the surface layer:
+\begin{equation}
+ln\left(\frac{z}{z_{0}}\right) = \frac{\kappa \left| u \right|}{u^{*}},
+\label{neutral}
+\end{equation}
+from which $u_{*}$ can be deduced. Here, $z_{0}$ is a surface roughness height depending on the ground nature. $z_0$ is set by default to {\it zrough} = $1.e-4$ $m$ in {\it cm.nml}, and must be adjusted  depending on the simulated surface type. Relation \ref{neutral} remains valid as long as the surface layer remains neutral. For stable and unstable BL, Monin-Obukhov similarity theory is used to derive relations similar to \ref{neutral}. This first requires the evaluation of a surface buoyancy flux which can take different forms depending on the selected option.
+
+\begin{description}
+\item[{\it isurf} = 0: Fixed surface fluxes]
+The surface buoyancy flux is defined as:
+\begin{equation}
+\overline{b^{\prime}w^{\prime}} = \frac{g}{\theta_{00}}\overline{\theta_{v}^{\prime}w^{\prime}} = \frac{g}{\rho_0 \theta_{00}}\left(\frac{SHF}{cp} + \epsilon \theta_{00}\frac{LHF}{L_{v}}\right),
+\end{equation}
+Where SHF and LHF must be prescribed in {\it cm.nml} (keywords {\it shf} and {\it lhf} respectively). We then define the Monin-Obukhov length scale by:
+\begin{equation}
+L = - \frac{u^{*3}}{\kappa \overline{b^{\prime}w^{\prime}}},
+\end{equation}
+and deduce the friction velocity from a relation similar to \ref{neutral}:
+\begin{equation}
+ln\left(\frac{z}{z_{0}}\right) - \Psi_{m}\left(\zeta\right) = \frac{\kappa \left| u \right|}{u^{*}}
+\label{noneutral}
+\end{equation}
+in which $\Psi_{m}$ (the stability function) has been introduced to account for stability/instability at the surface.
+The ratio $\zeta = z/L$ can be viewed as a measure of surface layer stability (stable for $\zeta>0$ and unstable for $\zeta<0$). $\Psi_{m}$ is commonly obtained 
+from observations and depends on the sign of $\zeta$. We use here the forms proposed by Garratt \cite{Gar1992}:
+\begin{eqnarray}
+\mbox{for } \zeta > 0 & \mbox{      } & \Psi_{m}\left(\zeta\right) = -5.3 \zeta \\
+\mbox{for } \zeta < 0 & \mbox{      } & \Psi_{m}\left(\zeta\right) = 2 ln\left(\frac{1+x}{2}\right) + ln\left(\frac{1+x^{2}}{2}\right) - 2 tan^{-1}\left(x\right) +
+\frac{\pi}{2} \mbox{\hspace{1cm} and \hspace{1cm}} x = \left(1 - 16\zeta\right)^{1/4}.
+\end{eqnarray}
+As this was the case for the neutral boundary layer, $u^{*}$ can be derived from relation \ref{noneutral}. However, $L$ depending directly on $u^{*}$, an iterative
+procedure is required to obtain a converged value of $u^{*}$. The friction virtual potential temperature can then be deduced from: $\theta^{*}_{v} = - \frac{\theta_{00} b}{g u^{*}}$. Of course, the applied sensible and latent heat fluxes are directly given by the prescribed SHF and LHF, and do not need to be recomputed using $\theta^{*}_{v}$.
+
+\item[{\it isurf} = 1: Fixed surface properties]
+The surface buoyancy flux is now calculated from the gradient between the virtual 
+potential temperature in the first grid cell above the surface and a skin surface virtual potential temperature:
+\begin{equation}
+b = \frac{g}{\theta_{00}}\left(\theta_{v1} - \theta_{v,skin}\right) = \frac{g}{\theta_{00}}\left[\left(\theta_{1} - \Pi_{00} SST\right) + 0.608 \theta_{00}\left(q_{t1} - SSM\right)\right].
+\end{equation}
+SST and SSM are the prescribed skin surface temperature and surface moisture (where it is generally assumed that the near surface air is saturated) which can be prescribed in {\it cm.nml}. An initial friction potential temperature can readily be obtained under neutral conditions following:
+\begin{equation}
+Pr_{t} ln\left(\frac{z}{z_{0}}\right) = \frac{k b \theta_{00}}{g \theta^{*}_{v*}},
+\end{equation}
+with $Pr_{t}$ the turbulent Prandtl number defined in {\it cm.nml}. We can now define as previously the Monin-Obukhov characteristic length scale, but using the surface buoyancy flux
+defined above:
+\begin{equation}
+L = \frac{u^{*2} \theta_{00}}{\kappa g \theta^{*}_{v}}.
+\end{equation}
+From these relations, the friction virtual potential temperature can be deduced:
+\begin{equation}
+Pr_{t}\left[ln\left(\frac{z}{z_{0}}\right) - \Psi_{h}\left(\zeta\right)\right] = \frac{\theta_{00} b}{g \theta^{*}_{v}}.
+\end{equation}
+The friction velocity is still estimated following \ref{noneutral}. $\Psi_{m}$ doesn't change compared to the fixed surface fluxes case, and $\Psi_{h}$ is given by:
+\begin{eqnarray}
+\mbox{for } \zeta > 0 & \mbox{      } & \Psi_{h}\left(\zeta\right) = -5.3\zeta \\
+\mbox{for } \zeta < 0 & \mbox{      } & \Psi_{h}\left(\zeta\right) = 2 ln\left(\frac{1+y}{2}\right) \mbox{\hspace{1cm} and \hspace{1cm}} y = \left(1 - 16\zeta\right)^{1/4}.
+\end{eqnarray}
+Once again, the dependence of $L$ on $u^{*}$ and $\theta^{*}_{v}$ requires subiterations to yield an accurate solution. Once a converged value of $\theta^{*}_{v}$ is obtained, it can be used to determine the surface latent and sensible heat fluxes.
+
+\item[{\it isurf} = 2: Fixed surface drag]
+The option {\it isurf} = 2 implies a very simple surface flux formulation whereby friction quantities at the surface are obtained using:
+\begin{equation}
+u^{*} = C_d \left|u_1\right|,
+\end{equation}
+and:
+\begin{equation}
+\theta_v^{*} = \frac{C_d}{Pr_{t}} \left(\theta_{v1} - \theta_{vs}\right).
+\end{equation}
+$\theta_{vs}$ is the surface value of the virtual potential temperature calculated using a fixed SST (prescribed in {\it cm.nml}) and assuming near surface air is saturated ($q_{vs} = q_{sat}\left(SST\right)$). The drag coefficient $C_d$ can be set in {\it cm.nml}. Its default value is $1.2\times 10^{-3}$. Again, sensible and latent heat fluxes can then be recomputed based on $\theta_v^{*}$ and $u^{*}$.
+\end{description}
+
+\subsubsection{Radiation}
+
+The radiation solver coupled to MIMICA is the 2005 version of the Fu-Liou model developed by Fu and Liou \cite{FL1993}. The solver is a multiband 2-4 stream radiation model and requires certain input files and options to operate properly. Running MIMICA with interactive radiation is done by setting {\it setenv RADIA TRUE} in {\it start}. Because the radiative transfer model is the slowest part of all the MIMICA model, radiation is only calculated every {\it iradx} seconds. {\it iradx} can be modified in {\it cm.nml} and its default value is set fo $30$ $s$.
+
+The radiation solver works on 1D columns extending up to the top of the atmosphere. Because MIMICA's domain is limited in altitude, the input data must be completed
+using standard atmosphere above the numerical domain. Standard soundings are stored in {\it .lay} files located in the {\it DATA} directory. The most appropriate
+standard atmosphere must then be renamed {\it sounding\_rad.dat} to be read by MIMICA. In addition to the standard atmosphere, the radiation solver also requires two additional tables located in {\it DATA} containing informations used by the CKD (correlated k-distribution) model: {\it ckd.dat} and {\it cldwtr.dat}.
+
+In addition to these 1D soundings, surface parameters must also be provided as inputs to the radiation solver. These parameters are: the surface albedo ({\it alb} in {\it cm.nml}, set by default to $0.07$), the surface skin temperature ({\it sst} in {\it cm.nml}, set by default to $295$ $K$), and the surface emissivity ({\it emi} in {\it cm.nml}, set by default to $0.984$). To finish with, the solar zenith angle is computed at each radiation step. The formula uses the prescribed latitude, julian day, starting time of the simulation (UTC) and the local simulation time. All these parameters can also be set in {\it cm.nml}.
+
+Note that in some specific cases, as in the DYCOMS and ISDAC templates for example, radiation is computed interactively as a simple function of the liquid water path only, without calling the radiative transfer model introduced above. 
+
+\subsubsection{Microphysics}
+\label{micro}
+
+\subsubsection{Basic definitions}
+
+A two-moment bulk microphysics scheme is implemented in the code for all the hydrometeors (including cloud droplets) where assumed size distributions are used, taking the
+form of regular gamma functions denoted $\Gamma\left(x\right)$. They are expressed as:
+\begin{equation}
+dN = N_{0} D^{\alpha} e^{-\lambda D} dD,
+\label{distribution}
+\end{equation}
+where $N$ is the number concentration of a given hydrometeor population having diameter $D$, $\alpha$ is a constant depending on the hydrometeor type, and $N_{0}$ and
+$\lambda$ are two parameters which can be expressed in terms of $N$ and $Q$ the mass mixing ratio. 
+\begin{equation}
+N_{0} = \frac{N\lambda^{\alpha+1}}{\Gamma\left(\alpha+1\right)} \mbox{\hspace{2cm} and \hspace{2cm}} 
+\lambda = \left(\frac{A_{m}\Gamma\left(\alpha+\beta_{m}+1\right)N}{\Gamma\left(\alpha+1\right)Q}\right)^{1/\beta_{m}}.
+\end{equation}
+The parameters $A_{m}$ and $\beta_{m}$ are the constants in the particle's mass-size relation given by:
+\begin{equation}
+m = A_{m} D^{\beta_{m}}.
+\label{mass}
+\end{equation}
+One important property of $\Gamma$ that will be used later on must be introduced here: $\Gamma\left(x+1\right) = x\Gamma\left(x\right)$.
+
+$N$ and $Q$ are defined by:
+\begin{equation}
+N = \int_{0}^{+\infty} f\left(D\right) dD \mbox{\hspace{2cm} and \hspace{2cm}} Q = \int_{0}^{+\infty} m f\left(D\right) dD,
+\label{N_et_Q}
+\end{equation}
+with $f\left(D\right) = \frac{dN}{dD}$.
+Therefore, $N$ is considered to be the 0th moment of distribution \ref{distribution} while $m$ is the $\beta_{m}$th moment. The mean diameter of a given hydrometeor 
+population, which will be used later, is the first moment of \ref{distribution}: $\overline{D} = \int_{0}^{+\infty} D f\left(D\right) dD$. 
+The values of coefficients $\alpha$, $\beta_{m}$ and $A_{m}$ for all the hydrometeor kinds defined in the model are summarized in table \ref{micro_param}. 
+Note that species terminal fall speeds, $V_{p}$, are modeled using simple power laws of the diameter as well (the coefficients are gathered in table \ref{micro_param}):
+\begin{equation}
+V_{p} = A_{v} D^{\beta_{v}} \left(\frac{\rho_{0}}{\rho}\right)^{\gamma}.
+\label{TFS}
+\end{equation}
+Cloud droplets are commonly assumed not to precipitate so that $A_{v,c}=0$.
+
+At the moment, five types of hydrometeors are described by the model: cloud droplets, rain drops, cloud ice, graupel and snow. In the following, quantities refering to a specific
+type of hydrometeor will be denoted by the initials c, r, i, g or s. 
+
+Ice crystals may take different shapes depending on the thermodynamic conditions under which they were nucleated. At the moment, only one type of ice crystal habit can be assumed 
+at a time for each simulation. The proper ice habit has to be selected prior to the beginning of the calculation in {\it shared\_hydro.f90} where a list of ice microphysical 
+parameters is provided (hard coded). All the default ice crystal types are summarized in table \ref{micro_param}. 
+
+\begin{table}[!h]
+\begin{center}
+\begin{tabular}{c|ccccc}
+hydrometeor & $\alpha$ & $\beta{m}$ & $A_{m}$ & $\beta_{v}$ & $A_{v}$ \\
+\hline
+cloud (c) & 5 & 3 & 523.6 & - & - \\
+rain (r) & 0 & 3 & 523.6  & 0.8 & 836. \\
+ice (i, rosette C2a) & 2 & 2.26 & 0.102 & 1.225 & 6059.5 \\
+ice (i, columns C1f) & 2 & 1.8 & 0.0093 & 0.488 & 30.14 \\
+ice (i, plates P1c) & 2 & 2.79 & 1.43 & 0.62 & 17.9 \\
+ice (i, dendrites P1e) & 2 & 2.29 & 0.0233 & 0.48 & 5.02 \\
+ice (i, assemblage of den. P7b) & 2 & 2.68 & 0.35 & 0.83 & 62.62 \\
+graupel (g) & 0 & 3 & 65  & 0.8 & 199.05 \\
+snow (s) & 1 & 2 & 0.04   & 0.333 & 6.962 \\
+\end{tabular}
+\end{center}
+\caption{{\it Coefficients for the microphysics scheme for all five kinds of hydrometeors. Parameters for ice crystals are taken from Propacher and Klett \cite{PK1997} and Khvorostyanov 
+and Curry \cite{KC2002}. Units are SI (kg-m-s).}}
+\label{micro_param}
+\end{table}
+
+The choice of the microphysics level is controled by the integer lmicro in {\it cm.nml}: lmicro = 0 corresponds to a dry case where no condensed water is present (no
+microphysics calculated), for lmicro = 1, only warm microphysics is modeled (cloud drops and rain, drizz in {\it cm.nml} even allows to swith on and off the formation of
+precipitating rain drops), for lmicro = 2, ice microphysics is included but only for pristine ice crystals (no riming and no aggregation) whereas lmicro = 3
+includes the formation of snow flakes and graupel (the 5 hydrometeor species, $nh=5$).
+
+$nh$ and $nhydro$ must not be confused: $nhydro$ is the total possible number of hydrometeors which is used to allocate and initialize all the arrays depending on
+microphysics, whereas $nh$ is the number of modeled hydrometeors and is used for the calculations. 
+
+\subsubsection{Equivalence with mass distributions}
+
+It is sometimes convenient to describe hydrometeor populations in terms of mass distributions instead of size. Combining relations \ref{mass} and \ref{distribution} yields 
+a distribution under the form of a generalized gamma distribution:
+\begin{equation}
+dN = M_{0} m^{\nu} e^{-\Lambda m^{\mu}} dm,
+\end{equation}
+where $M_{0}$ and $\Lambda$ are the new parameters that need to be redefined, and $\nu$ and $\mu$ two constants dependent on the type of hydrometeor. Comparing the mass
+and size distributions the following equalities come:
+\begin{eqnarray}
+M_{0} &=& \frac{N_{0}}{\beta A_{m}^{\frac{\alpha+1}{\beta_{m}}}}, \\
+\Lambda &=& \frac{\lambda}{A_{m}^{1/\beta_{m}}}, \\
+\nu &=& \frac{\alpha +1}{\beta_{m}} - 1, \\
+\mu &=& \frac{1}{\beta_{m}}.
+\end{eqnarray}
+
+The kth moment of this generalized distribution is given by:
+\begin{eqnarray}
+M^{\left(k\right)} &=& \int_{0}^{+\infty} m^{k} f\left(m\right) dm \label{relation1}\\
+ &=& M_{0}\int_{0}^{+\infty} m^{k+\nu} e^{-\Lambda m^{\mu}} dm \\
+ &=& M_{0} \frac{\Gamma\left(\frac{\nu+k+1}{\mu}\right)}{\mu} \Lambda^{-\frac{\nu+k+1}{\mu}} \label{relation3}.
+\end{eqnarray}
+Note that using relation \ref{relation3}, expressions for $M_{0}$ and $\Lambda$ as functions only of $N$, $Q$ and the parameters $\nu$ and $\mu$ can be derived:
+\begin{equation}
+M_{0} = \frac{\mu N}{\Gamma\left(\frac{\nu+1}{\mu}\right)} \Lambda^{\frac{\nu+1}{\mu}} \mbox{\hspace{2cm} and \hspace{2cm}}
+\Lambda = \left[\frac{\Gamma\left(\frac{\nu+1}{\mu}\right) Q}{\Gamma\left(\frac{\nu+2}{\mu}\right) N}\right]^{-\mu}.
+\end{equation}
+Replacing the $\nu$ and $\mu$ by their corresponding expressions depending on $\alpha$, $A_{m}$ and $\beta_{m}$, we find:
+\begin{equation}
+M_{0} = \frac{N}{\beta\Gamma\left(\alpha+1\right)} \Lambda^{\alpha+1} \mbox{\hspace{2cm} and \hspace{2cm}}
+\Lambda = \left[\frac{\Gamma\left(\alpha+1\right) Q}{\Gamma\left(\alpha+\beta+1\right) N}\right]^{-1/\beta}.
+\end{equation}
+
+\subsubsection{Collisions between hydrometeors}
+
+The collisional sources and sinks are obtained by integrating a collection kernel $K\left(m,m^{*}\right)$ over two different hydrometeor populations having masses $m$
+and $m^{*}$. The time variation of a mass distribution $f\left(m\right)$ due to collision processes can be derived, commonly called the Stochastic Collection Equation:
+\begin{equation}
+\frac{\partial f\left(m\right)}{\partial t} = \frac{1}{2}\int_{0}^{m} f\left(m-m^{*}\right) f\left(m^{*}\right) K\left(m-m^{*},m^{*}\right)dm^{*} -
+\int_{0}^{+\infty}f\left(m\right)f\left(m^{*}\right)K\left(m,m^{*}\right)dm^{*}.
+\end{equation}
+Introducing the kth moment $M^{\left(k\right)}$ of $m$ in the previous relation, an equation for the evolution of
+$M^{\left(k\right)}$ can be found \cite{SB2001}. From this general equation (not shown here), and after further simplifications, some simpler expressions can be derived giving 
+the rate of change of the particle's number densities and mass mixing ratios due to collision/coalescence events. 
+\begin{equation}
+\frac{\partial N}{\partial t} = \int_{0}^{+\infty}f\left(m\right)\left[\int_{0}^{+\infty}f\left(m^{*}\right)K\left(m,m^{*}\right)dm^{*}\right] dm,
+\label{number_int}
+\end{equation}
+and: 
+\begin{equation}
+\frac{\partial Q}{\partial t} = \int_{0}^{+\infty}mf\left(m\right)\left[\int_{0}^{+\infty}f\left(m^{*}\right)K\left(m,m^{*}\right)dm^{*}\right] dm,
+\label{mass_int}
+\end{equation}
+The previous equations represent the evolution of the number and mass of a given hydrometeor species $\Psi$ due to collisions with particles $\Psi^{*}$ belonging to another species. 
+These relations can be derived without any assumption on the collection kernel or on the mass distribution. 
+
+Given that $f$ is usually assumed to take the shape of gamma distribution, the only unknown in the previous equations is the collection kernel $K$ which needs to be presumed. 
+The original model uses the gravitational kernel which reads:
+\begin{equation}
+K\left(D,D^{*}\right) = \rho E^{*}\frac{\pi}{4}\left(D+D^{*}\right)^{2}\left|V_{p} - V_{p}^{*}\right|.
+\label{grav_ker}
+\end{equation}
+The coefficient $E^{*}$ represents the collision efficiency and usually depends on the considered microphysical species and local conditions. 
+This modelling assumption is still in use in the mixed-phase microphysics part of the LES. Warm microphysics processes are however now modeled using 
+Seifert and Beheng's approach which makes use of a slightly different kernel as shown in the next section.
+
+Provided that the SCE is given in terms of particle masses, it may not be adequate to represent an hydrometeor population by its size distribution. This issue is however commonly
+overcome by simply assuming that the previous relations for the mass and number microphysical sources can directly be extended to a size distribution. The correspondance between
+the two relations may not be perfectly exact as mass and diameter are related by a linear power law formula in such a way that additional terms or factors should be included.
+The assumption seems nevertheless acceptable and will therefore be used in the following.
+
+\subsubsection{Warm microphysics: Seifert \& Beheng's scheme}
+
+Warm microphysics (involving only liquid water) will be treated using Seifert and Beheng's model \cite{SB2001, SB2004}. The microphysics parameterization uses a double moment
+approach for both cloud droplets and rain where mass distributions of these two species are represented by generalized gamma functions. The approach chosen by Seifert and
+Beheng is thus slightly different from the framework introduced previously, but the same assumptions still apply.
+
+The authors use a simple kernel defined by a picewise polynome (Long's kernel):
+\begin{eqnarray}
+K\left(m,m^{*}\right) &=& k_{c}\left(m^{2} + m^{*2}\right) \\
+K\left(m,m^{*}\right) &=& k_{r}\left(m + m^{*}\right).
+\end{eqnarray}
+The first polynome is used when the mass of the collector $m$ is smaller than a critical mass $m_{c}$ separating cloud drops and rain drops. This mass is calculated
+from the separation diameter between cloud droplets and rain prescribed by the parameter {\it drmin} in {\it cm.nml}. Cloud drops can only
+collect smaller cloud drops so that the first polynome will only represent cloud/cloud interactions. The second one is used when the collector's mass is greater than
+$m_{c}$, which corresponds to rain/cloud or rain/rain interactions. The constants $k_{c}$ and $k_{r}$ are given the values $9.44e9$ cm3/g2/s and $5.78e3$ cm3/g/s
+respectively. 
+
+Integrating the mass distributions following relations \ref{number_int}, \label{mass_int} and using the above kernels leads to the exact expressions for the rates of 
+autoconversion (c+c $\rightarrow$ r), accretion (r+c $\rightarrow$ r) and selfcollection (c+c $\rightarrow$ c or r+r $\rightarrow$ r). These rates can be found in 
+\cite{SB2001, SB2004} and are recalled hereafter:
+\begin{equation}
+\left.\frac{\partial Q_{r}}{\partial t}\right|_{auto} = auq = \frac{k_{c}}{20 m_{c}} \frac{\left(\nu_{c}+2\right)\left(\nu_{c}+4\right)}{\left(\nu_{c}+1\right)
+\left(\nu_{c}+1\right)} Q_{c}^{2} \overline{m}_{c} \left[1+\frac{\Phi_{a}\left(\tau\right)}{\left(1-\tau\right)^{2}}\right],
+\label{auq}
+\end{equation}
+\begin{equation}
+\left.\frac{\partial N_{r}}{\partial t}\right|_{auto} = aun = \frac{1}{m_{c}} \left.\frac{\partial Q_{r}}{\partial t}\right|_{auto}
+\label{aun}
+\end{equation}
+\begin{equation}
+\left.\frac{\partial Q_{c}}{\partial t}\right|_{auto} = -auq 
+\label{ccq}
+\end{equation}
+\begin{equation}
+\left.\frac{\partial N_{c}}{\partial t}\right|_{auto} = -2\times aun
+\label{ccn}
+\end{equation}
+\begin{equation}
+\left.\frac{\partial Q_{r}}{\partial t}\right|_{acc} = clr = k_{r} Q_{c} Q_{r} \Phi_{ac}\left(\tau\right)
+\label{crrq}
+\end{equation}
+\begin{equation}
+\left.\frac{\partial N_{r}}{\partial t}\right|_{acc} = 0
+\label{crrn}
+\end{equation}
+\begin{equation}
+\left.\frac{\partial Q_{c}}{\partial t}\right|_{acc} = -clr
+\label{crcq}
+\end{equation}
+\begin{equation}
+\left.\frac{\partial N_{c}}{\partial t}\right|_{acc} = clrn = -\frac{1}{\overline{m}_{c}} clr
+\label{crcn}
+\end{equation}
+\begin{equation}
+\left.\frac{\partial Q_{r}}{\partial t}\right|_{sc} = 0
+\label{scrq}
+\end{equation}
+\begin{equation}
+\left.\frac{\partial N_{r}}{\partial t}\right|_{sc} = crrn = -k_{r} N_{r} Q_{r} \Phi_{b}\left(\tau\right) 
+\label{scrn}
+\end{equation}
+\begin{equation}
+\left.\frac{\partial Q_{c}}{\partial t}\right|_{sc} = 0
+\label{sccq}
+\end{equation}
+\begin{equation}
+\left.\frac{\partial N_{c}}{\partial t}\right|_{sc} = cccn = -k_{c}\frac{\left(\nu_{c}+2\right)}{\left(\nu_{c}+1\right)}Q_{c}^{2} + 2\times aun 
+\label{sccn}
+\end{equation}
+where $\nu_{c}$ corresponds to the mass exponent in the mass distribution for cloud droplets. Seifert and Beheng suggest that this parameter should be set to $1$, which is
+equivalent to $\alpha = -1/3$ in a size distribution (considering that $\beta_{m}=3$). To remain consistent with table \ref{micro_param} where $\alpha = 5$, a value of 
+$\nu_{c}=0$ will be chosen (set in {\it shared\_data}). 
+
+In the above, $\overline{m} = Q/N$ is a mean mass, $\tau=1-\frac{Q_{c}}{Q_{c}+Q_{r}}$ is a dimensionless scaling parameter, and $\Phi_{a}$ and $\Phi_{b}$ are autoconversion,
+accretion and break-up rates defined by Seifert and Beheng \cite{SB2004} using similarity assumptions as:
+\begin{equation}
+\Phi_{a} = 400\tau^{0.7}\left(1-\tau^{0.7}\right)^{3}
+\end{equation} 
+\begin{equation}
+\Phi_{ac} = \left(\frac{\tau}{\tau + 5e-5}\right)^{4}
+\end{equation} 
+\begin{eqnarray}
+\Phi_{b} = k_{b}\left(\overline{D}_{r} - D_{eq}\right) &\mbox{\hspace{1cm} when \hspace{1cm}}& 0.35 mm < \overline{D}_{r} < D_{eq} \\
+\Phi_{b} = 2\exp\left[k_{b}\left(\overline{D}_{r} - D_{eq}\right)\right] - 1 &\mbox{\hspace{1cm} when \hspace{1cm}}& \overline{D}_{r} > D_{eq}
+\end{eqnarray} 
+with $k_{b}=1000$ 1/m and $D_{eq}$ an equilibrium diameter (corresponding to a balance between break-up and selfcollection) set to $0.9$ mm. $\Phi_{b}$ is set to $0$ when
+$\overline{D}_{r}<0.35$ mm. 
+
+\subsubsection{mixed phase microphysics}
+
+Mixed-phase microphysics is treated using a similar parameterization as in the original CRM model. Three ice microphysical species are described (ice, graupel and snow)
+and modeled via their size distributions. The gravitational kernel \ref{grav_ker} is used to represent their interactions with any other hydrometeor (including liquid
+drops). 
+
+The collision rates between two hydrometeors, 1 collecting 2, for cold microphysics are given by:
+\begin{eqnarray}
+P_{n12} &=& \frac{\pi}{4} \rho E_{12} \int_{0}^{+\infty}\int_{0}^{+\infty}f\left(D_{1}\right)f\left(D_{2}\right) \left(D_{1} + 
+D_{2}\right)^{2} \left|V_{p1} - V_{p2}\right|dD_{1} dD_{2},
+\end{eqnarray}
+\begin{eqnarray}
+P_{q12} &=& \frac{\pi}{4} \rho E_{12} \int_{0}^{+\infty}\int_{0}^{+\infty}D_{2}f\left(D_{1}\right)f\left(D_{2}\right) \left(D_{1}
++ D_{2}\right)^{2} \left|V_{p1} - V_{p2}\right|dD_{1} dD_{2},
+\end{eqnarray}
+After tidious manipulations and simplifications, one can write the general form of the collision rates:
+\begin{eqnarray}
+\begin{split}
+P_{n12} = \frac{\pi}{4} \rho E_{12} N_{1}N_{2} \left[ \left<D_{1}^{2}\right> \left|\frac{\left(\alpha_{1}+\beta_{v1}+2\right)\left(\alpha_{1}+\beta_{v1}+1\right)}
+{\left(\alpha_{1}+2\right)\left(\alpha_{1}+1\right)}\left<V_{p1}\right> - \left<V_{p2}\right>\right|\right. \\
++2\left<D_{1}\right>\left<D_{2}\right>\left|\frac{\alpha_{1}+\beta_{v1}+1}{\alpha_{1}+1}\left<V_{p1}\right> - \frac{\alpha_{2}+\beta_{v2}+1}{\alpha_{2}+1}
+\left<V_{p2}\right>\right| \\
+\left.+ \left<D_{2}^{2}\right> \left|\left<V_{p1}\right> - \frac{\left(\alpha_{2}+\beta_{v2}+2\right)\left(\alpha_{2}+\beta_{v2}+1\right)}
+{\left(\alpha_{2}+2\right)\left(\alpha_{2}+1\right)}\left<V_{p2}\right>\right|\right]
+\label{collision_n}
+\end{split}
+\end{eqnarray}
+
+\begin{eqnarray}
+\begin{split}
+P_{q12} = \frac{\pi}{4} \rho E_{12} Q_{1}N_{2} \left[ \left<D_{1}^{2}\right>_{m} \left|\frac{\left(\alpha_{1}+\beta_{v1}+\beta_{m1}+2\right)\left(\alpha_{1}+\beta_{v1}+\beta_{m1}+1\right)}
+{\left(\alpha_{1}+\beta_{m1}+2\right)\left(\alpha_{1}+\beta_{m1}+1\right)}\left<V_{p1}\right>_{m} - \left<V_{p2}\right>\right|\right. \\
++2\left<D_{1}\right>_{m}\left<D_{2}\right>\left|\frac{\alpha_{1}+\beta_{v1}+\beta_{m1}+1}{\alpha_{1}+\beta_{m1}+1}\left<V_{p1}\right>_{m} - \frac{\alpha_{2}+\beta_{v2}+1}{\alpha_{2}+1}
+\left<V_{p2}\right>\right| \\
+\left. + \left<D_{2}^{2}\right> \left|\left<V_{p1}\right>_{m} - \frac{\left(\alpha_{2}+\beta_{v2}+2\right)\left(\alpha_{2}+\beta_{v2}+1\right)}
+{\left(\alpha_{2}+2\right)\left(\alpha_{2}+1\right)}\left<V_{p2}\right>\right|\right]
+\label{collision_q}
+\end{split}
+\end{eqnarray}
+The notations $\left<.\right>$ and $\left<.\right>_{m}$ respectively denote an ensemble mean over the entire hydrometeor population and a mass weighted ensemble mean.
+Elementary functions were created in MIMICA to calculate the mean diameters and terminal fall speeds as well as any other useful distribution averaged qantity. $P_{q12}$ represents 
+the mass tendency of species 1 when collected by species 2. It is also possible in a similar manner to define the mass tendency of species 2 following the same process.
+
+Two major simplifications can be obtained in the case where two identical hydrometeors interact (selfcollection) or when the collected
+particle is a cloud droplet (riming). In the latter case, two assumptions can be made: that the cloud droplet terminal fall speed is 0, and that their size or mass is small
+compared to the collector particle. We can then rewrite $P_{n11}$ as well as $P_{n1c}$ under the following forms (similar simplifications are obtained for $P_{q}$):
+\begin{eqnarray}
+\begin{split}
+P_{n11} = \frac{\pi}{2} \rho E_{11} N_{1}^{2} \left<D_{1}^{2}\right> \left<V_{1}\right>\left|\frac{\left(\alpha_{1}+\beta_{v1}+2\right)\left(\alpha_{1}+\beta_{v1}+1\right)}
+{\left(\alpha_{1}+2\right)\left(\alpha_{1}+1\right)} - 1\right|,
+\label{coll_same}
+\end{split}
+\end{eqnarray}
+(during selfcollection, the mass of 1 is conserved in such a way that $P_{q11}=0$)
+\begin{equation}
+\begin{split}
+P_{n1c} = \frac{\pi}{4} \rho E_{1c} N_{1}N_{c}\frac{\left(\alpha_{1}+\beta_{v1}+2\right)\left(\alpha_{1}+\beta_{v1}+1\right)}
+{\left(\alpha_{1}+2\right)\left(\alpha_{1}+1\right)}\left<D_{1}^{2}\right>\left<V_{p1}\right>.
+\label{coll_drop}
+\end{split}
+\end{equation}
+These general relations can be applied to any type of hydrometeor provided that the coefficients for the mass and terminal fall speed formula are known.
+
+For most of the interactions, the preceding relations are applied as such. All the possible interactions treated in the code are summarized in table \ref{collisions}.
+A total of 17 processes are modeled in the present version. Some collision processes present particularities. Riming of ice crystals and snow
+(resulting from the collision between ice/snow and cloud droplets) is for instance assumed to occur only for cloud droplets having a diameter larger than 15 mm (see 
+\cite{WC1993}). In these cases, a partial mixing ratio of cloud droplets effectively rimmed is calculated and multiplied to the integral collection rates. This allows
+to exclude part of the cloud droplet spectrum from the rimming process. Similarly, autoconversion of ice particles to graupel will occur if the ice particle diameter 
+exceeds a threshold $\hat{D}_{i} = 0.3$ mm. This transition can only result from deposition growth. In that case, only partial integrals must be calculated (see \cite{WC1993}).  
+
+%\begin{landscape}
+\begin{table}[!h]
+\begin{center}
+\begin{tabular}{|c|ccccc|}
+\hline
+hydrometeor types & cloud drops & rain & ice crystals & graupel & snow \\
+\hline
+            & c + c $\rightarrow$ c/r & c + r $\rightarrow$ r &  c + i $\rightarrow$ g & c + g $\rightarrow$ g & c + s $\rightarrow$ s \\
+cloud drops & auq, aun, cccn                &  clr, clrn  & cli, clii, clin & clg, clgn & cls, clsn  \\
+            & \ref{auq}, \ref{aun}, \ref{sccq}, \ref{sccn} & \ref{crcn}, \ref{crcq} & \ref{coll_drop} & \ref{coll_drop}  & \ref{coll_drop} \\
+\hline
+     &  & r + r $\rightarrow$ r &  r + i $\rightarrow$ g & r + g $\rightarrow$ g & r + s $\rightarrow$ g \\ 
+rain &  & crrn (inc. break-up) & cir, cirn & crg, crgn & csr, csrr, csrn \\
+     &  & \ref{scrn} & \ref{collision_n}, \ref{collision_q} & \ref{collision_n}, \ref{collision_q} & \ref{collision_n}, \ref{collision_q} \\
+\hline
+     &       &  & i + i $\rightarrow$ s & i + g $\rightarrow$ g & i + s $\rightarrow$ s \\ 
+ice crystals &  &  & i $\rightarrow$ g (autoconv.) & - & cis, cisn \\
+     &       &  & ais, aisn \ref{coll_same}, aig, aign & efficiency = 0 & \ref{collision_n}, \ref{collision_q} \\
+\hline
+        &  &  &  & g + g $\rightarrow$ g & g + s $\rightarrow$ g \\ 
+graupel &  &  &  & - & csg, csgn \\
+        &  &  &  & rebound & \ref{collision_n}, \ref{collision_q} \\
+\hline
+        &  &  &  &  & s + s $\rightarrow$ s \\ 
+snow &  &  &  &  & cssn \\
+        &  &  &  &  & \ref{coll_same} \\
+\hline
+\end{tabular}
+\end{center}
+\caption{{\it Interactions between hydrometeors treated in the code.}}
+\label{collisions}
+\end{table}
+%\end{landscape}
+
+\subsubsection{Precipitation}
+
+Precipitation fluxes appearing in equation \ref{scalar} include a mean terminal fall speed for each hydrometeor kind, defined as a mass weighted average over the entier 
+hydrometeor population. The power law \ref{TFS} defines the terminal fall speed of an hydrometeor having a given mass $m$, including a correction term accounting for 
+vertical density variations. The mass weighted mean terminal fall speeds are thus defined as:
+\begin{equation}
+\left<V_{p}\right> = \frac{\int_{0}^{+\infty} m V_{p}\left(D\right) f\left(D\right) dD}{\int_{0}^{+\infty} m f\left(D\right) dD}.
+\end{equation}
+After simplifications, it comes:
+\begin{equation}
+\left<V_{p}\right> = A_{v} \frac{\Gamma\left(\alpha+\beta_{v}+\beta_{m}+1\right)}{\Gamma\left(\alpha+\beta_{m}+1\right)} \lambda^{-\beta_{v}} \left(\frac{\rho_{0}}{\rho}\right)^{\gamma}.
+\end{equation}
+
+Considering any hydrometeor moment ($N$ or $Q$) denoted $\Psi$, the related precipitation flux reads:
+\begin{equation}
+P^{\Psi} \equiv -\frac{1}{\rho} \frac{\partial \rho \left<V_{p}\right> \Psi}{\partial z},
+\end{equation}
+with $\left<V_{p}\right>$ the mass weighted averaged terminal fall speed of the chosen hydrometeor kind. This velocity is expressed following relation \ref{TFS} and exhibits
+a non-linear dependence on the two hydrometeor moments. The modeled precipitation flux $P^{\Psi}$ is thus a non-linear derivative term which can generate inherent
+numerical instabilities in the vicinity of discontinuities or sharp gradients (this is a property of non-linear PDEs). In order to avoid the development of such
+instabilities, precipitation fluxes are discretized using upstream 1st order differences which introduce large numerical dissipation damping any
+numerical wave. We write (to simplify, only the vertical index $k$ is shown):
+\begin{equation}
+P^{\Psi}_{k} = \frac{1}{\rho_{k}} \frac{\rho_{k+1}\left<V_{p}\right>_{k+1} \Psi_{k+1} - \rho_{k}\left<V_{p}\right>_{k} \Psi_{k}}{\Delta z_{p}}.
+\end{equation} 
+Note that $\left<V_{p}\right>$ being an hydrometeor property, it is calculated at the scalar location and is thus cell-centered.
+
+\subsubsection{Phase transitions}
+\label{phasetrans}
+
+Here is defined how phase transitions are treated in the model: evaporation/condensation, sublimation/deposition, melting/freezing. Following Pruppacher and Klett
+\cite{PK1997}, the mass tendency of a given droplet of diameter $D$ due to evaporation/condensation is given by:
+\begin{equation}
+\left.\frac{\partial m}{\partial t}\right|_{e/c} = 2\pi D G_{lv}\left(T,p\right) F_{v} \frac{s}{q_{s}},
+\label{evap}
+\end{equation}
+with:
+\begin{equation}
+G_{lv}\left(T,p\right) = \left[ \frac{R_{w} T}{e_{s} D_{v}} + \frac{L_{lv}}{K_{T} T}\left(\frac{L_{lv}}{R_{w} T}-1\right)\right]^{-1}
+\end{equation}
+$s = q_{v} - q_{s}$ is the absolute supersaturation, $q_{s}$ the saturation mixing ratio over liquid water, $e_{s}$ the saturation vapor pressure over liquid water, $R_{w}$ 
+the ideal gas specific constant for water vapor, $D_{v}$ the diffusion coefficient for water vapor ($\approx 3.e-5$ m2/s), $K_{T}$ the heat conductivity ($\approx 2.5e-2$ Jm/s/K).
+The ventilation factor $F_{v}$ is defined following Chen and Lamb \cite{CL1994} as a function of the Best number $X = Sc^{1/3}Re^{1/2}$: 
+\begin{equation}
+F_{v} = a_{v} + b_{v} X^{\gamma}.
+\end{equation}
+The Schmidt number $Sc$ is assumed to be constant and equal to $0.7$ whereas the Reynolds number $Re$ is defined by:
+\begin{equation}
+Re = \frac{\rho_{0} V_{p} D}{\mu},
+\end{equation}
+with $V_{p}$ the drop terminal fall speed and $\mu$ the dynamic viscosity of air ($\approx 1.5e-5$ kg/m/s). For $ X \leq 1$, Chen and Lamb suggest that $\gamma = 2$, $a_{v}=1$ 
+and $b_{v}=0.14$ whereas when $X>1$, $\gamma = 1$, $a_{v}=0.86$ and $b_{v}=0.28$ for ice crystals and $\gamma = 1$, $a_{v}=0.78$ and $b_{v}=0.308$ otherwise. Ventilation effects 
+are neglected for cloud droplets so that $F_{v}$ is set to $1$. For the other hydrometeor species, it is possible to turn on the ventilation effects by setting lvent to 1 in 
+{\it cm.nml} (these effects are not included by default but might have a large impact on ice crystal growth).
+
+In order to obtain condensation/evaporation sources for the entire drop population, one has to integer relation \ref{evap} over the assumed size distribution.
+To simplify integration, we assume that the final total mass tendency will take the form:
+\begin{eqnarray}
+\left.\frac{\partial Q}{\partial t}\right|_{e/c} &=& 2 \pi G_{lv}\left(T,p\right) \frac{s}{q_{s}} \int_{0}^{+\infty} D F_{v} f\left(m\right) dm \\
+ &=& 2 \pi N G_{lv}\left(T,p\right) \left<D\right> F_{v}^{*} \frac{s}{q_{s}}
+\label{cond/evap}
+\end{eqnarray}
+where we defined a modified ventilation factor depending on an averaged Reynolds number:
+\begin{eqnarray}
+F_{v}^{*} &=& a_{v} + b_{v}Sc^{1/3}\left<Re\right>^{1/2} \\
+ &=&  a_{v} + b^{*}_{v}Sc^{1/3}\left(\frac{\beta_{v} + \alpha + 1}{\alpha + 1} \frac{\left<V\right>\left<D\right>}{\nu}\right)^{1/2}.
+\end{eqnarray}
+The mass weighted terminal fall speeds are defined previously and $b^{*}_{v}$ is a modified factor, not detailed here.
+
+Similar relations are found for sublimation/deposition processes applied to ice crystals, graupel and snow flakes:
+\begin{equation}
+\left.\frac{\partial m}{\partial t}\right|_{e/c} = 4\pi C_{i} D G_{iv}\left(T,p\right) F_{v} \frac{s_{i}}{q_{si}},
+\label{sublim}
+\end{equation}
+and:
+\begin{equation}
+G_{iv}\left(T,p\right) = \left[ \frac{R_{w} T}{e_{si} D_{v}} + \frac{L_{iv}}{K_{T}T}\left(\frac{L_{iv}}{R_{w} T}-1\right)\right]^{-1},
+\end{equation}
+which yields the following total mass tendencies for the solid hydrometeor populations:
+\begin{equation}
+\left.\frac{\partial Q}{\partial t}\right|_{s/d} = 4\pi N C_{i} G_{iv}\left(T,p\right) \left<D\right> F_{v}^{*} \frac{s_{i}}{q_{si}},
+\end{equation}
+$C_{i}$ is the ice crystal capacitance. It takes the value $1/2$ for spherical particles (graupel) and $1/\pi$ for other shapes. The assumption of a constant capacitance
+is actually very approximate and more advanced methods with a capacitance depending on crystals shape (through their aspect ratio for example) are more accurate. 
+
+The integration of condensation/evaporation sources for water droplets may sometimes lead to numerical instability issues if no specific treatment
+is applied. Most of the time, these problems lead to the apparition of spurious water mixing ratio peaks at the cloud boundaries where in-cloud air parcels are mixed with the
+ambient dry atmosphere. Direct integration of the condensation/evaporation sources are nonetheless necessary in two particular cases (even though simpler approaches can be 
+used but with a dramatic drop in model accuracy): when three-phase microphysics is used so that water vapor will interact both with liquid drops and ice crystals, and when
+droplet activation is modeled, especially with prognostic aerosols. These issues and the solution adopted in MIMICA are discussed in the following sections.
+
+Melting of ice particles is treated in a similar manner as diffusional growth, with the mass tendency of a single particle given by:
+\begin{equation}
+\left.\frac{\partial m}{\partial t}\right|_{melt} = \frac{2\pi}{L_{il}} \left[K_{T}\left(T-T_{0}\right)F_{h} + \frac{D_{v}}{L_{lv}}\left(\frac{p_{v}}{T} -
+\frac{p_{s}}{T_{0}}\right) F_{v}\right] D.
+\end{equation}
+$F_{h}$ is a heat ventilation coefficient approximated by $F_{h} = Le_{v} F_{v}$ with $Le_{v} \approx 0.67$ the Lewis number for water vapor, and $T_{0}=273.15$ K is
+the freezing temperature. Integrating over the particle population gives:
+\begin{equation}
+\left.\frac{\partial Q}{\partial t}\right|_{melt} = \frac{2\pi}{L_{il}} N \left[K_{T}\left(T-T_{0}\right)Le_{v} + \frac{D_{v}}{L_{lv}}\left(\frac{p_{v}}{T} -
+\frac{p_{s}}{T_{0}}\right)\right] F_{v}^{*} \left<D\right>,
+\end{equation}
+with $F_{v}^{*}$ defined as previously. All the melted water is considered to be rain.
+
+In the above, positive tendencies mean growth of drops or ice particles via condensation or deposition of water vapor. Negative tendencies mean a loss of ice or liquid water 
+via sublimation or evaporation. Whereas in the first case the number concentration of hydrometeors is left unchanged (the existing particles only grow), 
+evaporation and sublimation lead to a decrease in droplet and ice crystal number concentrations. 
+These variations of number concentration for ice particles and liquid drops due to sublimation and evaporation are expressed following:
+\begin{equation}
+\left.\frac{\partial N}{\partial t}\right|_{e/s} = \frac{N}{Q}\min\left(\left.\frac{\partial Q}{\partial t}\right|_{e/s}, 0\right).
+\end{equation}
+Here, the subscripts $e/s$ mean evaporation or sublimation as we consider both cloud droplets and ice crystals. The mass mixing ratio tendencies on the right
+hand side are limited by $0$ as number concentrations are only allowed to decrease through evaporation/sublimation. 
+
+\subsubsection{Saturation adjustment}
+
+When a detailed knowledge of supersaturation is not required, the saturation adjustment method can be employed, thus overcoming the need to
+integrate condensation/evaporation sources. The saturation adjustment assumption comes from the observation that in most stratiform clouds, in-cloud water
+relaxes very quickly to equilibrium. In other words, omitting CCN activation, it can be assumed that at any time, the in-cloud atmosphere is saturated, $q_{v} = q_{s}$ or $s=0$,
+so that all the water vapor available above saturation condenses instantaneously on the existing drops. Striclty following this assumption, the liquid water mixing ratio can  
+be diagnosed given $q_{v}$ and $q_{s}$. The method is selected by setting the option SAT\_ADJ to TRUE in {\it start}.
+
+Let's note $q_{l}^{n}$ and $q_{v}^{n}$ the quantities at time $t^{n}$, before adjustment, and $q_{l}^{*}$ and $q_{v}^{*}$ the same quantities after adjustment. 
+Knowing that $q_{t} = q_{v} + q_{l}$, the total  water content, is conserved, we can write:
+\begin{equation}
+q_{l}^{*} = q_{t}^{n} - q_{s}\left(P,T^{*}\right).
+\label{satadj1}
+\end{equation}
+Here, $q_{s}$ is expressed following Rogers and Yau \cite{RY1989}:
+\begin{equation}
+q_{s} = \frac{380.1}{P}\exp\left(\frac{T - 273.15}{T - 29.65}\right).
+\end{equation}
+The liquid water mixing ratio can be introduced in the previous relation by introducing the liquid potential temperature: $T = \Pi \Theta_{l} + \frac{L_{lv}q_{l}}{c_{p}}$.
+Relation \ref{satadj1} is then solved using Newton-Raphson iterations while updating $q_{l}$, $q_{v}$, $T$ and $\Theta_{l}$ after each step. The system to be solved can be written:
+\begin{equation}
+q_{l}^{m+1} = q_{l}^{m} + \frac{q_{t} - q_{l}^{m} - q_{s}\left(P,T^{m}\right)}{1 + \frac{\partial q_{s}\left(P,T^{m}\right)}{\partial q_{l}^{m}}},
+\end{equation}
+where $m$ denotes the current Newton step. Iterations are stopped when $\left|q_{l}^{m+1} - q_{l}^{m}\right| < \epsilon$, and we set $q_{l}^{*} = q_{l}^{m+1}$.
+
+When the saturation adjustment scheme is applied, only the mixing ratio of cloud water is updated. It is thus assumed that all the water vapor in excess condenses over cloud
+droplets only. Rain mixing ratio is thus taken into account to evaluate the total water mixing ratio necessary for the resolution of the above system, but it is not modified
+after the procedure is completed. 
+
+When considering mixed-phase clouds, the method can still be applied with minor biases in liquid dominated clouds but large errors can appear when the ice/liquid equilibrium
+lies far from saturation over liquid, that is when the ice proportion within the cloud layer becomes large. In such conditions, an explicit treatment of condensation/deposition 
+sources is required.
+
+Saturation adjustment schemes for mixed-phase environments have been proposed in the litterature, but none of these solutions yield reasonable results. They usually fail to predict
+the right repartition between liquid and ice phase. 
+As a result, when mixed-phase clouds are to be simulated using MIMICA, the direct integration of all condensation/sublimation sources
+is employed.
+
+Note that the saturation adjustment scheme is always used prior to the first time step to initiate the cloud layer. The initial cloud cover/liquid water field is indeed usually 
+diagnosed from the input potential temperature and total water mixing ratio soundings using the saturation adjustment method.
+
+\subsubsection{Direct integration of condensation/evaporation}
+
+When condensation/evaporation sources (respectively deposition/sublimation) are explicitly integrated, the implicit dependence of the diffusional sources on supersaturation
+over water and ice may be the source of numerical issues. The diffusional growth terms are simplified for the present demonstration:
+\begin{equation}
+C_{k} = \frac{s}{\tau_{lk}}  \mbox{\hspace{2cm} (} D_{k} = \frac{si}{\tau_{ik}} \mbox{)},
+\label{evap}
+\end{equation}
+with $s = q_{v}-q_{s}$ ($si = q_{v} - q_{si}$) being the supersaturation over liquid water (ice), and $\tau_{lk}$  ($\tau_{ik}$) are characteristic time scales of 
+condensation/evaporation (deposition/sublimation) processes that can be deduced from relations given in \ref{phasetrans}. A detailed resolution of supersaturation evolution, 
+which is necessary for a proper representation of condensation/evaporation processes, requires time-steps of the order of milliseconds. As this is not conceivable in LES of 
+atmospheric flows, specific alternatives must be found to preserve the system stability as well as the accuracy of the solution. 
+
+In the present LES code, the strong implicit relation between supersaturation and condensation/evaporation is modeled using a pseudo-analytic solution of the supersaturation
+equation over a time step, as proposed for example by Morrison and Grabowski \cite{MG2007}. For the purpose of the demonstration, we simplify the entire system to account only
+for diffusional growth (mixing and advection were neglected):
+\begin{eqnarray}
+\frac{\partial q_{l}}{\partial t} & = & \frac{s}{\tau_{l}} \label{condevap1}\\
+\frac{\partial q_{i}}{\partial t} & = & \frac{si}{\tau_{i}} \\
+\frac{\partial q_{v}}{\partial t} & = & - \frac{s}{\tau_{l}} - \frac{si}{\tau_{i}}
+\label{condevap2}
+\end{eqnarray}
+The system can be completed by the following relations:
+\begin{equation}
+\frac{\partial q_{s}}{\partial t} = \frac{\partial q_{s}}{\partial T}\frac{\partial T}{\partial t} = -A.
+\end{equation}
+\begin{equation}
+\frac{\partial q_{si}}{\partial t} = \frac{\partial q_{si}}{\partial T}\frac{\partial T}{\partial t} = -B.
+\end{equation}
+where we define $\frac{\partial T}{\partial t}$, a temperature tendency term containing radiation, turbulent mixing as well as advection through updrafts/downdrafts.
+Combining the previous relations, it is possible to derive balance equations for $s$ and $si$. The equation for $s$ and $si$ can be written as follows:
+\begin{equation}
+\frac{\partial s}{\partial t} = - \frac{s}{\tau} + \frac{1}{\tau_{i}}\left(s - s_{i}\right) + A
+\label{equa_s}
+\end{equation}
+\begin{equation}
+\frac{\partial si}{\partial t} = - \frac{si}{\tau} - \frac{1}{\tau_{c}}\left(s - s_{i}\right) + B ,
+\label{equa_si}
+\end{equation}
+with the characteristic phase relaxation time:
+\begin{equation}
+\tau = \left(\frac{1}{\tau_{l}} + \frac{1}{\tau_{i}}\right)^{-1},
+\end{equation}
+
+Equation \ref{equa_s} (respectively \ref{equa_si}) can be integrated under the assumption that $\tau_{c}$, $\tau_{i}$ and $A$ remain constant during time $t$:
+\begin{equation}
+s\left(t\right) = \tau \left[\frac{s_{i}}{\tau_{i}} + \frac{s}{\tau_{c}} - \tau\left(\frac{B}{\tau_{i}} + \frac{A}{\tau_{c}}\right)\right]e^{-\frac{t}{\tau}}
++ \tau^{2}\left(\frac{B}{\tau_{i}} + \frac{A}{\tau_{c}}\right) + \frac{\tau}{\tau_{i}}\left[s - s_{i} + \left(A - B\right)t\right].
+\label{snp1}
+\end{equation}
+A very similar relation can be found for $si$. Compared to the work of Morrison et al. \cite{Mal2005}, the dependence of $s-s_{i}$ on time has been considered. This yields
+a more complicated but more accurate solution of the supersaturation equation.
+
+Condensation/evaporation (sublimation/deposition) sources are now evaluated using a time averaged supersaturation integrated over a timestep. Integrating relation 
+\ref{snp1} over $\Delta t$ gives
+\begin{eqnarray}
+\overline{s} & = & \frac{1}{\Delta t}\int_{t}^{t+\Delta t} s\left(t^{*}\right) dt^{*} \\
+ & = & \frac{\tau^{2}}{\Delta t} \left[\frac{s_{i}}{\tau_{i}} + \frac{s}{\tau_{c}} - \tau\left(\frac{B}{\tau_{i}} + \frac{A}{\tau_{c}}\right)\right]\left(1 - e^{-\frac{\Delta t}{\tau}}\right)
++ \tau^{2}\left(\frac{B}{\tau_{i}} + \frac{A}{\tau_{c}}\right) + \frac{\tau}{\tau_{i}}\left[s - s_{i} + \frac{\Delta t}{2}\left(A - B\right)\right].
+\label{mean_s}
+\end{eqnarray}
+The mean supersaturation obtained above is then used to calculate the condensation/evaporation sources for liquid drops whereas a mean ice supersaturation (taking a
+similar form) is used to evaluate the deposition/sublimation sources of all ice particles.
+
+Although quite complicated, the method provides a very stable and accurate way of integrating condensation/evaporation sources when a detailed evolution
+of supersaturation is required. The issue related to supersaturation integration in high resolution models appears to be a non trivial one and finding efficient methods to
+overcome the issue (not mentioning the saturation adjustment scheme) is not a simple task. 
+
+The model is selected by setting lgrowth to 1 in {\it cm.nml}. If lgrowth is turned to 0, supersaturation for diffusional growth is evluated explicitly at time $t$.
+
+\subsubsection{Droplet activation}
+
+When the chemistry/aerosol modules are deactivated, an empirical parameterization of the number of activated CCN is chosen, based on a power law of the supersaturation:
+\begin{equation}
+N_{CCN} = N_{CCN,0} S^{\kappa},
+\end{equation}
+with $N_{CCN}$ the number of activated CCN and $N_{CCN,0}$ and $\kappa$ two constants. $N_{CCN,0}$ is usually defined as the background number of aerosols that can be
+activated, and $\kappa$ varies between $0.3$ to $0.7$ depending on the case. The supersaturation is here defined as:
+\begin{equation}
+S = \frac{q_{v} - q_{s}}{q_{s}}\times 100,
+\end{equation}
+where $q_{v}$ is the vapor mixing ratio and $q_{s}$ the saturation mixing ratio. Supersaturation is expressed in \% and is explicitly limited to a value of $1\%$ in
+the code (beware if larger values are expected). Note that $S$, the relative supersaturation, must not be confused with $s$, the absolute supersaturation (used in the
+diffusional growth theory above).
+
+The number of droplets formed is explicitly assumed to be equal to the number of activated CCN: $\left.N_{c}\right|_{nuc} = N_{CCN}$. All the droplets thus formed have the same
+mass which is equal to 4.19e15 kg (the mass of a droplet having the minimum diameter possible). 
+
+\subsubsection{Ice nucleation}
+\label{icenuc}
+
+At the moment, only a simple ice nucleation scheme is present in MIMICA, as used in the ISDAC intercomparison for instance. Ice nucleation is defined as a simple relaxation 
+of the ice number concentration towards a fixed background IN concentration:
+\begin{equation}
+\left.\frac{\partial N_{i}}{\partial t}\right|_{nuc} = \frac{N_{i} - IN_{0}}{\Delta t}.
+\end{equation}
+To limit the nucleation events, this relation is only applied where liquid water is also present and where supersaturation over ice is sufficient, for example where $Si > 5 \%$.
+All the newly nucleated ice crystals are assumed to have the same mass, defined as the minimum ice crystal mass possible. It results that:
+\begin{equation}
+\left.\frac{\partial Q_{i}}{\partial t}\right|_{nuc} = m_{min} \left.\frac{\partial N_{i}}{\partial t}\right|_{nuc}.
+\end{equation}
+At the moment, $m_{min}$ is hard coded but can be changed easily in {\it micro\_ice.f90}.
+
+On a long term basis, a detailed ice nucleation scheme should be implemented in MIMICA. The model will be based on nucleation theory and follow state-of-the-arts parameterization
+that can be commonly found in the litterature. In such works, all the different nucleation paths are usually included, namely nucleation via deposition, immersion, contact and 
+condensation/freezing. 
+
+\subsection{Large scale tendencies (nudging)}
+
+In some cases, it can be requested that the simulated wind and scalar fields must be nudged to a given reference state.
+If we consider one particular quantity $\Phi$, nudging is treated by simply adding one extra term $N_{\Phi}$ in the corresponding balance equation. This term allows the
+relaxation of the $\Phi$-field towards the reference state $\Phi_{0}$ with a given time scale $\tau_{n}$. We then write:
+\begin{equation}
+N_{\Phi}\left(x,y,z;t\right) = -\frac{\Phi\left(x,y,z;t\right) - \Phi_{0}\left(x,y,z;t\right)}{\tau_{n}}.
+\end{equation}
+The relaxation time scale $\tau_{n}$ is usually case and variable dependent. It can be a constant, depend on the vertical coordinate or on the simulation time. The
+reference state $\Phi_{0}$ is often taken to be one-dimensional only (dependent on the height only) and equal to the initial state.
+
+In a similar fashion, large scale scalar advection can be considered. Large scale advection is simply modeled by a constant source added to the scalar tendencies (only
+for ice/liquid potential temperature and total water mixing ratio). These sources can possibly be time dependent (to be defined in {\it timevar.f90}).
+
+\newpage
+\section{MIMICA inputs}
+\label{inputs}
+
+\subsection{{\it start}}
+
+{\it start} is a csh script piloting the compilation of MIMICA. Compilation is simply accomplished by typing
+
+\begin{verbatim}
+./start
+\end{verbatim}
+
+in your local working directory. {\it start} also contains a series of configuration options, controlling, for example, the selection of various physical modules, the size of the domain or MPI decomposition. Each option can be activated (resp. deactivated) by uncommenting {\it setenv XXXXX TRUE} (resp. {\it setenv XXXXX FALSE}), with {\it XXXXX} being the desired option keyword. Note that MIMICA must be recompiled entirely after changing anything in {\it start} by first cleaning all the directory (\verb?make clean?). A {\it compile.log} file is created locally in your working directory each time {\it start} is executed. This file contains a summary of all the configuration options used to create the last MIMICA executable.
+
+A description of all the options defined in {\it start} and their meaning is provided below.
+
+\subsubsection{{\it NP} (default: {\it setenv NP 1})}
+
+{\it NP} corresponds to the number of processors on which MIMICA will be run. Any value of {\it NP} larger than 1 also requires {\it setenv SPMD TRUE} to allow MPI parallelization. 
+
+\subsubsection{{\it CMPLER} (default: commented)}
+
+Setting {\it setenv CMPLER INTEL} enables compilation with the intel ifort compiler. The default compiler (if {\it CMPLER} is left commented) is the gfortran compiler.
+
+\subsubsection{{\it DEBUG} (default: {\it setenv DEBUG FALSE})}
+
+Setting {\it setenv DEBUG TRUE} turns on all recommended debug options. The MIMICA executable thus created is usually larger than an optimized one, and its execution is about 2 to 10 times slower. It is however strongly recommended to use the DEBUG configuration and run MIMICA with debug options when problems possibly related to coding errors is encountered at run time.
+
+\subsubsection{{\it PROF} (default: {\it setenv PROF FALSE})}
+
+Setting {\it setenv PROF TRUE} turns on profiling (with gprof) options. The MIMICA executable thus created can be run to estimate the time spent in each routine at run time. This option should be used for optimization purposes.
+
+\subsubsection{{\it SPMD} (default: {\it setenv SPMD FALSE})}
+
+Setting {\it setenv SPMD TRUE} allows parallelization with MPI. MIMICA is then compiled using the appropriate MPI wrapper, and must be executed using commands like {\it mpirun} or {\it mpiexec}.
+
+\subsection{{\it cm.nml}}
+
+{\it cm.nml} is a namelist file containing all the most important options and parameters required to run MIMICA. The namelist is organized in 9 "sections": 
+\begin{description}
+\item[{\it cm\_run}] contains general options related to time integration and the simulation period
+\item[{\it cm\_init}] contains options related model initialization
+\item[{\it cm\_grid}] contains options related to the grid and numerical domain
+\item[{\it cm\_out}] contains options related to model outputs
+\item[{\it cm\_num}] contains options related to the model's numerical schemes
+\item[{\it cm\_phys}] contains options related to physical models
+\item[{\it cm\_bc}] contains options related to boundary and surface conditions
+\item[{\it cm\_micro}] contains options specific to the microphysics schemes
+\item[{\it cm\_lag}] contains options specific to lagrangian particle tracking
+\end{description}
+Default values for all the parameters contained in {\it cm.nml} are defined in {\it INCLUDE/default.h}. If an option is not present in your local {\it cm.nml} file, the default value is applied automatically. MIMICA does not need to be recompiled when an option is modified in {\it cm.nml}. 
+
+\subsubsection{{\it dt0} (default: {\it dt0 = 1})}
+
+{\it dt0} is the initial/default model time step in seconds. Unless specified otherwise (see {\it ldtfix}), {\it dt0} is used to compute the first time step but is adjusted automatically later on based on the CFL stability criterion.
+
+\subsubsection{{\it ldtfix} (default: {\it ldtfix = 0})}
+
+If {\it ldtfix} is set to 0 (default), the time step is adjusted automatically during the course of the simulation to satisfy the CFL stability criterion. If {\it ldtfix} is set to 1, the time step is held constant and equal to {\it dt0} during the entire simulation.
+
+\subsubsection{{\it limit\_ts} (default: {\it limit\_ts = 20})}
+
+{\it limit\_ts} is the ration between the default time step {\it dt0} and the minimum time step allowed during the simulation: after adjustment, the time step cannot become smaller than $dt0/limit\_ts$. If it does, the simulation stops with the following error message: "{\it ERROR: Time-step too small}".
+
+\subsubsection{{\it tstart} (default: {\it tstart = 0})}
+
+{\it tstart} is the time at initialization. 
+
+\subsubsection{{\it tstop} (default: {\it tstop = 1})}
+
+{\it tstop} is the simulation end time in seconds. For example, if {\it tstart = 0} and {\it tstop = 86400}, the simulated period will be exactly 1 day.
+
+\subsection{{\it out.nml}}
+
+Just like {\it cm.nml}, {\it out.nml} is a namelist file used to enable/disable output variables. It is organized in 4 "sections":
+\begin{description}
+\item[{\it ou\_in}] contains switches for all output variables included in the full 2D/3D output file and profiles
+\item[{\it ou2d\_in}] contains switches for surface or vertically integrated quantities (eg. surface rain rates or LWP)
+\item[{\it oud\_in}] contains switches for the tendencies included in the full 2D/3D output file and profiles
+\item[{\it pro\_in}] contains options related to the different horizontal profiles to output
+\end{description}
+Default values for all the parameters contained in {\it out.nml} are also defined in {\it INCLUDE/default.h}. 
+
+\subsubsection{{\it out\_u} (default: {\it out\_u = .true.})}
+
+{\it out\_u} allows the output of the horizontal wind (X component).
+
+\subsubsection{{\it out\_v} (default: {\it out\_v = .true.})}
+
+{\it out\_v} allows the output of the horizontal wind (Y component).
+
+\subsubsection{{\it out\_w} (default: {\it out\_w = .true.})}
+
+{\it out\_w} allows the output of the vertical wind.
+
+\subsection{Initial soundings and idealized profiles}
+
+MIMICA can be initialized by either including idealized profiles of potential temperature $\theta$, total water mixing ratio $q_t$, and wind velocities, or by specifying initial 1D soundings function of altitude. Both initialization methods depend on external files stored in the {\it INCLUDE} directory: the former have a {\it .h} extension and contain short pieces of code written in fortran, while the latter are simple text files with a standard column structure. The use of one or the other method depends on two {\it cm.nml} keywords (in {\it cm\_init}): the name of the simulation/configuration can be specified with {\it casename} (certain predefined case names make use of specific idealized profiles, see section \ref{examples}: "Template and examples"), while {\it file\_init} is the name of the input sounding file to be used for model initialization (the specified file must be present in {\it INCLUDE}). The choice of one method or the other is essentially case dependent: idealized case studies tend to rely on standard initial profiles provided as simple functions of altitude which can easily be implemented in include {\it .h} files, while more realistic configurations will typically require the specification of a realistic atmospheric sounding.
+ 
+As mentioned previously, all 1D soundings must have a similar 5 or 6-column structure, with a single line header necessarily starting with \# as follows:
+\begin{verbatim}
+#          H        T(C)          RH           U           V
+\end{verbatim}
+Each item on the line is in fact a keyword indicating which variables are to be read in the file:
+\begin{description}
+\item[H] indicates the altitude of each sounding level, {\bf in meters above the surface}
+\item[T(C)] indicates the absolute temperature {\bf in C} at each vertical level. The temperature can alternatively be specified {\bf in K} by specifying the keyword \verb?T(K)? instead. An other possibility is to specify the potential temperature at each vertical level using the keyword \verb?PT?
+\item[RH] indicates the relative humidity {\bf in \%} at each vertical level. The water vapor mixing ratio can alternatively be specified {\bf in g/kg} using the keyword \verb?Q? instead
+\item[QL] (optional) indicates the liquid water mixing ratio {\bf in kg/kg} at each vertical level
+\item[U] indicates the horizontal U velocity {\bf in m/s} at each vertical level
+\item[V] indicates the horizontal V velocity {\bf in m/s} at each vertical level.
+\end{description}
+Note that \verb?QL? is optional, while the specification of temperature and moisture profiles can be done in several ways depending on the selected keyword. 
+
+In addition to these two types of initial condition files, there also exists a {\it sounding\_rad.dat} file, located in the {\it DATA} directory, and required to run MIMICA with interactive radiation (with {\it setenv RADIA TRUE} in {\it start}). The role of {\it sounding\_rad.dat} is to describe the thermodynamic state of the atmospheric column extending between the top of the model domain (typically located between 1.5 and 45 km depending on the simulated configuration) and the top of the atmosphere. This is absolutely required by the radiative transfer model to calculate the exact solar insulation at the top of the model domain. Because the exact structure of the full atmosphere is generally not known at the precise location of the simulation, several default soundings are available ({\it .lay} files in {\it DATA}), representative of a standard atmosphere at various locations and various seasons. For example, {\it kmlw.dat} is representative of a mid-latitude winter atmosphere, while {\it ktrop.lay} is representative of the tropical atmosphere. In order to use one of the available profiles, it is enough to rename it {\it sounding\_rad.dat}. Care must however be taken as the transition between the thermodynamic state at the top of the model domain and that of the standard atmosphere must be smooth enough for the radiation code to work successfully. Modifying the standard {\it sounding\_rad.dat} file may be necessary in some instances to guarantee a smooth transition. 
+
+\newpage
+\section{MIMICA outputs}
+\label{outputs}
+ 
+\subsection{Overview and standards}
+
+\subsection{Time series}
+
+\subsection{2D-3D complete outputs}
+
+\subsection{slices}
+
+\subsection{Vertical profiles}
+
+\subsection{Restart files}
+
+\newpage
+\section{Templates and examples}
+\label{examples}
+
+
+
+\clearpage
+\bibliography{biblio}
+\bibliographystyle{plain}
+
+\end{document}

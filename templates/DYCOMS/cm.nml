@@ -1,0 +1,145 @@
+ $cm_run
+	dt0           = 2.,
+	ldtfix        = 0,
+	limit_ts      = 20.,
+	tstart        = 0.,
+	tstop         = 21600.,
+	ntau	      = 20,
+	ldebug        = .false.,
+	new_run       = .true.,
+        nest_run      = .false.
+  $end
+  
+  $cm_init
+	casename      = 'DYCOMS',
+	psurf         = 101780.,
+	dpt           = 0.1,
+	dqv           = 0.,
+	dw            = 0.,
+	kpert  	      = 5,
+	j_day         = 243,
+	ctr_lat       = 31.5,
+	t_local       = 8.,
+	file_init     = 'none'
+  $end
+  
+  $cm_grid
+	dx            = 50.,
+	dy            = 50.,
+	dz            = 25.,
+	z1            = 795.,
+	z2            = 920.,
+	ztop          = 1500.,
+	sratio        = 0.2,
+	zdamp         = 1200.,
+        dxdamp        = -1000.,
+        dydamp        = -1000.,
+	tdamp         = 100.,
+        tnudg         = 0.
+  $end
+  
+  $cm_out
+	no_out	      = .true.,
+	minmax       = .false.,
+	iax           = 1800.,
+	its           = 60.,
+	ipro	      = 120.,
+	ires          = 21600.,
+	iav           = -10.,
+        zbl	      = 800.,
+        nslicex       = 1,
+        slicex_io     = 3200., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 
+        nslicey       = 1,
+        slicey_io     = 3200., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 
+        nslicez       = 3,
+        slicez_io     = 0., 200., 650., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 
+        spec_diag     = .true.,
+        out_surf      = .false.,
+	ts_out        = 'stratus',
+	file_output   = 'dycoms-out.nc'
+  $end
+
+  $cm_num
+  	scal_adv      = 'muscl',
+	limit         = .true.,
+	lim_tol       = 1.e-7,
+	imp_buoy      = .false.,
+        split_mic     = .true.,
+        mom_ord       = 3,
+	nsubp         = 2,
+	cfl_max       = 0.48,
+	cfl_min       = 0.44,
+	adiv          = 0.
+  $end
+  
+  $cm_phys
+	with_mom      = .true.,
+	with_adv      = .true.,
+	with_dif      = .true.,
+	with_buoy     = .true.,
+        with_mic      = .true.,
+	with_nudg     = .false.,
+	with_cor      = .true.,
+	with_lsadv    = .false.,
+	with_lssub    = .true.,
+	with_rad      = .true.,
+	with_lssrc    = .false.,
+	diff_2d       = .false.,
+	iradx	      = 1.,
+	diff          = 0.,
+	zdec          = 150.,
+	pran          = -0.4,
+	u0shift       = 5.,
+	v0shift       = -5.5,
+	Ddiv          = 3.75e-6,
+        cst_cp	      = 1
+  $end
+  
+  $cm_bc
+	bcl(1)        = 'per',
+	bcl(2)        = 'per',
+	bcl(3)        = 'per',
+	bcl(4)        = 'per',
+	bcl(5)        = 'nnf',
+	bcl(6)        = 'nnf',
+	isurf         = 0,
+	momsf         = 1,
+        ust           = 0.25,
+	shf0          = 16.,
+	lhf0          = 93.,
+	scf	      = 0.,
+	zrough        = 0.0004,
+	alb           = 0.84,  
+	sst           = 289.76,
+	ssm           = 1,
+	c_dm          = 1.2e-3,
+	c_ds          = 1.2e-3,
+        min_w         = 1.
+  $end
+  
+  $cm_micro
+	micro_dif     = .true.,
+	lmicro        = 1,
+	laero         = 0,
+	lndrop        = 0,
+	lfreeze       = 0,
+	dtcon         = 0.,
+	xauto         = 6.545e-11,
+	xn_ccn0       = 55.e6,
+	xnc0_d        = 120.e-9,
+	xnc0_s        = 1.7,
+	xnc0_k        = 0.56
+  $end
+ 
+  $cm_aero
+  	nmode0 	       = 1,
+	reg_mode       = .false.,
+	lkin	       = .false.,
+
+	aeroi(1)%nelem = 1,
+	aeroi(1)%init%present = .true., .false., .false., .false.,
+	aeroi(1)%init%frac = 1., 0., 0., 0.,
+	aeroi(1)%init%n0 = 65.e6,
+	aeroi(1)%size%rmean = 0.06,
+	aeroi(1)%size%sigma = 1.7
+  $end

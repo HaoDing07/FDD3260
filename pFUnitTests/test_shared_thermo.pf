@@ -1,0 +1,79 @@
+module test_shared_thermo
+	use gridno
+	use shared_data
+   use shared_thermo
+	use typedef_thermo
+	use shared_aerosol_new
+   use funit
+   implicit none
+
+contains
+
+   !< Test of cal_flv function of MIMICA
+   @test
+   subroutine test_cal_flv()
+      real :: x_expected      !<  Helper for expacted values 
+      real :: x_calculated    !<  Helper for calcualted values
+      real :: test_tolerance  !<  Tolerance for tests
+
+      test_tolerance = 1e-4
+
+      ! Tests for non constant thermo cp cv
+      if (cst_cp == 0) then
+         !Test for 0K 
+         x_calculated = cal_flv(0.d0)
+         x_expected = 3139887.7
+         @assertEqual(x_expected, x_calculated, tolerance=test_tolerance)
+
+         !Test for 300K
+         x_calculated = cal_flv(300.d0)
+         x_expected = 2432487.69
+         @assertEqual(x_expected, x_calculated, tolerance=test_tolerance)
+
+         ! Test for 100 degree C
+         x_calculated = cal_flv(373.15d0)
+         x_expected = 2260000.0
+         @assertEqual(x_expected, x_calculated, tolerance=test_tolerance)
+
+         ! Test with negative Temperature in Kelvin should result in NaN
+         x_calculated = cal_flv(-100.d0)
+         @assertTrue(x_calculated /= x_calculated)
+
+      !Test for constant therm properties  cp cv
+      else
+         ! Test two differnt values, sould return same result
+         x_calculated = cal_flv(300.00d0)
+         x_expected = cal_flv(400.00d0)
+         @assertEqual(x_expected, x_calculated, tolerance=test_tolerance)
+      endif
+   end subroutine test_cal_flv
+
+   ! Test cal_sigmawv
+   @test
+   subroutine test_cal_sigmawv()
+      real :: x_expected      !<  Helper for expacted values 
+      real :: x_calculated    !<  Helper for calcualted values
+      real :: test_tolerance  !<  Tolerance for tests
+
+      test_tolerance = 1e-3
+      ! Surface tension at the water / vapor intercace at T = 293.15K 
+      ! is equal to  0.0756 N m−1
+      ! See Book Lohman et al. (2016) Chapter 6 p. 162
+
+      x_calculated = cal_sigmawv(273.15)
+      write(*,*) "x_calculated", x_calculated
+      x_expected =  0.0756
+      @assertEqual(x_expected, x_calculated, tolerance=test_tolerance)
+
+      ! Test if surface tension if higher at lower temperature
+      x_calculated = cal_sigmawv(273.15-20)
+      x_expected =  cal_sigmawv(273.15)
+      @assertTrue(x_calculated >= x_expected)
+
+      ! Test if surface tension if lower at higher temperature
+      x_calculated = cal_sigmawv(273.15+20)
+      x_expected =  cal_sigmawv(273.15)
+      @assertTrue(x_calculated <= x_expected)
+
+   end subroutine test_cal_sigmawv
+end module test_shared_thermo
