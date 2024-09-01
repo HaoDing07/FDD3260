@@ -1,0 +1,171 @@
+#!/bin/csh -f
+#
+# A shell to build, compile, link,
+#             
+#
+#   Chien Wang
+#   Modified for Tornado 060717 By Annica Ekman
+#
+# ==========================================
+
+#
+# === Set up cpu: NP=number processors, NN=number nodes
+
+setenv VERSION `git rev-parse --short HEAD`
+
+setenv MIMICA /dss/dsskcsfs01/pn34ca/pn34ca-dss-0003/mimicav5_new/
+setenv INCDIR /dss/dsskcsfs01/pn34ca/pn34ca-dss-0003/mimicav5_new/INCLUDE
+setenv DATADIR /dss/dsskcsfs01/pn34ca/pn34ca-dss-0003/mimicav5_new/DATA
+
+# === Set up compiler and platform and flags
+
+setenv CMPLER INTEL
+
+setenv UNITTEST TRUE
+#setenv UNITTEST FALSE
+
+#setenv DEBUG TRUE
+setenv DEBUG FALSE
+
+#setenv PROF TRUE
+setenv PROF FALSE
+
+setenv SPMD TRUE
+#setenv SPMD FALSE
+
+#source modules.tornado
+#
+# === Model setting:
+#    M3D:     3d run
+#    NEWRUN:  new run; otherwise resume
+#    RADIA:   include radiation calculation
+#    CHEM:    include chemistry model (tracer, react, aq, and solid)
+#    AEROSOL: use multiple mode aerosol model; otherwise CCN and IN
+#    other parameters can be set in wheaders.csh
+#
+#    MAXX3D, MAXY3D, MAXZ3D: the max gridpoint along x, y, z axis for 3d
+#    MAXX2D, MAXY2D, MAXZ2D: the max gridpoint along x, y, z axis for 2d
+#
+# ----------
+#  Domain
+# ----------
+#
+
+setenv M3D TRUE
+#setenv M3D FALSE
+
+setenv DECOMP_2D TRUE
+#setenv DECOMP_2D FALSE
+
+setenv NPX 4
+setenv NPY 4
+
+if ($DECOMP_2D == FALSE) then
+  set NX = $NPX; set NY = $NPY
+  @ NP = $NX * $NY
+  setenv NPX $NP; setenv NPY 1
+endif
+
+setenv MAXX  128
+setenv MAXY  128
+setenv MAXZ  96
+
+setenv NPART 0
+setenv NSCAL 0
+
+#
+# ----------
+#  Initialize
+# ----------
+#
+
+setenv FINE TRUE
+#setenv FINE FALSE
+
+#setenv NESTING TRUE
+setenv NESTING FALSE
+
+#
+# ----------
+#  OUTPUTS
+# ----------
+#
+
+#setenv PARALLEL_OUT TRUE
+setenv PARALLEL_OUT FALSE
+
+#setenv MEANDATA TRUE
+setenv MEANDATA FALSE
+
+#
+# ----------
+#  Physical modules
+# ----------
+#
+
+#setenv RADIA TRUE
+setenv RADIA FALSE
+
+#setenv CHEM TRUE
+setenv CHEM FALSE
+
+#setenv AEROSOL TRUE
+setenv AEROSOL FALSE
+
+#setenv TKE TRUE
+setenv TKE FALSE
+
+#setenv LAGRANGE TRUE
+setenv LAGRANGE FALSE
+
+#
+# ----------
+#  NUMERICS
+# ----------
+#
+
+setenv ISENTROPIC TRUE
+#setenv ISENTROPIC FALSE
+
+setenv ANELASTIC TRUE
+#setenv ANELASTIC FALSE
+
+setenv CONSERVATIVE TRUE
+#setenv CONSERVATIVE FALSE
+
+#setenv ADV_SPLIT TRUE
+setenv ADV_SPLIT FALSE
+
+setenv RK TRUE
+#setenv RK FALSE
+
+#
+# ----------
+#  Microphysics
+# ----------
+#
+
+#setenv SAT_ADJ TRUE
+setenv SAT_ADJ FALSE
+
+setenv SEIFERT TRUE
+#setenv SEIFERT FALSE
+
+#setenv NUC_CNT TRUE
+setenv NUC_CNT FALSE
+
+#
+# === Execution section:
+#
+
+mkdir ./build
+mkdir ./OUTPUT
+    
+#    === write headers
+    $MIMICA/INCLUDE/wheaders.csh
+
+#    === write gridno.F 
+    $MIMICA/INCLUDE/wgrid.csh
+    
+#    make -f ./Makefile cleandump
+    make -f ./Makefile

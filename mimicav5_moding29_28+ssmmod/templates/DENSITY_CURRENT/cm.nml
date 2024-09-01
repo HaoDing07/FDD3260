@@ -1,0 +1,125 @@
+ $cm_run
+	dt0           = 0.5,
+	ldtfix        = 1,
+        limit_ts      = 20.,
+	tstart        = 0.,
+	tstop         = 900.,
+	ntau	      = 12,
+	new_run       = .true.,
+        nest_run      = .false.,
+	ldebug	      = .false.
+  $end
+  
+  $cm_init
+	casename      = 'CURRENT',
+	psurf         = 100000.,
+	dpt           = 0.,
+	dqv           = 0.,
+	dw            = 0.,
+	kpert  	      = 0,
+	j_day         = 116,
+	ctr_lat       = 71.1,
+	t_local       = 17.,
+	file_init     = 'initial.dat'
+  $end
+  
+  $cm_grid
+	dx            = 200.,
+	dy            = 200.,
+	dz            = 200.,
+	z1            = 920.,
+	z2            = 1120.,
+	ztop          = 6400.,
+	sratio        = 0.3,
+	zdamp         = 20000.,
+        dxdamp        = -1000.,
+        dydamp        = -1000.,
+	tdamp         = 300.,
+	tnudg         = 0.
+  $end
+  
+  $cm_out
+  	no_out	      = .false.,
+	iax           = 90.,
+	iav           = 1.,
+	its           = 5.,
+	ipro	      = 900.,
+	ires          = 900.,
+	zbl           = 0.,
+	kout          = 0,
+        ts_out        = 'none',
+	file_output   = 'current.nc'
+  $end
+
+  $cm_num
+  	scal_adv      = 'muscl',
+	limit         = .true.,
+	p_mcons       = .false.,
+	lim_tol       = 1.e-9,
+	imp_buoy      = .false.,
+        split_mic     = 0,
+        nsubp         = 3,
+	mom_ord       = 4,
+	cfl_max       = 0.5,
+	cfl_min       = 0.1,
+	adiv          = 0.005
+  $end
+  
+  $cm_phys
+	with_mom      = .true.,
+	with_adv      = .true.,
+	with_dif      = .true.,
+	with_buoy     = .true.,
+        with_mic      = .false.,
+	with_nudg     = .false.,
+	with_lsadv    = .false.,
+	with_rad      = .false.,
+	diff_2d       = .false.,
+	iradx	      = 1,
+	diff          = 75.,
+	zdec	      = 2000.,
+	pran          = 1.,
+	u0shift       = 0.,
+	v0shift       = 0.,
+	Ddiv          = 0.,
+	cst_cp        = 1
+  $end
+  
+  $cm_bc
+	bcl(1)        = 'per',
+	bcl(2)        = 'per',
+	bcl(3)        = 'per',
+	bcl(4)        = 'per',
+	bcl(5)        = 'nnf',
+	bcl(6)        = 'nnf',
+	isurf         = -1,
+	momsf         = 0,
+	shf0          = 0.,
+	lhf0          = 0.,
+        scf           = 0.
+	zrough        = 0.001,
+	alb           = 0.9,  
+	sst           = 303.15,
+	ssm           = 0.,
+	c_dm          = 1.e-3,
+	c_ds          = 1.e-3,
+        min_w         = 1.
+  $end
+  
+  $cm_micro
+	micro_dif     = .false.,
+	lmicro        = 0,
+	lndrop        = 0,
+	lfreeze       = 0,
+	qauto         = 1.e-4,
+	xnc0_d        = 0.2e-6,
+	xnc0_s        = 1.47,
+	xnc0_k        = 0.61,
+	xn_ccn0       = 0.0e6,
+	xn_in0        = 0.,
+	ice_habit     = 'DEN'
+  $end
+  
+  $cm_lag
+  $end
+  

@@ -1,0 +1,184 @@
+This file summarizes what the various diag outputs present in the netcdf files stand for.
+----------------------------------------------------------------------------------
+
+#out_diagu (U momentum, units in kg m-2 s-2)
+U_tend_1	Horizontal advection along x
+U_tend_2	Horizontal advection along y
+U_tend_3	Vertical advection along z
+U_tend_4	Turbulent mixing horizontal
+U_tend_5	Turbulent mixing vertical
+U_tend_6	Coriolis
+U_tend_7	Pressure gradient
+U_tend_8	Nuding and sponge layer
+U_tend_9	Total (sum of all the above)
+
+#out_diagv (V momentum, units in kg m-2 s-2)
+V_tend_1	Horizontal advection along x
+V_tend_2	Horizontal advection along y
+V_tend_3	Vertical advection along z
+V_tend_4	Turbulent mixing horizontal
+V_tend_5	Turbulent mixing vertical
+V_tend_6	Coriolis
+V_tend_7	Pressure gradient
+V_tend_8	Nuding and sponge layer
+V_tend_9	Total (sum of all the above)
+
+#out_diagw (W momentum, units in kg m-2 s-2)
+W_tend_1	Horizontal advection along x
+W_tend_2	Horizontal advection along y
+W_tend_3	Vertical advection along z
+W_tend_4	Turbulent mixing horizontal
+W_tend_5	Turbulent mixing vertical
+W_tend_6	Buoyancy
+W_tend_7	Pressure gradient (perturbation)
+W_tend_8	Hydrostatic pressure correction
+W_tend_9	Total (sum of all the above)
+
+#out_diagt (PT, units in kg K m-3 s-1)
+PT_tend_1	Horizontal advection along x
+PT_tend_2	Horizontal advection along y
+PT_tend_3	Vertical advection along z
+PT_tend_4	Latent heating (phase changes)
+PT_tend_5	Turbulent mixing
+PT_tend_6	Vertical upwelling/subsidence
+PT_tend_7	Radiation
+PT_tend_8	Nudging, sponge layer and additional sources	
+PT_tend_9	Total (sum of all the above)
+
+#out_diagtv (PTV, units in kg K m-3 s-1)
+PTV_tend_1	Horizontal advection along x
+PTV_tend_2	Horizontal advection along y
+PTV_tend_3	Vertical advection along z
+PTV_tend_4	Latent heating (phase changes)
+PTV_tend_5	Turbulent mixing
+PTV_tend_6	Vertical upwelling/subsidence
+PTV_tend_7	Radiation
+PTV_tend_8	Nudging, sponge layer and additional sources	
+PTV_tend_9	Total (sum of all the above)
+
+#out_diagq (QT, units in kg m-3 s-1)
+QT_tend_1	Horizontal advection along x
+QT_tend_2	Horizontal advection along y
+QT_tend_3	Vertical advection along z
+QT_tend_4	-	
+QT_tend_5	Turbulent mixing
+QT_tend_6	Vertical upwelling/subsidence
+QT_tend_7	Microphysics residual + precipitation
+QT_tend_8	Nudging, sponge layer and additional sources	
+QT_tend_9	Total (sum of all the above)
+
+#out_diagl (QC, units in kg m-3 s-1)
+QC_tend_1	Horizontal advection along x
+QC_tend_2	Horizontal advection along y
+QC_tend_3	Vertical advection along z
+QC_tend_4	Condensation/Evaporation
+QC_tend_5	Turbulent mixing
+QC_tend_6	-
+QC_tend_7	Microphysics 
+QC_tend_8	Activation - nucleation	
+QC_tend_9	Total (sum of all the above)
+
+#out_diagr (QR, units in kg m-3 s-1)
+QR_tend_1	Horizontal advection along x
+QR_tend_2	Horizontal advection along y
+QR_tend_3	Vertical advection along z
+QR_tend_4	Condensation/evaporation
+QR_tend_5	Turbulent mixing
+QR_tend_6	Precipitation
+QR_tend_7	Microphysics
+QR_tend_8	-
+QR_tend_9	Total (sum of all the above)
+
+#out_diagi (QI, units in kg m-3 s-1)
+QI_tend_1	Horizontal advection along x
+QI_tend_2	Horizontal advection along y
+QI_tend_3	Vertical advection along z
+QI_tend_4 	Deposition/sublimation	
+QI_tend_5	Turbulent mixing
+QI_tend_6	Precipitation
+QI_tend_7	Microphysics
+QI_tend_8	Nucleation
+QI_tend_9	Total (sum of all the above)
+
+#out_diags (SCAL, units in kg m-3 s-1)
+SCA_tend_1	Horizontal advection along x
+SCA_tend_2	Horizontal advection along y
+SCA_tend_3	Vertical advection along z
+SCA_tend_4 	-	
+SCA_tend_5	Turbulent mixing
+SCA_tend_6	Vertical upwelling/subsidence
+SCA_tend_7 	Other sources	
+SCA_tend_8	Nudging + sponge layer
+SCA_tend_9	Total (sum of all the above)
+
+#out_micro (detailed microphysics, units in kg m-3 s-1)
+#Q1-N1: Cloud droplets
+N1/Q1_micro_1	Condensation/evaporation	
+N1/Q1_micro_2	Auto-conversion (c->r)	
+N1/Q1_micro_3	Accretion (r+c->r)
+N1/Q1_micro_4 	Riming (i+c->i,g,r)	
+N1/Q1_micro_5	Accretion (g+c->g,r)
+N1/Q1_micro_6	Accretion (s+c->s,r)
+N1/Q1_micro_7 	-	
+N1/Q1_micro_8	Freezing
+N1/Q1_micro_9	Activation
+N1/Q1_micro_10	-
+
+#Q2-N2: Rain 
+N2/Q2_micro_1	Condensation/evaporation	
+N2/Q2_micro_2	Auto-conversion (c->r)	
+N2/Q2_micro_3	Accretion (r+c->r)
+N2/Q2_micro_4 	Melting (all)    	
+N2/Q2_micro_5	Ice collection, shedding (c+i->r, r+i->r)
+N2/Q2_micro_6	Graupel collection, shedding (c+g->r, g+r->r)
+N2/Q2_micro_7 	Snow collection, shedding (c+s->r, s+r->r)	
+N2/Q2_micro_8	Freezing
+N2/Q2_micro_9	-
+N2/Q2_micro_10	Precipitation
+
+#Q3-N3: Ice
+Q3_micro_1	Deposition/sublimation	
+Q3_micro_2	Melting	
+Q3_micro_3	Aggregation (i+i->s)
+Q3_micro_4 	Riming (c+i->i,g,r)	
+Q3_micro_5	Riming (r+i->g,r)
+Q3_micro_6	Aggregation (i+s->s)	
+Q3_micro_7 	Ice multiplication, Hallett-Mossop	
+Q3_micro_8	Freezing
+Q3_micro_9	-
+Q3_micro_10	Precipitation
+
+#Q4-N4: Graupel
+Q4_micro_1	Deposition/sublimation	
+Q4_micro_2	Melting	
+Q4_micro_3	Riming, cloud droplets (c+i->g,r, c+s->s,r)
+Q4_micro_4 	Riming, rain (r+i->g,r, r+s->g,r)	
+Q4_micro_5	Accretion (g+c->g,r, g+r->g,r)
+Q4_micro_6	Aggregation (g+s->g)
+Q4_micro_7 	Ice multiplication, Hallett-Mossop
+Q4_micro_8	Freezing
+Q4_micro_9	-
+Q4_micro_10	Precipitation
+
+#Q5-N5: Snow   
+Q5_micro_1	Deposition/sublimation	
+Q5_micro_2	Melting	
+Q5_micro_3	Aggregation (i+i->s)
+Q5_micro_4 	Riming (c+s->g,r)	
+Q5_micro_5	Riming (r+s->g,r)	
+Q5_micro_6	Aggregation (g+s->g)
+Q5_micro_7 	Aggregation (s+i->s)	
+Q5_micro_8	-
+Q5_micro_9	-
+Q5_micro_10	Precipitation
+
+#out_diaga (Intersticial aerosol number, per mode, units in kg m-3 s-1)
+NAERO_tend_1	Horizontal advection along x	
+NAERO_tend_2	Horizontal advection along y
+NAERO_tend_3	Vertical advection along z
+NAERO_tend_4	Turbulent diffusion
+NAERO_tend_5 	Activation
+NAERO_tend_6	Regeneration
+NAERO_tend_7 	Impaction scavenging	
+NAERO_tend_8	-
+NAERO_tend_9	Total

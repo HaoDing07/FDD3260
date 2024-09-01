@@ -1,0 +1,129 @@
+ $cm_run
+	dt0           = 1.,
+	ldtfix        = 1,
+	limit_ts      = 150.,
+	tstart        = 0.,
+	tstop         = 3000.,
+	ntau	      = 2,
+	ldebug        = .false.,
+	new_run       = .true.,
+        nest_run      = .false.
+  $end
+  
+  $cm_init
+	casename      = 'IGW',
+	psurf         = 100000.,
+	dpt           = 0.2,
+	dqv           = 0.,
+	dw            = 0.,
+	kpert  	      = 0,
+	sca_set       = 0,
+	j_day         = 152,
+	ctr_lat       = 18.,
+	t_local       = 0.,
+	file_init     = 'none',
+        file_rest     = 'restart.dat'
+  $end
+  
+  $cm_grid
+	gridfile      = 'none',
+	dx            = 1000.,
+	dy            = 1000.,
+	dz            = 1000.,
+	ztop          = 10000.,
+	sratio        = 1.,
+	zdamp         = 20000.,
+        dxdamp        = -1000.,
+        dydamp        = -1000.,
+	tdamp         = 900.,
+	tnudg         = 43200.
+  $end
+  
+  $cm_out
+	no_out	      = .false.,
+	minmax        = .false.,
+	iax           = 60.,
+	its           = 15.,
+	ipro	      = 3000.,
+	ires          = 3000.,
+	zbl           = 10000.,
+	ztrop         = 10000.,
+	out_surf      = .false.,
+	out_hov       = .false.,
+	spec_diag     = .false.,
+	all_rest      = .false.,
+	ts_out        = 'deep',
+	file_output   = 'igw.nc'
+  $end
+
+  $cm_num
+  	scal_adv      = 'quick',
+	limit         = .false.,
+	imp_buoy      = .false.,
+	p_mcons       = .false.,
+	lim_tol       = 1.e-6,
+        mom_ord       = 4,
+	nsubp         = 3,
+	cfl_max       = 0.5,
+	cfl_min       = 0.45,
+	adiv          = 0.
+  $end
+  
+  $cm_phys
+	with_mom      = .true.,
+	with_adv      = .true.,
+	with_dif      = .false.,
+	with_buoy     = .true.,
+        with_mic      = .false.,
+	with_nudg     = .false.,
+	with_cor      = .false.,
+	with_lsadv    = .false.,
+	with_rad      = .false.,
+	diff_2d       = .false.,
+	rad_sw        = 1,
+	rad_o3        = 0,
+	iradx	      = 600.,
+	diff          = 0.,
+	zdec          = 10000.,
+	pran          = -0.4,
+	Ddiv          = 0.,
+        cst_cp	      = 1
+  $end
+  
+  $cm_bc
+	bcl(1)        = 'per',
+	bcl(2)        = 'per',
+	bcl(3)        = 'per',
+	bcl(4)        = 'per',
+	bcl(5)        = 'nnf',
+	bcl(6)        = 'nnf',
+	isurf         = 0,
+	shf0          = 0.,
+	lhf0          = 0.,
+	momsf         = 1,
+	zrough        = 1.,
+	alb           = 0.07,  
+	emi           = 0.984,
+	sst           = 300.,
+	ssm           = 1.,
+	c_dm          = 1.1e-3,
+	c_ds          = 1.1e-3,
+        min_w         = 1.
+  $end
+  
+  $cm_micro
+	micro_dif     = .false.,
+	lmicro        = 1,
+	lndrop        = 0,
+	lfreeze       = 1,
+	qthres        = 1.e-5,
+	xnc0_d        = 0.2e-6,
+	xnc0_s        = 1.4,
+	xnc0_k        = 0.7,
+	xn_ccn0       = 100.0e6,
+	xn_in0        = 0.1,
+	ice_habit     = 'DEN'
+  $end
+ 
+  $cm_lag
+  $end 

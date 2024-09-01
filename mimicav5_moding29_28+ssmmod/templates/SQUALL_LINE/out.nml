@@ -1,0 +1,95 @@
+
+ $ou_in
+	out_u         = .true.
+	out_v         = .false.
+	out_w         = .true.
+	out_p         = .true.
+	out_t         = .false.
+	out_pt        = .true.
+	out_ptv       = .true.	
+	out_mse       = .false.	
+	out_rho       = .false.
+	out_sca       = .false.
+	out_qv        = .true.
+	out_qc        = .true.
+	out_nc        = .false.
+	out_dc        = .false.
+	out_qr        = .true.
+	out_nr        = .false.
+	out_dr	      = .true.
+	out_qi        = .false.
+	out_ni        = .true.
+	out_di	      = .true.	
+	out_qg        = .true.
+	out_ng        = .false.
+	out_dg        = .true.	
+	out_qs        = .true.
+	out_ns        = .true.
+	out_ds        = .true.
+	out_ws        = .false.
+	out_qh        = .true.
+	out_nh        = .true.
+	out_dh        = .true.
+	out_wh        = .false.
+	out_qt        = .true.	
+	out_z	      = .true.
+	out_ql        = .false.
+	out_qt        = .false.	
+	out_var       = .false.
+	out_sat       = .false.				
+	out_k         = .false.
+	out_tke       = .false.
+        out_ent       = .false.
+	out_vort      = .true.
+	out_div       = .true.
+        out_grad      = .false.
+	out_buoy      = .false.
+        out_dp        = .false.	
+	out_wmom      = .false.
+	out_flut      = .false.
+	out_fsgs      = .false.
+	out_dtnet     = .false.
+	out_frad      = .false.
+	out_ccn       = .false.
+	out_in        = .false.
+ $END
+ 
+ $ou2d_in
+        out_lwp       = .false.
+	out_wvp       = .false.
+	out_cmse      = .false.
+        out_ctop      = .false.
+	out_cp        = .false.
+        out_sfl       = .false.
+	out_srad      = .false.
+        out_rrate     = .false.
+        out_cape      = .false.
+	out_rrate     = .false.
+	out_srad      = .false.
+	out_ints      = .false.
+ $END
+
+ $oud_in
+        out_diagu     = .true.
+        out_diagv     = .false. 
+        out_diagw     = .true.
+        out_diagp     = .false.
+        out_diagt     = .true.
+	out_diagtv    = .false.
+        out_diagq     = .false.
+        out_diagl     = .false.
+        out_diagr     = .false.
+        out_diagi     = .false.
+        out_diags     = .false.
+	out_micro     = .false.
+ $END
+
+ $pro_in
+	pro_tot       = .true.
+	pro_env	      = .false.
+	pro_cl	      = .false.
+	pro_cor       = .false.
+ 	pro_env       = .false.
+        pro_cfcl      = .false.
+        pro_cfev      = .false.  
+ $END

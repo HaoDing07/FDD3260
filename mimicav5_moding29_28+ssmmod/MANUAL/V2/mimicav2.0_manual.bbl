@@ -1,0 +1,144 @@
+\begin{thebibliography}{10}
+
+\bibitem{Bou1983}
+P.~Bougeault.
+\newblock A non-reflective upper boundary condition for limited-height
+  hydrostatic models.
+\newblock {\em Monthly Weather Review}, 111:420--429, 1983.
+
+\bibitem{WC1993}
+J.S.~Chang C.~Wang.
+\newblock A three-dimensional numerical model of cloud dynamics, microphysics,
+  and chemistry: 1. concepts and formulation.
+\newblock {\em Journal of Geophysical Research}, 98:14,827--14,844, 1993.
+
+\bibitem{CL1994}
+J.-P. Chen and D.~Lamb.
+\newblock The theoretical basis for the parameterization of ice crystal habits:
+  growth by vapor deposition.
+\newblock {\em Journal of Atmospheric Sciences}, 51:1206--1221, 1994.
+
+\bibitem{Cla1979}
+T.L. Clark.
+\newblock Numerical simulations with a three dimensional cloud model: lateral
+  boundary condition experiments and multicellular severe storm simulations.
+\newblock {\em Journal of Atmospheric Sciences}, 36:2191--2215, 1979.
+
+\bibitem{Dea1974}
+J.W. Deardorff.
+\newblock Three dimensional numerical study of turbulence in an entraining
+  mixed layer.
+\newblock {\em Boundary-Layer Meteorology}, 7:199--226, 1974.
+
+\bibitem{Dur2010}
+D.R. Durran.
+\newblock {\em Numerical methods for fluid dynamics with applications to
+  geophysics, 2nd edition}.
+\newblock Texts in Applied Mathematics, Springer, 2010.
+
+\bibitem{Sal2005}
+B.~Stevens et~al.
+\newblock Evaluation of large eddy simulations via observations of nocturnal
+  marine stratocumulus.
+\newblock {\em Monthly Weather Review}, 133:1443--1462, 2005.
+
+\bibitem{FL1993}
+Q.~Fu and K.-N. Liou.
+\newblock Parameterization of the radiative properties of cirrus clouds.
+\newblock {\em Journal of Atmospheric Sciences}, 50:2008--2025, 1993.
+
+\bibitem{Gar1992}
+J.R. Garratt.
+\newblock {\em The atmospheric boundary layer}.
+\newblock Cambridge University Press, 1994.
+
+\bibitem{GS1998}
+S.~Gottlieb and C.-W. Shu.
+\newblock Total variation diminishing runge-kutta schemes.
+\newblock {\em Mathematics of Computation}, 67:73--85, 1998.
+
+\bibitem{Hal1995}
+W.~Hundsdorfer, B.~Koren, M.~Van Loon, and J.G. Verwer.
+\newblock A positive finite-difference advection scheme.
+\newblock {\em Journal of Computational Physics}, 117:35--46, 1995.
+
+\bibitem{JS1996}
+G.-S. Jiang and C.-W. Shu.
+\newblock Efficient implementation of weighted eno schemes.
+\newblock {\em Journal of Computational Physics}, 126:202--228, 1996.
+
+\bibitem{Ket2010}
+D.I. Ketcheson.
+\newblock Runge-kutta methods with minimum storage implementations.
+\newblock {\em Journal of Computational Physics}, 229:1,763--1,773, 2010.
+
+\bibitem{KC2002}
+V.I. Khvorostyanov and J.A. Curry.
+\newblock Terminal velocities of droplets and crystals: Power laws with
+  continuous parameters over the size spectrum.
+\newblock {\em Journal of Atmospheric Sciences}, 59:1872--1884, 2002.
+
+\bibitem{KT2000}
+A.~Kurganov and E.~Tadmor.
+\newblock New high-resolution central schemes for nonlinear conservation laws
+  and convection-diffusion equations.
+\newblock {\em Journal of Computational Physics}, 160:241--282, 2010.
+
+\bibitem{Mal2005}
+H.~Morrison, J.A. Curry, and V.I. Khvorostyanov.
+\newblock A new double-moment microphysics parameterization for application in
+  cloud and climate models. part i: Description.
+\newblock {\em Journal of Atmospheric Sciences}, 62:1,665--1,667, 2005.
+
+\bibitem{MG2007}
+H.~Morrison and W.W. Grabowski.
+\newblock Modeling supersaturation and subgrid-scale mixing with two-moment
+  bulk warm microphysics.
+\newblock {\em Journal of Atmospheric Sciences}, 65:792--812, 2008.
+
+\bibitem{PK1997}
+H.R. Pruppacher and J.D. Klett.
+\newblock {\em Microphysics of clouds and precipitation, 2nd edition}.
+\newblock Kluwer Academic Publishers, 1997.
+
+\bibitem{RY1989}
+R.R. Rogers and M.K. Yau.
+\newblock {\em A short course in cloud physics, 3rd edition}.
+\newblock Butterworth-Heinemann, 1989.
+
+\bibitem{SB2001}
+A.~Seifert and K.D. Beheng.
+\newblock A double moment parameterization for simulating autoconversion,
+  accretion and selfcollection.
+\newblock {\em Atmospheric Research}, 59-60:265--281, 2001.
+
+\bibitem{SB2004}
+A.~Seifert and K.D. Beheng.
+\newblock A two-moment cloud microphysics parameterization for mixed-phase
+  clouds. part i: Model descroption.
+\newblock {\em Meteorology and Atmospheric Physics}, 92:45--66, 2006.
+
+\bibitem{Smago}
+J.~Smagorinsky.
+\newblock General circulation experiments with the primitive equations: 1. the
+  basic experiment.
+\newblock {\em Monthly Weather Review}, 911:99--164, 1963.
+
+\bibitem{Sal2002}
+D.E. Stevens, A.S. Ackerman, and C.S. Bretherton.
+\newblock Effects of domain size and numerical resolution on the simulation of
+  shallow cumulus convection.
+\newblock {\em Journal of Atmospheric Sciences}, 59:3285--3301, 2002.
+
+\bibitem{Wil2009}
+P.D. Williams.
+\newblock A proposed modification to the robert-asselin time filter.
+\newblock {\em Monthly Weather Review}, 137:2538--2547, 2009.
+
+\bibitem{XS2005}
+Z.~Xu and C.-W. Shu.
+\newblock Anti-diffusive flux corrections for high order finite difference weno
+  schemes.
+\newblock {\em Journal of Computational Physics}, 205:458--485, 2005.
+
+\end{thebibliography}

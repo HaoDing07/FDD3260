@@ -1,0 +1,344 @@
+ $cm_in
+	dt            = 2.,
+	ds            = 0.01,
+	cfl_max       = 0.52,
+	cfl_min       = 0.45,
+	ldtfix        = 0,
+	nstart        = 1,
+	nstop         = 7200.,
+	nunit         = 1,
+	iax           = 1800.,
+	iav           = 0.,
+	its           = 150.,
+	ipro	      = 1800.,
+	ires          = 1800.,
+        iradx	      = 10,
+	i_creact      = 0,
+        isurf         = 11,
+	dx            = 50.0,
+	dy            = 50.0,
+	dz            = 20.,
+	z1            = 720.,
+	z2            = 910.,
+	sratio        = 0.25,
+        zdamp         = 1200.,
+	tdamp         = 300.,
+	pran          = -0.4,
+        cdiff         = 0.1,
+	lmicro        = 2,
+	lndrop        = 0,
+	c_sed         = 0,
+	drizz         = 1,
+	lvent         = 0,
+	lgrowth       = 1,
+	lfreeze       = 0,
+	nsmooth       = 2,
+	ksmooth       = 0.3,
+	psurf         = 102000.,
+        u0shift       = -7.,
+	v0shift       = -2.,
+	shf           = 0.,
+	lhf           = 0.,
+	Ddiv          = 5.e-6,
+	sst           = 264.6,
+        ssm           = 0.,
+	zrough        = 0.0004,
+	alb           = 0.9,
+	drmin         = 25.,
+	xnc0_c        = 200.e6,
+	xnc0_k        = 0.3,
+	xnc0_r        = 0.1e-6,
+	xn_ccn0       = 200.0e6,
+	xn_in0        = 400.,
+	if_filter     = 0,
+	nbulb         = 1,
+	dpt           = 0.00032,
+	dqv           = 0.,
+	mx            = 50,
+	mx1           = 25,
+	mx2           = 25,
+	ioe           = 1,
+	my            = 1,
+	my1           = 1,
+	my2           = 1,
+	joe           = 1,
+	mz            = 12,
+	mz1           = 2,
+	mz2           = 20,
+	koe           = 2,
+	casename      = 'ISDAC',
+
+	j_day         = 116,
+	ctr_lat       = 71.1,
+	t_ref         = 16.,
+	homedir       = './'
+	incdir        = './INCLUDE'
+        outpdir       = './OUTPUT'
+	file_init     = 'initial.dat'
+	file_rktbl    = 'rktable32.dat'
+ $END
+
+! === time steps:
+!
+      dt      = 5.0,	!Basic time step in second
+      dtau    = 0.5,	!Small time step for sound wav in second
+      ds      = 5.0,	!Time step for xxx in second
+       
+! === resume control:
+!
+!	=== start a new run with one time field init data:
+	nresume = 0,
+!	=== start a run with two time field init data & apply disturbance:
+	nresume = 1,
+!	=== resume a run with two time field init data:
+	nresume = 2,
+	
+! === start point in step:
+!
+	nstart  = 1,
+		
+! === Start time in 24 hour base:
+!	in main program it will be convert to
+!	start_in_s = (start_hr_in_24hr) *3600.0
+!	12 hr = 43200 s
+!
+	start_in_s = 12.0,
+
+! === Integration length:
+!	=== when nresume = 0:
+!
+	nstop      = 24,
+
+!	=== when nresume = 1:
+!
+	nstop      = 120,
+
+! === Unit of integration length:
+!	=== 3600: hour
+!	===   60: minute
+!	===   dt: step
+
+	nunit	   = 3600,
+
+! === frequency of output data in step:
+!
+	iax     = 60,
+	
+! === Radiation calculation frequency in step:
+!	typical value = 60 (5 min. in 5 sec time step)
+!	set up as negative int or 0 to close radiation call
+!
+	iradx	   = 120,
+
+! === For chemistry package:
+!	Yes = 1, no = 0
+!
+	!=== this has been closed in cpp version !
+	if_chem = 1,
+
+! === Chemical reaction calculation frequency in step:
+!	Only effect if if_chem = 1
+!
+!	typical value = 6 (30 sec. in 5 sec time step)
+!	set up as negative int or 0 to close reaction call
+!
+	i_creact   = 6,
+
+! === Dimension parameters:
+!
+      ndims   = 3,	!Number of dimensions
+      dx      = 2000.0,	!Horizontal interval along x in meter
+      dy      = 2000.0,	!Horizontal interval along y in meter
+      dz      =  500.0,	!Vertical interval in meter
+
+! === Thickness of top damping layer:
+!       normally can be set to 5000(m)/dz(m),
+!       it works for dz = 500m
+!
+      kdamp     = 10,
+
+! === Relaxation coefficient for LBC:
+!
+      eps     = 0.0,
+
+! === LBC damp option:
+!	if_lbcdamp = 0		not apply lbc_damp; 
+!		     n (n > 0)	tau = dx/C = n seconds
+!	
+	if_lbcdamp = 0,
+
+! === Adjustments of initial winds in m/s:
+!
+      u0shift = 0.0,
+      v0shift = 0.0,
+
+! === Minimum K for wind (fkmin_u) 
+! ===	and scalar (fkmin_s) in m/s/s:
+!
+      fkmin_u = 0.0,
+      fkmin_s = 0.0,
+
+! === Warm cloud (1) or cold cloud (0):
+!
+      nwarm   = 0,
+
+! === If after smooth go one step forward(1) or not(0):
+      nsmooth = 1,
+
+! === CCN & IN parameters:
+!	xnc0_c = CCN nucleation constant C in CCN 1/kg
+!	xnc0_k = CCN nucleation constant k
+!		 0.7 for marinetime, 0.5 for continental
+!		 based on Twomey & Wojciehowski (1969)
+!	xn_ccn0= surface or maximum CCN concentration 1/kg
+!	xn_in0 = surface or maximum IN concentration 1/kg
+! 
+      xnc0_c   = 50.0e6,
+      xnc0_k   = 0.7,
+      xn_ccn0  = 50.0e6,
+      xn_in0   = 100.0e3,
+
+! === for periodic lbc option:
+!	yes = 1, no = 0
+!
+	! === this has been closed in cpp version
+      if_plbc  = 0,
+
+! === for filter:
+	if_filter= 0,		;no filter 
+	if_filter= n(n>0),	;per n(dt) step, e.g., 12
+
+! === for solar radiation coefficient:
+	j_day = 67,		; the day of year from 1 to 365
+	ctr_lat =-4.0,		; lat value at the center of model
+				;  domain, from -90.0 to 90.0
+
+! === Initial perturbation:
+!	nbulb = use warm bulb method(1) or not(0)
+!	dpt   = maximum initial perturbation of 
+!			temperature in degree
+!	dqv   = maximum initial perturbation of 
+!			water vapor mixing ratio in percentage
+!			       
+! === for bulb:
+	if_plbc = 0,
+	nbulb   = 1,
+	dpt     = 1.00,
+	dqv     = 0.70,
+	mx      = 1500,
+	mx1     = 012,
+	mx2     = 012,
+	ioe     = 002,
+	my      = 001,
+	my1     = 000,
+	my2     = 000,
+	joe     = 001,
+	mz      = 004,
+	mz1     = 003,
+	mz2     = 003,
+	koe     = 002
+
+! === for random:
+	if_plbc = 1,
+	nbulb   = 0,
+	dpt     = 1.00,
+	dqv     = 0.60,
+	mx      = 1000,
+	mx1     = 999,
+	mx2     = 999,
+	ioe     = 002,
+	my      = 001,
+	my1     = 000,
+	my2     = 000,
+	joe     = 001,
+	mz      = 003,
+	mz1     = 002,
+	mz2     = 002,
+	koe     = 002
+
+! === for 3d 120x80x50
+        nstop      = 5,
+        nunit      = 3600,
+        iax        = 120,
+        iradx      = 120,
+        i_creact   = 6,
+        ndims      = 3,
+        dx         = 2000.0,
+        dy         = 2000.0,
+        dz         = 0500.0,
+        eps        = 0.00,
+        if_lbcdamp = 0,
+        u0shift    = 0.0,
+        v0shift    = 0.0,
+        fkmin_u    = 0.0,
+        fkmin_s    = 0.0,
+        nwarm      = 0,
+        nsmooth    = 1,
+        xnc0_c     = 50.0e6,
+        xnc0_k     = 0.7,
+        xn_ccn0    = 50.0e6,
+        xn_in0     = 100.0e3,
+        if_filter  = 120,
+        nbulb      = 1,
+        dpt        = 1.50,
+        dqv        = 0.70,
+        mx         = 25,
+        mx1        = 2,
+        mx2        = 3,
+        ioe        = 1,
+        my         = 25,
+        my1        = 2,
+        my2        = 3,
+        joe        = 1,
+        mz         = 5,
+        mz1        = 3,
+        mz2        = 3,
+        koe        = 2,
+        casename   = 'CEPEX0308       '
+
+! === foir 2-d 
+	dt         = 05.0,
+	dtau       = 00.5,
+	ds         = 05.0,
+	nresume    = 1,
+	nstart     = 1,
+	start_in_s = 12.0,
+	nstop      = 48,
+	nunit      = 3600,
+	iax        = 120,
+	iradx	   = 120,
+	i_creact   = 6,
+	ndims      = 2,
+	dx         = 2000.0,
+	dy         = 2000.0,
+	dz         = 0500.0,
+	eps        = 0.00,
+	if_lbcdamp = 0,
+	u0shift    = 0.0,
+	v0shift    = 0.0,
+	fkmin_u    = 0.0,
+	fkmin_s    = 0.0,
+	nwarm      = 0,
+	nsmooth    = 1,
+	xnc0_c     = 50.0e6,
+	xnc0_k     = 0.7,
+	xn_ccn0    = 50.0e6,
+	xn_in0     = 100.0e3,
+	if_filter  = 720,
+	nbulb      = 1,
+	dpt        = 1.50,
+	dqv        = 0.90,
+	mx         = 375,
+	mx1        = 3,
+	mx2        = 3,
+	ioe        = 2,
+	my         = 1,
+	my1        = 1,
+	my2        = 1,
+	joe        = 1,
+	mz         = 04,
+	mz1        = 03,
+	mz2        = 03,
+	koe        = 02,
+	casename   = 'CEPEX0308'
+

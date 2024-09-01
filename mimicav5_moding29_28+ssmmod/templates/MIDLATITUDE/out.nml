@@ -1,0 +1,83 @@
+
+ $ou_in
+	out_u         = .true.
+	out_v         = .true.
+	out_w         = .true.
+	out_p         = .true.
+	out_pt        = .true.
+	out_ptv       = .true.	
+	out_mse       = .true.	
+	out_t         = .true.
+	out_rho       = .true.
+	out_sca       = .false.
+	out_qv        = .true.
+	out_qc        = .true.
+	out_nc        = .true.
+	out_qr        = .true.
+	out_nr        = .true.
+	out_qi        = .true.
+	out_ni        = .true.	
+	out_qg        = .true.
+	out_ng        = .true.	
+	out_qs        = .true.
+	out_ns        = .true.
+	out_qt        = .false.	
+	out_var       = .false.
+	out_sat       = .false.				
+	out_k         = .false.
+	out_tke       = .false.
+        out_ent       = .false.
+        out_grad      = .false.
+	out_mf	      = .true.
+	out_buoy      = .false.
+	out_beff      = .false.
+        out_dp        = .false.
+	out_div       = .false.
+	out_vort      = .false.	
+	out_wmom      = .false.
+	out_flut      = .true.
+	out_dtnet     = .false.
+	out_frad      = .false.
+	out_ccn       = .false.
+	out_in        = .false.
+ $END
+
+ $ou2d_in
+        out_lwp       = .true.
+	out_wvp       = .true.
+	out_cmse      = .false. 
+        out_ctop      = .false.
+	out_cp        = .true.
+        out_sfl       = .true.
+        out_cape      = .false.
+	out_rrate     = .true.
+ $END
+ 
+ $oud_in
+        out_diagu     = .false.
+        out_diagv     = .false. 
+        out_diagw     = .false.
+        out_diagp     = .false.
+        out_diagt     = .true.
+	out_diagtv    = .false.
+        out_diagq     = .false.
+        out_diagl     = .false.
+        out_diagr     = .false.
+        out_diagi     = .false.
+        out_diaga     = .false.
+	out_micro     = .true.
+ $END
+
+ $pro_in
+        pro_tot       = .true.
+	pro_env       = .false.
+	pro_cl	      = .false.
+	pro_cor       = .true.
+	pro_int       = .false.
+	pro_out       = .false.
+        pro_ent       = .false.
+        pro_det       = .false.
+	pro_halo      = .false.
+        pro_cfcl      = .false.
+        pro_cfev      = .false.
+ $END

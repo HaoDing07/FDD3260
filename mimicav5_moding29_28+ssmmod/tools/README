@@ -1,0 +1,14 @@
+./tools:
+	This folder contains fortran programs used to process MIMICA's raw output data. In particular,
+'post_process.f90' can be used to convert the raw data files into formatted files readable by other
+visualization softwares (such as Paraview). The program is simply compiled by typing:
+
+	gfortran post_process.f90 -o post_process.exe
+	
+and is executed with ./post_process.exe. 'post_process' requires a 'file_list.inp' file as an input.
+'file_list.inp' is structured as follows: first, under "time", the output times which must be processed
+(corresponding to the extensions of the raw data outputs in ./OUTPUT, 0000 corresponding to the 1D profiles),
+and under "name" the names of the variables which needs to be processed (Z0 contains the model level heights
+and must always be listed first). 'post_process.exe' will then produce a series of formatted files named 
+'les_output.tec' gathering all the variables listed in 'file_list.inp', and with an additional extension 
+corresponding to the output time (there will be one les_output file per output step selected in 'file_list.inp').

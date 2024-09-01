@@ -1,0 +1,5 @@
+./DATA:
+	A set of specific input data files used by the radiation solver and chemistry module. For radiation,
+the background atmosphere in the free troposphere must be prescribed for the solver to work properly. Several
+reference atmospheres are provided in .lay files corresponding to various states of the atmosphere. The selected
+one should then be renamed 'sounding_rad.dat'.

@@ -1,0 +1,53 @@
+\contentsline {section}{\numberline {1}Coding standards}{3}{section.1}
+\contentsline {section}{\numberline {2}Physical model description}{5}{section.2}
+\contentsline {subsection}{\numberline {2.1}The LES approach}{5}{subsection.2.1}
+\contentsline {subsection}{\numberline {2.2}Governing equations}{5}{subsection.2.2}
+\contentsline {subsubsection}{\numberline {2.2.1}Pressure decomposition}{6}{subsubsection.2.2.1}
+\contentsline {subsubsection}{\numberline {2.2.2}Balance equations}{7}{subsubsection.2.2.2}
+\contentsline {subsection}{\numberline {2.3}Subgrid scale closure}{8}{subsection.2.3}
+\contentsline {subsection}{\numberline {2.4}Radiation}{9}{subsection.2.4}
+\contentsline {subsection}{\numberline {2.5}Microphysics: a two moment bulk scheme}{10}{subsection.2.5}
+\contentsline {subsubsection}{\numberline {2.5.1}Basic definitions}{10}{subsubsection.2.5.1}
+\contentsline {subsubsection}{\numberline {2.5.2}Equivalence with mass distributions}{11}{subsubsection.2.5.2}
+\contentsline {subsubsection}{\numberline {2.5.3}Collisions between hydrometeors}{11}{subsubsection.2.5.3}
+\contentsline {subsubsection}{\numberline {2.5.4}Warm microphysics: Seifert \& Beheng's scheme}{12}{subsubsection.2.5.4}
+\contentsline {subsubsection}{\numberline {2.5.5}mixed phase microphysics}{14}{subsubsection.2.5.5}
+\contentsline {subsubsection}{\numberline {2.5.6}Precipitation}{15}{subsubsection.2.5.6}
+\contentsline {subsubsection}{\numberline {2.5.7}Phase transitions}{15}{subsubsection.2.5.7}
+\contentsline {subsubsection}{\numberline {2.5.8}Saturation adjustment}{17}{subsubsection.2.5.8}
+\contentsline {subsubsection}{\numberline {2.5.9}Direct integration of condensation/evaporation}{17}{subsubsection.2.5.9}
+\contentsline {subsubsection}{\numberline {2.5.10}Droplet activation}{19}{subsubsection.2.5.10}
+\contentsline {subsubsection}{\numberline {2.5.11}Ice nucleation}{19}{subsubsection.2.5.11}
+\contentsline {subsection}{\numberline {2.6}Boundary conditions}{19}{subsection.2.6}
+\contentsline {subsubsection}{\numberline {2.6.1}Lateral boundaries}{19}{subsubsection.2.6.1}
+\contentsline {subsubsection}{\numberline {2.6.2}Top boundary}{19}{subsubsection.2.6.2}
+\contentsline {subsubsection}{\numberline {2.6.3}Surface modeling}{20}{subsubsection.2.6.3}
+\contentsline {subsection}{\numberline {2.7}Large scale tendencies (nudging)}{22}{subsection.2.7}
+\contentsline {section}{\numberline {3}Numerics}{23}{section.3}
+\contentsline {subsection}{\numberline {3.1}Time integration}{23}{subsection.3.1}
+\contentsline {subsection}{\numberline {3.2}Numerical grid}{24}{subsection.3.2}
+\contentsline {subsection}{\numberline {3.3}Momentum advection}{25}{subsection.3.3}
+\contentsline {subsection}{\numberline {3.4}Scalar advection}{26}{subsection.3.4}
+\contentsline {subsubsection}{\numberline {3.4.1}Upwind finite differences}{26}{subsubsection.3.4.1}
+\contentsline {subsubsection}{\numberline {3.4.2}2nd order flux limited Lax-Wendroff method}{26}{subsubsection.3.4.2}
+\contentsline {subsubsection}{\numberline {3.4.3}3rd order TVD flux limited scheme}{27}{subsubsection.3.4.3}
+\contentsline {subsubsection}{\numberline {3.4.4}3rd order MUSCL scheme}{28}{subsubsection.3.4.4}
+\contentsline {subsubsection}{\numberline {3.4.5}3rd order WENO scheme}{29}{subsubsection.3.4.5}
+\contentsline {subsection}{\numberline {3.5}Multidimensional advection}{30}{subsection.3.5}
+\contentsline {subsection}{\numberline {3.6}Precipitation}{30}{subsection.3.6}
+\contentsline {subsection}{\numberline {3.7}The pressure solver}{30}{subsection.3.7}
+\contentsline {subsubsection}{\numberline {3.7.1}Diagnostic pressure}{30}{subsubsection.3.7.1}
+\contentsline {subsubsection}{\numberline {3.7.2}Prognostic pressure}{31}{subsubsection.3.7.2}
+\contentsline {subsection}{\numberline {3.8}Criterion for numerical stability}{32}{subsection.3.8}
+\contentsline {subsection}{\numberline {3.9}MPI communications and domain decomposition}{33}{subsection.3.9}
+\contentsline {section}{\numberline {4}Input/Output}{34}{section.4}
+\contentsline {subsection}{\numberline {4.1}{\it cm.nml} and {\it out.nml}}{34}{subsection.4.1}
+\contentsline {subsection}{\numberline {4.2}{\it start}}{34}{subsection.4.2}
+\contentsline {subsection}{\numberline {4.3}Output files}{34}{subsection.4.3}
+\contentsline {subsubsection}{\numberline {4.3.1}Overview}{34}{subsubsection.4.3.1}
+\contentsline {subsubsection}{\numberline {4.3.2}Output options}{35}{subsubsection.4.3.2}
+\contentsline {subsubsection}{\numberline {4.3.3}Post-processing}{36}{subsubsection.4.3.3}
+\contentsline {subsection}{\numberline {4.4}Restart files}{38}{subsection.4.4}
+\contentsline {section}{\numberline {5}Main routines and data structures}{39}{section.5}
+\contentsline {subsection}{\numberline {5.1}Main subroutines and overall hierarchy}{39}{subsection.5.1}
+\contentsline {subsection}{\numberline {5.2}data structures}{41}{subsection.5.2}

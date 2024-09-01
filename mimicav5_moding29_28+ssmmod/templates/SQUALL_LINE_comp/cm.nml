@@ -1,0 +1,134 @@
+ $cm_run
+	dt0           = 5.,
+	ldtfix        = 0,
+	limit_ts      = 40.,
+	tstart        = 0.,
+	tstop         = 7200.,
+	ntau	      = 200,
+	new_run       = .true.,
+	nest_run      = .false.,
+	ldebug	      = .false.
+  $end
+  
+  $cm_init
+	casename      = 'SQUALL_LINE',
+	psurf         = 100000.,
+	dpt           = 0.,
+	dqv           = 0.,
+	dw            = 0.,
+	kpert  	      = 20,
+        sca_set       = 0,
+	j_day         = 116,
+	ctr_lat       = 71.1,
+	t_local       = 17.,
+	file_init     = 'em_squall2d_x_10',
+        file_rest     = 'restart.dat'
+  $end
+  
+  $cm_grid
+	dx            = 1000.,
+	dy            = 1000.,
+	dz            = 250.,
+	z1            = 920.,
+	z2            = 1120.,
+	ztop          = 20000.,
+	sratio        = 1.,
+	zdamp         = 15000.,
+        dxdamp        = 150000.,
+        dydamp        = 0.,
+	tdamp         = 300.,
+	tnudg         = 0.
+  $end
+  
+  $cm_out
+  	no_out 	      = .false.,
+	iax           = 900.,
+	iav           = 9000.,
+	its           = 60.,
+	ipro	      = 120.,
+	ires          = 3600.,
+	iclt          = 9000.,
+	zbl           = 1000.,
+	kout          = 0,
+	out_surf      = .true.,
+	spec_diag     = .true.,
+        all_rest      = .false.,
+        ts_out        = 'cumulus'
+        file_output   = 'squall_line.nc'
+  $end
+
+  $cm_num
+  	scal_adv      = 'muscl',
+	limit         = .true.,
+	lim_tol       = 1.e-7,
+	p_mcons       = .false.,
+	split_mom     = 0,
+        imp_buoy      = .true.,
+	nsubp         = 1,
+	mom_ord       = 4,
+	cfl_max       = 0.5,
+	cfl_min       = 0.45,
+	adiv          = 0.01
+  $end
+  
+  $cm_phys
+	with_mom      = .true.,
+	with_adv      = .true.,
+	with_dif      = .true.,
+	with_buoy     = .true.,
+	with_mic      = .true.,
+	with_nudg     = .false.,
+	with_lsadv    = .false.,
+	with_rad      = .false.,
+	diff_2d       = .false.,
+        rad_sw        = 1,
+	iradx	      = 1,
+	diff          = 0.,
+	zdec	      = 15000.,
+	pran          = -0.7,
+	u0shift       = 0.,
+	v0shift       = 0.,
+	Ddiv          = 0.,
+	cst_cp        = 1
+  $end
+  
+  $cm_bc
+   	bcl(1)        = 'per',
+   	bcl(2)        = 'per',
+   	bcl(3)        = 'per',
+    	bcl(4)        = 'per',
+    	bcl(5)        = 'nnf',
+    	bcl(6)        = 'nnf',
+	isurf         = 0,
+	momsf         = 0,
+	shf0          = 0.,
+	lhf0          = 0.,
+	scf           = 0.,
+	zrough        = 1.,
+	alb           = 0.9,  
+        emi           = 0.984,
+	sst           = 300.,
+	ssm           = 0.,
+	c_dm          = 1.2e-3,
+	c_ds          = 1.2e-3,
+	min_w         = 1.
+  $end
+  
+  $cm_micro
+	micro_dif     = .false.,
+	lmicro        = 3,
+	laero         = -1,
+	lndrop        = 1,
+	lfreeze       = 2,
+	qauto         = 1.e-4, 
+        qthres        = 1.e-5,
+	xnc0_d        = 0.2e-6,
+	xnc0_s        = 1.47,
+	xnc0_k        = 0.61,
+	xn_ccn0       = 100.0e6,
+	xn_in0        = 500.,
+	ice_habit     = 'DEF'
+  $end
+ 
+  $cm_lag
+  $end 

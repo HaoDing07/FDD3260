@@ -1,0 +1,45 @@
+This is BibTeX, Version 0.99c (Web2C 7.5.4)
+The top-level auxiliary file: mimicav2.0_manual.aux
+The style file: plain.bst
+Database file #1: biblio.bib
+You've used 25 entries,
+            2118 wiz_defined-function locations,
+            667 strings with 7500 characters,
+and the built_in function-call counts, 7677 in all, are:
+= -- 759
+> -- 285
+< -- 0
++ -- 123
+- -- 88
+* -- 512
+:= -- 1306
+add.period$ -- 75
+call.type$ -- 25
+change.case$ -- 115
+chr.to.int$ -- 0
+cite$ -- 25
+duplicate$ -- 279
+empty$ -- 656
+format.name$ -- 88
+if$ -- 1612
+int.to.chr$ -- 0
+int.to.str$ -- 25
+missing$ -- 29
+newline$ -- 128
+num.names$ -- 50
+pop$ -- 93
+preamble$ -- 1
+purify$ -- 94
+quote$ -- 0
+skip$ -- 182
+stack$ -- 0
+substring$ -- 639
+swap$ -- 25
+text.length$ -- 0
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 92
+warning$ -- 0
+while$ -- 71
+width$ -- 27
+write$ -- 273

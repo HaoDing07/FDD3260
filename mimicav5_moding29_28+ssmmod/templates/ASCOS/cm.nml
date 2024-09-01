@@ -1,0 +1,128 @@
+ $cm_run
+	dt0           = 1.,
+	ldtfix        = 0,
+	limit_ts      = 20.,
+	tstart        = 0.,
+	tstop         = 28800.,
+	ntau	      = 20,
+	ldebug        = .false.,
+	new_run       = .true.,
+        nest_run      = .false.
+  $end
+  
+  $cm_init
+	casename      = 'ASCOS',
+	psurf         = 102630.,
+	dpt           = 0.1,
+	dqv           = 0.,
+	dw            = 0.,
+	kpert  	      = 5,
+	j_day         = 243,
+	ctr_lat       = 87,
+	t_local       = 12.,
+	file_init     = 'ascos_init'
+  $end
+  
+  $cm_grid
+	dx            = 62.5,
+	dy            = 62.5,
+	dz            = 35.,
+	z1            = 700.,
+	z2            = 1200.,
+	ztop          = 1800.,
+	sratio        = 0.2,
+	zdamp         = 1400.,
+        dxdamp        = -1000.,
+        dydamp        = -1000.,
+	tdamp         = 1800.,
+        tnudg         = 1.
+  $end
+  
+  $cm_out
+	no_out	      = .false.,
+	iax           = 900.,
+	its           = 120.,
+	ipro	      = 120.,
+	ires          = 14400.,
+	iav           = -10.,
+        zbl	      = 1000.,
+        spec_diag     = .false.,
+        out_surf      = .false.,
+	ts_out        = 'stratus',
+	file_output   = 'accacia-out.nc'
+  $end
+
+  $cm_num
+  	scal_adv      = 'lw',
+	limit         = .true.,
+	lim_tol       = 1.e-6,
+        imp_buoy      = .true.,
+        split_mic     = 0,
+        mom_ord       = 3,
+	nsubp         = 2,
+	cfl_max       = 0.49,
+	cfl_min       = 0.44,
+	adiv          = 0.005
+  $end
+  
+  $cm_phys
+	with_mom      = .true.,
+	with_adv      = .true.,
+	with_dif      = .true.,
+	with_buoy     = .true.,
+        with_mic      = .true.,
+	with_nudg     = .false.,
+	with_lsadv    = .false.,
+	with_rad      = .true.,
+	diff_2d       = .false.,
+	iradx	      = 120.,
+	diff          = 0.,
+	zdec          = 1400.,
+	pran          = -0.4,
+	u0shift       = 0.,
+	v0shift       = 0.,
+	Ddiv          = 1.5e-6,
+        cst_cp	      = 1
+  $end
+  
+  $cm_bc
+	bcl(1)        = 'per',
+	bcl(2)        = 'per',
+	bcl(3)        = 'per',
+	bcl(4)        = 'per',
+	bcl(5)        = 'nnf',
+	bcl(6)        = 'nnf',
+	isurf         = 0,
+	momsf         = 1,
+	shf0          = 0.,
+	lhf0          = 0.,
+	scf	      = 0.,
+	momsf         = 0,
+	zrough        = 0.0004,
+	alb           = 0.85,  
+	sst           = 271.35,
+	ssm           = 1,
+	c_dm          = 1.e-3,
+	c_ds          = 1.e-3,
+        min_w         = 1.
+  $end
+  
+  $cm_micro
+	micro_dif     = .false.,
+	ice_delay     = 7200.,
+	lmicro        = 2,
+	lndrop        = 1,
+	laero         = -1,
+	lfreeze       = 1,
+	qauto         = 1.e-4,
+	qthres        = 1.e-5,
+	xnc0_d        = 93.e-9,
+	xnc0_s        = 1.5,
+	xnc0_k        = 0.3,
+	xn_ccn0       = 30.0e6,
+	xn_in0        = 200.,
+	ice_habit     = 'def'
+  $end
+ 
+  $cm_lag
+  $end

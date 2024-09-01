@@ -1,0 +1,28 @@
+# Compiled files
+*.exe
+*.o
+*.mod
+
+# Special files
+gridno.f90
+sounding_rad.dat
+src/TYPES/gridno.F
+INCLUDE/ctrparam.h
+fftw-3.3.8
+src/fftmpi/src/*.a
+src/fftmpi/src/*.so
+src/fftw-3.3.8/*
+src/fftw-3.3.8/*/*
+tools/profiles/*.dat*
+tools/profiles/*.gp
+tools/profiles/*.png
+tools/cloud_tracking/*.dat 
+tools/cloud_tracking/*.gp
+tools/cloud_tracking/*.png
+tools/*/*.dat*
+tools/*/*.gp
+tools/*/*.png
+namelist
+
+# outputs
+OUTPUT

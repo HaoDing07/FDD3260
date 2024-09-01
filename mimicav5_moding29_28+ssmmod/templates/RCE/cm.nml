@@ -1,0 +1,128 @@
+ $cm_run
+	dt0           = 5.,
+	ldtfix        = 0,
+	limit_ts      = 20.,
+	tstart        = 0.,
+	tstop         = 86400.,
+	ntau	      = 20,
+	ldebug        = .false.,
+	new_run       = .true.,
+        nest_run      = .false.
+  $end
+  
+  $cm_init
+	casename      = 'RCE2',
+	psurf         = 100000.,
+	dpt           = 0.1,
+	dqv           = 0.,
+	dw            = 0.,
+	kpert  	      = 5,
+	j_day         = 116,
+	ctr_lat       = 71.1,
+	t_local       = 17.,
+	file_init     = 'em_rce_2'
+  $end
+  
+  $cm_grid
+	dx            = 2000.,
+	dy            = 2000.,
+	dz            = 200.,
+	z1            = 1200.,
+	z2            = 20000.,
+	ztop          = 20000.,
+	sratio        = 0.4,
+	zdamp         = 16750.,
+        dxdamp        = -1000.,
+        dydamp        = -1000.,
+	tdamp         = 3600.,
+	tnudg         = 21600.
+  $end
+  
+  $cm_out
+	no_out	      = .false.,
+	iax           = 21600.,
+	its           = 600.,
+	ipro	      = 900.,
+	ires          = 86400.,
+	iav           = 90000.,
+	zbl           = 1000.,
+	kout          = 0,
+	out_surf      = .true.,
+	spec_diag     = .false.,
+	ts_out        = 'cumulus',
+	file_output   = 'output_3d.nc'
+  $end
+
+  $cm_num
+  	scal_adv      = 'muscl',
+	limit         = .true.,
+	p_mcons       = .false.,
+	lim_tol       = 1.e-8,
+	imp_buoy      = .true.,
+        split_mic     = 0,
+        mom_ord       = 4,
+	nsubp         = 2,
+	cfl_max       = 0.5,
+	cfl_min       = 0.45,
+	adiv          = 0.01
+  $end
+  
+  $cm_phys
+	with_mom      = .true.,
+	with_adv      = .true.,
+	with_dif      = .true.,
+	with_buoy     = .true.,
+        with_mic      = .true.,
+	with_rad      = .true.,
+	with_nudg     = .true.,
+	with_lsadv    = .false.,
+	diff_2d       = .false.,
+	iradx	      = 1,
+	diff          = 0.,
+	zdec          = 12000.,
+	pran          = -1.,
+	u0shift       = 0.,
+	v0shift       = 0.,
+	Ddiv          = 0.,
+        cst_cp	      = 1
+  $end
+  
+  $cm_bc
+	bcl(1)        = 'per',
+	bcl(2)        = 'per',
+	bcl(3)        = 'per',
+	bcl(4)        = 'per',
+	bcl(5)        = 'nnf',
+	bcl(6)        = 'nnf',
+	isurf         = 3,
+	momsf         = 1,
+	shf0          = 0.,
+	lhf0          = 0.,
+	scf	      = 0.,
+	zrough        = 0.16,
+	alb           = 0.9,  
+	sst           = 300.,
+	ssm           = 1.,
+	c_dm          = 1.2e-3,
+	c_ds          = 1.2e-3,
+        min_w         = 2.
+  $end
+  
+  $cm_micro
+	micro_dif     = .false.,
+	lmicro        = 1,
+	laero         = -1,
+	lndrop        = 0,
+	lfreeze       = 1,
+	qauto         = 1.e-4,
+	qthres        = 1.e-5,
+	xnc0_d        = 0.2e-6,
+	xnc0_s        = 1.47,
+	xnc0_k        = 0.61,
+	xn_ccn0       = 100.0e6,
+	xn_in0        = 0.,
+	ice_habit     = 'DEN'
+  $end
+ 
+  $cm_lag
+  $end 

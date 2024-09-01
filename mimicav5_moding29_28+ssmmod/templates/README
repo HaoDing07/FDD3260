@@ -1,0 +1,66 @@
+./templates:
+	In this folder can be found example input files for a series of idealized and more complex 
+test cases. In each template sub-folder, one can find at least 4 files required to run MIMICA
+for the corresponding test case:
+	- start: the compilation script with the appropriate compilation flags and physical/numerical modules
+	- cm.nml: the main MIMICA input file with all the model options and parameters 
+	- case_name.h: an include file setting the initial conditions
+	- file_list.inp: the input file for the post_process tool needed to convert the raw MIMICA outputs
+All these files can serve as templates for your own personal simulations.
+
+	Here is a short description of all the test cases currently included:
+	- ASCOS: Semi-idealized case based on ASCOS data.
+	- 1D_ADV (OK): Simple one-dimensional advection of a step function for a scalar. Uses the Anelastic approximation by
+		default with the QUICK advection scheme, but can be used to test various other scalar advection schemes.
+	- 1D_DIFF (OK): One-dimensional diffusion of a step function for a simple scalar. No advection is included.
+	- 2D_ADV (OK): Two-dimensional advection of a gaussian blob for a passive scalar. The gaussian is advected along the
+		diagonal with fixed u and w velocities (u=w).
+	- 2D_NL_ADV: Two-dimensional non-linear (momentum) advection-diffusion of a square shaped velocity field with 
+		standard configuration.
+	- 2D_DIFF (OK): Two-dimensional diffusion of a gaussian blob along the diagonal with fixed velocities. Anelastic 
+		equations with PPM advection and split advection.
+	- BUBBLE_ANELASTIC (OK): Warm bubble rising in an homogeneous atmosphere with open boundaries. The case is driven 
+		by buoyancy only. The Anelastic assumption is used with TVD advection.
+	- BUBBLE_3D (OK): Similar to above but in 3D, with a small amount of diffusion (although not necessary).
+	- BUBBLE_COMPRESSIBLE (OK): Same as BUBBLE_ANELASTIC but using the fully compressible conservative solver. 
+	- BUBBLE_PRECIP (OK): Saturated rising thermal developing precipitable water at roughly 10m resolution (from Grabowski 
+		and Clark 1991). Uses simplified microphysics with saturation adjustment and the compressible solver.
+	- BUBBLE_PRECIP_mse (OK): Same as BUBBLE_PRECIP but with moist static energy as conserved variable
+	- CONE (OK): Advection of a cone by a rotating flow.
+	- DENSITY_CURRENT (OK): An initially cold bubble sinks, hits the surface, and propagates laterally to develop a
+		high density current. The case uses the Anelastic approximation, QUICK advection, and a fixed diffusion 
+	- DENSITY_CURRENT_MPI (OK): Same as DENSITY_CURRENT but on 4 processors.
+        - DENSITY_CURRENT_comp (OK): Same as DENSITY_CURRENT but using the fully compressible solver.
+        - DENSITY_CURRENT_conserv (OK): Same as DENSITY_CURRENT but forcing conservation (CONSERVATIVE option, plus pressure 
+		solver).
+	- DRY_PBL: A two-dimensional dry planetary boundary layer, from the WRF test case suite. Useful to test
+		the SGS viscosity and surface fluxes.
+	- DYCOMS: 3D DYCOMS cases: a precipitating warm stratocumulus cloud case.
+        - HYDRO_ADJUST_1D (OK): Hydrostatic adjustment with a fixed heat source in the middle of the domain. Pseudo 1D domain 
+		with open lateral boundaries, vertical periodicity. Non-conservative compressible equations are solved.
+	- HYDRO_ADJUST_2D (OK): Hydrostatic adjustment in 2D with fixed heat source in lower part of the domain (Lamb's problem).
+		Original config is compressible, periodic with TVD advection. Possibility to switch to anelastic.
+	- IGW: Inertia gravity waves. 2D domain with fixed static stability and an initial temperature perturbation at the center.
+		QUICK advection scheme with 1km horizontal resolution, and 2nd order RK time-stepping.
+	- KMSc: An idealized Sc case using a 2D kinematic framework. Fixed velocity field, homogeneous initial conditions, uses the
+		Seifert-Beheng microphysics with detailed activation. Possibility to use with complex cloud-aerosol interactions.
+	- MIDLATITUDE: An idealized midlatitude summertime convection case. The grid is 200x200 km2 with 200 m resolution. Parameterizations
+		include the full Seifert-Beheng microphysics scheme, Smagorinsky turbulent diffusion. No radiation.
+	- ISDAC: based on ISDAC F31: a mixed-phase Arctic stratus cloud case. Possibility to use various options for the
+		modelling of the ice phase initiation. Input files are here for a 2D simulation.
+	- RCE (OK): A radiative-convective equilibrium case (here in 2D). Anelastic approximation with conserved potential temperature.
+		This is just a template for more elaborate RCE simulations.
+	- RCEMIP (OK): Setup similar (but not exactly) to the recent RCEMIP intercomparison project. 2D domain only with 1 km horizontal
+		resolution and prescribed vertical grid (file grid.dat must be copied in working directory). Interactive radiation 
+		with ozone from model scalar 1. 
+	- RICO: Setup based on the RICO intercomparison study (trade wind shallow cumulus clouds).
+	- SINE (OK): One-dimensional advection of a sine wave. Uses TVD advection by default. Does 20 revolutions.
+	- SPIRAL (OK): Advection of a scalar gaussian blob in a rotating flow (prescribed time dependent velocities). Anelastic
+		equations with TVD scheme and split advection.
+	- SQUALL_LINE (OK): A two-dimensional idealized squall line from the WRF test case suite. Uses the anelastic approximation and
+		saturation adjustment with the Seifert-Beheng microphysics (for autoconversion and precipitation).
+	- SQUALL_LINE_comp (OK): Mostly similar to the SQUALL_LINE case above, but using the fully compressible core. 
+	- TG_VORTEX: Taylor Green vortex (the flow field should be balanced by the pressure field determined by the pressure 
+		solver at all time). Fully compressible case with pressure solver, fully periodic. No scalar.
+	- TRANSITION: A shallow to deep convection transition case based on TRMM-LBA experiment (Grabowski et al. 2006). The case
+		is 2D, with time varying surface fluxes, refined grid in the vertical, and other case specific I/O.

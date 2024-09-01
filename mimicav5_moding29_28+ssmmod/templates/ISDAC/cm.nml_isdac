@@ -1,0 +1,136 @@
+ $cm_run
+	dt0           = 2.,
+	ldtfix        = 0,
+	limit_ts      = 20.,
+	tstart        = 0.,
+	tstop         = 28800.,
+	ntau	      = 50,
+	new_run       = .true.,
+	nest_run      = .false.,
+	ldebug	      = .false.
+  $end
+  
+  $cm_init
+	casename      = 'ISDAC',
+	psurf         = 102000.,
+	dpt           = 0.1,
+	dqv           = 0.,
+	dw            = 0.,
+	kpert  	      = 82,
+        sca_set       = 0,
+	j_day         = 116,
+	ctr_lat       = 71.3,
+	t_local       = 17.,
+	file_init     = 'isdac_31.h',
+        file_rest     = 'restart.dat'
+  $end
+  
+  $cm_grid
+	dx            = 50.,
+	dy            = 50.,
+	dz            = 25.,
+	z1            = 1200.,
+	z2            = 1500.,
+	ztop          = 1500.,
+	sratio        = 0.4,
+	zdamp         = 2500.,
+        dxdamp        = 0.,
+        dydamp        = 0.,
+	tdamp         = 3600.,
+	tnudg         = 7200.
+  $end
+  
+  $cm_out
+	no_out	      = .false.,
+	minmax        = .false.,
+	iax           = 3600.,
+	iav           = 0.,
+	its           = 60.,
+	ipro	      = 150.,
+	ires          = 7200.,
+	zbl           = 950.,
+	kout          = 0,
+	out_surf      = .false.,
+	spec_diag     = .true.,
+        all_rest      = .false.,
+        ts_out        = 'stratus'
+        file_output   = 'isdac.nc'
+  $end
+
+  $cm_num
+  	scal_adv      = 'muscl',
+	limit         = .true.,
+	p_mcons       = .false.,
+	lim_tol       = 1.e-6,
+	imp_buoy      = .true.,
+        split_mic     = 0,
+	nsubp         = 2,
+	mom_ord       = 4,
+	cfl_max       = 0.49,
+	cfl_min       = 0.45,
+	avisc         = 1.,
+	adiv          = 0.1
+  $end
+  
+  $cm_phys
+	with_mom      = .true.,
+	with_adv      = .true.,
+	with_dif      = .true.,
+	with_buoy     = .true.,
+	with_mic      = .true.,
+	with_nudg     = .true.,
+	with_rad      = .true.
+	with_lsadv    = .false.,
+	diff_2d       = .false.,
+        rad_sw        = 1,
+	iradx	      = 1,
+	diff          = 0.,
+	zdec	      = 825.,
+	pran          = -0.4,
+	u0shift       = -7.,
+	v0shift       = -2.,
+	Ddiv          = 5.e-6,
+	cst_cp        = 1
+  $end
+  
+  $cm_bc
+   	bcl(1)        = 'per',
+   	bcl(2)        = 'per',
+   	bcl(3)        = 'per',
+    	bcl(4)        = 'per',
+    	bcl(5)        = 'nnf',
+    	bcl(6)        = 'nnf',
+	isurf         = 0,
+	momsf         = 0,
+	shf0          = 0.,
+	lhf0          = 0.,
+	scf           = 0.,
+	zrough        = 0.0004,
+	alb           = 0.9,  
+        emi           = 0.984,
+	sst           = 267.,
+	ssm           = 1.,
+	c_dm          = 1.2e-3,
+	c_ds          = 1.1e-3,
+	min_w         = 1.
+  $end
+  
+  $cm_micro
+	micro_dif     = .true.,
+	ice_delay     = 7200.,
+	lmicro        = 2,
+	laero         = -1,
+	lndrop        = 0,
+	lfreeze       = 1,
+	qauto         = 1.e-4, 
+        qthres        = 1.e-5,
+	xnc0_d        = 0.2e-6,
+	xnc0_s        = 1.5,
+	xnc0_k        = 0.56,
+	xn_ccn0       = 200.e6,
+	xn_in0        = 1000.,
+	ice_habit     = 'ISD'
+  $end
+ 
+  $cm_lag
+  $end 
