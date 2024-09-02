@@ -1,0 +1,7 @@
+mpprun INFO: mpprun v1.9.5 started
+mpprun INFO: mpprun srun handler invoked on: ./mimicav5_.exe
+mpprun INFO: Setting env variable: LD_LIBRARY_PATH=/software/sse2/tetralith_el9/manual/PSM2/11.2.230/i18/hpc1/usr/lib64
+mpprun INFO: Setting env variable: I_MPI_FABRICS=shm:tmi
+mpprun INFO: Setting env variable: TMI_CONFIG=/software/sse2/tetralith_el9/manual/intel/parallelstudioxe/2018.u3/compilers_and_libraries_2018.3.222/linux/mpi/intel64/etc/tmi.conf
+mpprun INFO: none of the known threading env variables set, all set by mpprun: OPENBLAS_NUM_THREADS=1, MKL_NUM_THREADS=1, NUMEXPR_NUM_THREADS=1, OMP_NUM_THREADS=1
+mpprun INFO: mpprun v1.9.5 executing: /usr/bin/srun --mpi pmi2 -m block:block ./mimicav5_.exe

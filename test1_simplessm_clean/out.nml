@@ -1,0 +1,105 @@
+$ou_in  ! 3D fields
+	out_u         = .true.   ! horrizonal wind in u-direction [m/s]
+	out_v         = .true.   ! horrizonal wind in v-direction [m/2]
+	out_w         = .true.    ! vertical wind  [m/s]
+	out_p         = .true.   ! preasure field [Pa]
+	out_t         = .true.   ! Temperature [K]
+	out_pt        = .true.   ! Potential temperature [K]
+	out_ptv       = .false.   ! Virtual potential temperature [K]
+	out_mse       = .false.   ! Moist static energy [J]
+	out_rho       = .true.    ! Full denisity [kg/m3]
+	out_sca       = .false.   ! Passive scalar number [-]
+	out_qv        = .true.    ! Water vapour mixing fraction [kg/kg]
+	out_qc        = .true.    ! Cloud droplet mixing fraction [kg/kg]
+	out_nc        = .true.    ! Cloud droplet number density [1/kg]
+	out_dc        = .true.    ! Cloud droplet mean size [mm]
+	out_qr        = .true.    ! Rain drops mixing fraction [kg/kg]
+	out_nr        = .true.    ! Rain drops number density [1/kg]
+	out_dr        = .true.    ! Rain droplet mean size [1/kg]
+	out_qi        = .false.   ! Ice mixing fraction [kg/kg]
+	out_ni        = .false.   ! Ice number density [1/kg]
+	out_di        = .false.   ! Ice mean size [mm]
+	out_qg        = .false.   ! Graupel mixing fraction [kg/kg]
+	out_ng        = .false.   ! Graupel number density [1/kg]
+	out_dg        = .false.   ! Graupel mean size [1/kg]
+	out_qs        = .false.   ! Snow mixing fraction [kg/kg]
+	out_ns        = .false.   ! Snow number denisity [1/kg]
+	out_ds        = .false.   ! Snow mean size [1/kg]
+	out_z         = .false.   ! Equivalent radar reflectivity [dBz]
+	out_vp 		  = .true.
+	!out_ql        = .true.    ! Liquid water mixing fraction [kg/kg]
+	out_qt        = .true.    ! Total water mixing fraction [kg/kg]
+	out_var       = .false.   ! ptv ... Potential temperature variance [K2]; qvv ... Water vapour variance [kg/m3/m2]
+	out_sat       = .true.   ! rh... Relative humidity [%] hhi ... Relative hummidity over ice [%]	
+	out_k         = .false.   ! Horizontal SGS eddy viscosity [m2/s]
+	out_tke       = .true.   ! Resolved turbulent kinetic energy [m2/s2]
+	out_div       = .true.   ! Resolved turbulent kinetic energy [1/s]
+	out_grad      = .false.   ! u,v,w,t,q gradients in x,y,z direction
+	out_ent       = .false.   ! write out vofw, vofc, en1 to en6, de 1 .. de6
+	                          ! vofw Volume of fluid in cell (normalized) [-]
+	                          ! vofc Volume of fluid in cell (normalized) [-]
+	                          ! en1 .. en6 Entrainment rate for updraft cloud core [kg/m3/s]
+                              ! de1 ..de6  Detrainment rate for updraft cloud core [kg/m3/s]
+	out_buoy      = .false.   ! Resolved buoyancy [m2/s3]
+	out_beff      = .false.   ! Effective buoyancy [m2/s3]
+	out_dp        = .false.   ! Buoaynt, Dynamic, Non-Hydrostatic Preassure pertubations [Pa]
+	!out_wmom      = .true.   ! Vertical Velocity moments wm2= variance wm3 = skewnes
+	out_flut      = .false.   ! see netcdf_define.f90 for details
+	out_dtnet     = .true.   ! Net radiative heating [K/s]
+	out_frad      = .true.   ! Net radiative flux [W/m2]
+	!out_dtsw      = .true.   ! SW radiative heating [K/s]
+	!out_dtlw      = .true.   ! LW radiative heating [K/s]
+	!out_tau_aer   = .true.   ! Aerosol optical depth	
+	out_ccn       = .true.    ! Bulk total CCN number density [1/m3]
+	out_in        = .false.   ! Bulk IN number density [1/m3]
+	out_aero      = .true.   ! Number concentration of aerosol in mode [1/kg]; 
+	                          ! Mass concentration of aerosol in mode [1/kg]; 
+	                          ! Mass concentration of activated aerosols in mode [kg/kg]
+    !out_clfrac    = .true.   !Cloud area fraction	   
+ $END
+ 
+ $ou2d_in
+	out_lwp       = .true.   ! Liquid Water Path [kg/m2]
+	out_wvp       = .true.   ! Column integrated water vapor [kg/m2]
+	out_cmse      = .true.   ! Column integrated moist static energy [J/m2]
+	out_ctop      = .false.   ! Cloud top height [m]
+	out_cp        = .false.   ! Cold pool intensity [m/s]; Cold pool depth [m]
+	out_sfl       = .true.   ! Sensible Heat Fluxes [W/m2]; Latent Heat Fluxes [W/m2]
+	out_srad      = .true.   ! Surface_LW + Surface_SW in [W/m2]
+	out_rrate     = .true.   ! Surface rain rate [mm/d]; Accumulated surface precipitation [mm]
+	out_cape      = .false.   ! Convective Available Potential Energy [J/kg]
+	!out_cin       = .false.   ! Convective Inhibition [J/kg]
+	out_ints      = .false.   ! Vertically integrated scalar 1 [kg/m2]  
+	out_olr       = .true.    ! Outgoing/longwave radiation
+	out_osr       = .true.    ! Outgoing/incoming shortwave radiation
+	out_ocs       = .true.    ! Outgoing longwave/shortwave radiation clear sky
+	out_opthic    = .true.    ! Optical thickness of aerosol, cloud and rain
+	!out_zinv      = .true.    !Inversion height for the SE Atlantic case 
+	!out_wsurf     = .true.    !Surface winds 	
+ $END
+
+ $oud_in
+	out_diagu     = .false.   ! Zonal velocity tendency [m/s2]
+	out_diagv     = .false.   ! Meridional velocity tendency [m/s2]
+	out_diagw     = .false.   ! Vertiacal velocity tendency [m/s2]
+	out_diagp     = .false.   ! Preassure tendency [Pa/s]
+	out_diagt     = .false.   ! Potential temperature tendency [K/s]
+	out_diagtv    = .false.   ! Virtual potential temperature tendency [K/s]
+	out_diagq     = .true.   ! Total water mixing fraction tendency [kg/m3/s]
+	out_diagl     = .true.   ! Cloud droplet mixing fraction tendency [kg/m2/s]
+	out_diagr     = .true.   ! Rain drop mixing fraction tendency [kg/m2/s]
+	out_diagi     = .false.   ! Ice crystal mixing fraction tendency [kg/m2/s]
+	out_diags     = .false.   ! tendency of SCAL1-9 [kg/m3/s]
+	out_micro     = .true.   ! depends on aerosol mode; out out some aerosol tendencies
+	out_diaga     = .true.    ! Output aerosol 
+ $END
+
+ $pro_in !options related to the different horizontal profiles to output
+	pro_tot       = .true.
+	pro_env       = .false.
+	pro_cl        = .false.
+	pro_cor       = .false.
+	pro_env       = .false.
+	!pro_cfcl      = .false.
+	!pro_cfev      = .false.  
+ $END
