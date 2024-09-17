@@ -1,0 +1,37 @@
+Compiling MIMICA V5 version 
+Compiling with the intel compiler
+Compiling with debug flags
+
+Summary of options selected in "start":
+#define DEBUG
+#undefine PROF
+#define SPMD
+#define M3D
+Missing option keyword: COLUMN 
+#define DECOMP_2D
+#MAXX 16
+#MAXY 16
+#MAXZ 400
+#NPX 4
+#NPY 4
+#define FINE
+#undefine NESTING
+Missing option keyword: CHANNEL 
+#undefine PARALLEL_OUT
+#undefine MEANDATA
+Deprecated option keyword: CLOUD_TRACK 
+#define RADIA
+#undefine CHEM
+#define AEROSOL
+#undefine TKE
+#undefine LAGRANGE
+#define ISENTROPIC
+#define ANELASTIC
+#define CONSERVATIVE
+#undefine ADV_SPLIT
+#undefine SAT_ADJ
+#define SEIFERT
+#undefine NUC_CNT
+#undefine NUC_CNT1
+Missing option keyword: AERO_RADIA 
+

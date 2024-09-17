@@ -1,0 +1,214 @@
+$cm_run        ! Run time options (time-step, simulated time)
+	dt0           = 1.0,            ! Initial (or fixed) time-step
+	ldtfix        = 0,             ! Fixed time-step if =1, time-step step by CFL if =0
+	limit_ts      = 10.,           ! Minimum allowed time step is dt0/limit_ts
+	tstart        = 0.,            ! Simulation starting time
+	tstop         = 72000.,        ! Simulation end time
+	ntau	      = 20,            ! Number of sub-steps in compressible solver (small time-step = dt0/ntau)
+	verbose        = 3,            ! Level of debug printouts in cm.prt: from 0 (nothing) to 3 (all)
+	new_run       = .true.,        ! New run if .true., run start from restart.dat file if .false.
+	nest_run      = .false.        ! If true, restart a nested run from existing nesting.dat file
+$end
+
+$cm_init      ! Initialization options
+	casename      = 'PoValley',      ! Reference name of the case (useful for predefined test cases)
+	psurf         = 101400,       ! Surface pressure COMBLE
+	dpt           = 0.1,           ! Max initial potential temperature perturbations (random)
+	dqv           = 0.,            ! Max initial water vapor perturbations (random)
+	dw            = 0.,            ! Max initial vertical velocity perturbations (random)
+	kpert  	      = 5,             ! Level up to which random perturbations are applied
+	j_day          = 49,          ! Julian day March 12 2020
+	ctr_lat       = 44.65,          ! Reference latitude
+	t_local       = 17.,           ! Local time at simulation start (UTC)
+	file_init     = 'pv_init_oldOS',    ! Name of initial sounding file
+	!file_rest                         ! Name of restart file
+	forcing_surface = .true.,
+	forcing_file ='pv8_surface_obs.dat',   !Name of the forcing file to force MIMICA's free troposphere (COMBLE case)
+	forcing_file_ssm = 'ssm_simple.dat'  ! Name of the ssm forcing file
+	forcing_file_shf = 'shf_forcing_smooth3.dat',		! Name of the shf forcing file
+	forcing_file_lhf = 'lhf_forcing_smooth3.dat',			! Name of the shf forcing file
+$end
+
+$cm_grid
+	dx            = 10.,            ! Cell size in x
+	dy            = 10.,            ! Cell size in y
+	dz            = 5,            ! Reference cell size in z
+	!gridfile    			     ! Name of vertical grid file
+	z1            = 300.,          ! First reference altitude for refinement (depends on algorithm)
+	z2            = 600.,          ! Second reference altitude for refinement (depends on algorithm)
+	ztop          = 600.,         ! Predefined domain top altitude for grid refinement
+	sratio        = 0.2,           ! Minimum vertical cell size defined as sratio*dz
+	zdamp         = 600.,         ! Starting altitude of vertical damping layer
+	dxdamp        = -1000.,        ! Width of horizonzal damping layer in x
+	dydamp        = -1000.,        ! Width of horizonzal damping layer in y
+	tdamp         = 1800.,         ! Relaxation time scale in damping layer
+	tnudg         = 0.             ! Nudging time scale
+$end
+
+$cm_out
+	no_out	      = .false.,        ! Turns off all outputs for debug (default .false.)
+	iax           = 60.,           ! Frequency of main 3D (2D) outputs in sec
+	isli          = 60.,             ! Frequency of slice output (for 3d runs only) in sec
+	its           = 60.,            ! Frequency of time series output (T_S) in sec
+	ipro	      = 30.,              ! Frequency of t-z profile outputs in sec
+	ires          = 600.,           ! Frequency of restart.dat output in sec
+	!inest                          ! Frequency of nesting.dat output in sec
+	iav           = 1800.,          ! Frequency for resetting temporal averages#
+	!minmax       = .true.,         ! Writes domain min-max values of output quantities (default .false.)
+	zbl           = 400.,          ! Boundary layer (or reference) height
+	!ztrop                               ! Tropopause height
+	kout          = 0.,             ! Writes levels below kout only (all levels if kout=0)
+	!nslicez                             ! Number of horizontal slices to output
+	!nslicex                             ! Number of slices in Y-Z plane
+	!nslicey                             ! Number of lsices in X-Z plane
+	!slicez_io(15)                       ! Altitudes of horizontal slices (15 max)
+	!slicex_io(15)                       ! Altitudes of Y-Z slices (15 max)
+	!slicey_io(15)                       ! Altitudes of X-Z slices (15 max)
+	ts_out        = 'stratus',      ! Type of time-series (T_S) output: 'stratus', 'cumulus' or 'none'
+	out_surf      = .true.,         ! Output surface variables (in main output file)
+	out_hov       = .false.,         ! Output Hovmoller plot
+	out_yav       = .false.,         ! Output slices averaged along y 
+	spec_diag     = .true.,         ! Turns on special diagnostics
+	file_output   = 'povalley_case8.nc' ! Name of main output file
+	!all_rest                           ! Saves all restart files
+$end
+
+$cm_num
+	sorder		  = 2,             ! Scheme order of accuracy (1 or 2)
+	scal_adv      = 'muscl',       ! Select scalar advection scheme ('tvd', 'quick', 'muscl', 'ppm', 'weno')
+	limit         = .true.,        ! Apply slope limiter to scalar advection if .true. (recommended)
+	lim_tol       = 1.e-7,         ! Tolerance for flux limiter
+	imp_buoy      = .false.,       ! Implicit buoyancy
+	!split_mom     = 1,            ! Split momentum integration (0: full explicit, 1: implicit buoy, 2: strang splitting)
+	split_mic     = .true.,        ! Split microphysics integration (0: full explicit, 1: direct splitting, 2: strang)
+	mom_ord       = 4,             ! Order of accuracy of momentum advection (3 or 4)
+	!p_mcons       = .false.,       ! Mass conservation constraint on dynamical pressure (anelastic solver)
+	nsubp         = 2,             ! Number of pressure solver subiterations
+	!phi_p         = 1,             ! Full implicit pressure if =1, weighted implicit/explicit pressure if >1
+	cfl_max       = 0.48,          ! Max allowed CFL (time-step adjusted so that CFL is always below that limit)
+	cfl_min       = 1.0e-5,          ! Min allowed CFL (can be very small)
+	!lavisc         = s1.,            ! Artificial viscosity coefficient for momentum advection (between 0 and 1)
+$endd
+
+$cm_phys      ! Physics options
+	with_mom      = .true.,        ! Advances momentum if .true., fixed velocity field if .false.
+    !with_scal                          ! Advances scalars if .true.
+	with_dif      = .true.,        ! Allows turbulent diffusion of scalars and momentum
+	with_adv      = .true.,        ! Allows advection of scalars and momentum
+	with_buoy     = .true.,        ! Allows buoyancy
+	with_mic      = .true.,        ! Allows microphysics calculation
+	with_nudg     = .false.,       ! Allows nudging
+	with_cor      = .true.,        ! Allows Coriolis
+	with_lsadv    = .false.,       ! Allows large-scale advection
+	with_lssub    = .true.,        ! Allows large-scale subsidence
+	with_rad      = .true.,        ! Allows radiation
+	with_lssrc    = .false.,       ! Allows large-scale sources
+	rad_sw        = 1,             ! Compute SW fluxes 0 = False, 1 = True
+	iradx	      = 1,              ! Frequency of update of radiation in time-steps
+	!rad_o3                              ! Interactive radiation with O3 if =1
+	diff          = 0.,            ! Fixed diffusion coefficient if /=0 (from SGS model otherwise)
+	zdec	      = 150.,          ! Decay height for SGS turbulence (eddy viscosity decays as exp(-z/z_dec) when pran < 0)
+	pran          = -0.3333,          ! Turbulent Prandtl number for scalar diffusion
+	u0shift       = 0.,            ! Reference (geostrophic) wind speed in x
+	v0shift       = 0.,          ! Reference (geostrophic) wind speed in y
+	Ddiv          = 1e-6,       ! Horizontal divergence used to calculate subsidence rate
+	cst_cp        = 1,              ! Constant thermo (cp, cv) properties if =1 (depend on water content otherwise)
+    with_tvar     =.true.,		   ! Enables surface temperature forcing
+	with_radmod   =.true.,          ! Enables modification of radiation sounding at t_radmod
+	t_radmod      = 21600,        ! Time point when the sounding_rad is modified (in second, reading sounding_rad_time2.dat)
+	with_warmadv  =.true.,			! Enables (warm) advection to be nudged
+	tstart1_warmadv = 1 ,          ! Time point when the (warm) advection is nudged (in seconds)
+	tstop1_warmadv  = 16200,			! Time point when the (warm) advection is terminated (in seconds)
+	warm_adv_H1     = 'warm_adv_H1.dat' ! File setting the H for warm advection
+	warm_adv_dT1    = 'warm_adv_dT1.dat' ! File setting the H for warm advection
+	q_adv_H1     = 'q_adv_H1.dat' ! File setting the H for q advection
+	q_adv_dQ1    = 'q_adv_dQ1.dat' ! File setting the H for q advection
+	tstart2_warmadv = 16201,          ! Time point when the (warm) advection is nudged (in seconds)
+	tstop2_warmadv  = 19800,			! Time point when the (warm) advection is terminated (in seconds)
+	warm_adv_H2     = 'warm_adv_H2.dat' ! File setting the H for warm advection
+	warm_adv_dT2    = 'warm_adv_dT2.dat' ! File setting the H for warm advection
+	q_adv_H2     = 'q_adv_H2.dat' ! File setting the H for q advection
+	q_adv_dQ2    = 'q_adv_dQ2.dat' ! File setting the H for q advection
+	tstart3_warmadv = 19801,          ! Time point when the (warm) advection is nudged (in seconds)
+	tstop3_warmadv  = 72000,			! Time point when the (warm) advection is terminated (in seconds)
+	warm_adv_H3     = 'warm_adv_H3.dat' ! File setting the H for warm advection
+	warm_adv_dT3    = 'warm_adv_dT3.dat' ! File setting the H for warm advection
+	q_adv_H3     = 'q_adv_H3.dat' ! File setting the H for q advection
+	q_adv_dQ3    = 'q_adv_dQ3.dat' ! File setting the H for q advection
+$end
+
+$cm_bc        ! Boundary conditions
+	bcl(1)        = 'per',         ! Boundary condition at x=0 ('nnf' for no-normal flow, 'ope' for open, 'per' for periodic)
+	bcl(2)        = 'per',         ! Boundary condition at x=nx ('nnf' for no-normal flow, 'ope' for open, 'per' for periodic)
+	bcl(3)        = 'per',         ! Boundary condition at y=0 ('nnf' for no-normal flow, 'ope' for open, 'per' for periodic)
+	bcl(4)        = 'per',         ! Boundary condition at y=ny ('nnf' for no-normal flow, 'ope' for open, 'per' for periodic)
+	bcl(5)        = 'nnf',         ! Boundary condition at z=0: surface ('nnf' for no-normal flow, 'ope' for open, 'per' for periodic)
+	bcl(6)        = 'nnf',         ! Boundary condition at z=0: surface ('nnf' for no-normal flow, 'ope' for open, 'per' for periodic)
+	isurf         = 1,             ! Type of surface conditions: =0 fixed fluxes, =1 fixed sst and ssm, =2 fixed sst ssm and drag coefficient
+    ust           = 0.25           !Fixed u* (isurf=0)
+	momsf         = 1,             ! Includes surface friction if >0
+	shf0          = -2.03,           ! Fixed sensible heat flux (isurf=0)
+	lhf0          = -5.41,           ! Fixed latent heat flux (isurf=0)
+	scf           = 0.,            ! Fixed surface scalar flux
+	zrough        = 0.1,        ! Roughness height
+	alb           = 0.1,          ! Surface albedo
+	!emi                            ! Surface emissivity
+	sst           = 280.45,          ! Fixed Sea Surface Temperature (isurf=0,1)
+	ssm           = 1.,            ! Fixed surface saturation (saturated if =1; isurf=0,1)
+	c_dm          = 1.2e-3,        ! Fixed surface drag coefficient for momentum (isurf=2,3)
+	c_ds          = 1.2e-3,        ! Fixed surface drag coefficient for scalars (isurf=2,3)
+	min_w         = 1.             ! Min surface horizontal velocity for surface calculation
+$end
+
+$cm_micro
+	micro_dif     = .true.,        ! No turbulent diffusion for microphysical quantities if .false.
+	lmicro        = 1,             ! Microphysics level (=0 no microphysics, =1 liquid only, =2 liquid+ice, =3 graupel+snow, =4 hail)	
+	lndrop        = 1,             ! Prognostic cloud droplet number if =1 (fixed number if =0)
+	lfreeze       = 0,             ! Freezing turned on (=1 simple activation with fixed IN, =2 interactive nucleation)
+	dtcon         = 0.,            ! Condensation time-step
+	xauto         = 6.545e-11,     ! Autoconversion threshold (Seifert-Beheng)
+	qauto         = 1.e-4,         ! Autoconversion threshold (Kessler)
+	moments		  = 2,             ! Number of moments in SB scheme
+	xnc0_d        = 93.e-9,        ! Geometrical diameter of CCN particles. Used for activation when AEROSOL is FALSE in start
+	xnc0_s        = 2.00,           ! Standard deviation of CCN size distribution (assumed to be lognormal) Used for activation when AEROSOL is FALSE in start.
+	xnc0_k        = 0.53,          ! Mean kappa parameter for bulk aerosol species
+	xn_ccn0       = 600e6,        ! Fixed number of CCN/CDNC (units kg/m3)         !The previous number here was 34.0e6 (very strange value)
+	!xn_in0        = 0.01e3,            ! Fixed number of ice nuclei (units kg/m3)
+	ice_habit     = 'DEN'          ! Ice crystal shape (DEN=dendrites, COL=columns, PLA=plates...)
+	with_dropsed     =  .true.	   ! Enable droplet sedimentation if true
+	alpha_drop    = 3.0,             ! Shape parameter in the droplet (generalised) gamma distribution
+	nu_drop       = 1.0, 			   ! Scale parameter in the droplet (generalised) gamma distribution
+	with_collision     = .false.        ! Enable drop collision
+	with_aero_swelling  = .true.		! Enable aerosol swelling (hygroscopic growth)
+	hgf			=  2.0					! Hygroscopic growth factor for aerosol mixture
+$end
+
+$cm_aero
+	laero	=     2               ! Aerosol model level (<0 all flags turned off, =0 activation only, =1 with transport+activation, =2 +precipitation and regeneration, =3 +impaction scavenging, >3 use aerosol flags below)
+	nmode0          = 1,                                        ! number of aerosol modes
+	!lkin            = .true.                                    ! Allows kinetic growth of activated drops
+	aero_sfc_source = .false.,                                  ! Turn on/off aerosol source
+	!reg_mode        = .false.,                                  ! Presence of regeneration mode if .true. 
+	aeroi(1)%nelem = 3,                                         ! Number of elements in mixed mode (up to 4, sulfate, BC, salt, orga)
+	aeroi(1)%init%present = .true., .true., .false., .true.,  ! defines which species are used (sulfate,BC,sea salt,organic)
+    aeroi(1)%init%frac    = 0.88, 0.02, 0., 0.10,                     ! fraction of each aerosol species  
+	aeroi(1)%init%n0      = 6000.0e6,                               ! total initial number of all aerosols in (in #/kg) (put negative numbers to use aerosol profile, see aerosol.f90 for details)
+	!aeroi(1)%init%n0_sfc  = XXX,                          ! Prescribed surface concentration (constand over time iif aero_SFC_const)
+	aeroi(1)%init%n_sfc_source = 0.0e4,                            ! Aerosol surface number source
+    aeroi(1)%size%rmean   = 0.0482,                                   ! Modal radius(mum)                 
+	aeroi(1)%size%sigma   = 1.5,                                ! sigma (standard deviation)
+	!aero_var              =.false. 	                      !Force the model with time varying aerosol number and mass concentrations 
+$end
+
+$cm_lag  ! Lagrangian particles tracking options
+	!aerosol_lag                ! Allows to create an ensemble of particles
+	!compos_lag                 ! Name of the compound of which all particles composed (currently only 'NaCl')
+	!mu_lag                     ! Parameter of log-normal distribution of aerosol particles
+	!sigma_lag                  ! Parameter of log-normal distribution of aerosol particles
+	!ilag                       ! Frequency of lagrangian particle outputs
+	!nlag                       ! Number of lagrangian particle outputs
+	!res_lag                    ! Reset lagrangian particles when removed
+	!lag_init                   ! Method for initializing lagrangian particles
+	!lag_ord                    ! Interpolation order for lagrangian particles (1 or 2)
+	!lag_mix                    ! Particle properties from mixing with mean grid cell
+$end
