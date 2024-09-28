@@ -3,7 +3,7 @@ $cm_run        ! Run time options (time-step, simulated time)
 	ldtfix        = 0,             ! Fixed time-step if =1, time-step step by CFL if =0
 	limit_ts      = 10.,           ! Minimum allowed time step is dt0/limit_ts
 	tstart        = 0.,            ! Simulation starting time
-	tstop         = 72000.,        ! Simulation end time
+	tstop         = 180.,        ! Simulation end time
 	ntau	      = 20,            ! Number of sub-steps in compressible solver (small time-step = dt0/ntau)
 	verbose        = 3,            ! Level of debug printouts in cm.prt: from 0 (nothing) to 3 (all)
 	new_run       = .true.,        ! New run if .true., run start from restart.dat file if .false.
