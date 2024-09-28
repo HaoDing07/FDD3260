@@ -32,7 +32,7 @@ $end
 $cm_grid
 	dx            = 10.,            ! Cell size in x
 	dy            = 10.,            ! Cell size in y
-	dz            = 5,            ! Reference cell size in z
+	dz            = 10,            ! Reference cell size in z
 	!gridfile    			     ! Name of vertical grid file
 	z1            = 300.,          ! First reference altitude for refinement (depends on algorithm)
 	z2            = 600.,          ! Second reference altitude for refinement (depends on algorithm)
@@ -116,7 +116,7 @@ $cm_phys      ! Physics options
     with_tvar     =.true.,		   ! Enables surface temperature forcing
 	with_radmod   =.true.,          ! Enables modification of radiation sounding at t_radmod
 	t_radmod      = 21600,        ! Time point when the sounding_rad is modified (in second, reading sounding_rad_time2.dat)
-	with_warmadv  =.true.,			! Enables (warm) advection to be nudged
+	with_warmadv  =.false.,			! Enables (warm) advection to be nudged
 	tstart1_warmadv = 1 ,          ! Time point when the (warm) advection is nudged (in seconds)
 	tstop1_warmadv  = 16200,			! Time point when the (warm) advection is terminated (in seconds)
 	warm_adv_H1     = 'warm_adv_H1.dat' ! File setting the H for warm advection
@@ -175,11 +175,11 @@ $cm_micro
 	xn_ccn0       = 600e6,        ! Fixed number of CCN/CDNC (units kg/m3)         !The previous number here was 34.0e6 (very strange value)
 	!xn_in0        = 0.01e3,            ! Fixed number of ice nuclei (units kg/m3)
 	ice_habit     = 'DEN'          ! Ice crystal shape (DEN=dendrites, COL=columns, PLA=plates...)
-	with_dropsed     =  .true.	   ! Enable droplet sedimentation if true
+	with_dropsed     =  .false.	   ! Enable droplet sedimentation if true
 	alpha_drop    = 3.0,             ! Shape parameter in the droplet (generalised) gamma distribution
 	nu_drop       = 1.0, 			   ! Scale parameter in the droplet (generalised) gamma distribution
 	with_collision     = .false.        ! Enable drop collision
-	with_aero_swelling  = .true.		! Enable aerosol swelling (hygroscopic growth)
+	with_aero_swelling  = .false.		! Enable aerosol swelling (hygroscopic growth)
 	hgf			=  2.0					! Hygroscopic growth factor for aerosol mixture
 $end
 
